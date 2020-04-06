@@ -63,11 +63,24 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         child: ListTile(
           title: Text(student.toJson().toString()),
-          onTap: () => repository.add(student),
+          onTap: () => repository.delete(student),
         ),
       ),
     );
   }
 }
 
+// class Record {
+//  final String id;
+//  final DocumentReference reference;
 
+//  Record.fromMap(Map<String, dynamic> map, {this.reference})
+//      : assert(map['id'] != null),
+//        id=map['id'];
+
+//  Record.fromSnapshot(DocumentSnapshot snapshot)
+//      : this.fromMap(snapshot.data, reference: snapshot.reference);
+
+//  @override
+//  String toString() => "Record<$id:>";
+// }
