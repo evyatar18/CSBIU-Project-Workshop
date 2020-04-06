@@ -3,44 +3,39 @@ import 'package:workshop_digitalization/models/data/student.dart';
 
 abstract class DataRepository {
   Stream<QuerySnapshot> getStream();
-  Future<DocumentReference> addStudent(Student student);
-  void updateStudent(Student student);
-  void deleteStudent(Student student);
+  Future<DocumentReference> add(Serlizable serlizable);
+  void update(Serlizable serlizable);
+  void delete(Serlizable serlizable);
 }
 
-
-class StudentDataRepository implements DataRepository {
-  final CollectionReference collection ;
-  StudentDataRepository(String collectionName):collection = Firestore.instance.collection(collectionName);
-
+class FireBaseDataRepository implements DataRepository {
+  final CollectionReference collection;
+  FireBaseDataRepository(String collectionName)
+      : collection = Firestore.instance.collection(collectionName);
+  
   Stream<QuerySnapshot> getStream() {
     return collection.snapshots();
   }
 
-  Future<DocumentReference> addStudent(Student student) {
-    return collection.add(student.toJson());
-    /**
-     * await collection
-      .document(student.id)
-      .setData(student.toJson())
-     */
+  Future<DocumentReference> add(Serlizable serlizable) {
+    return collection.add(serlizable.toJson());
   }
 
-  void updateStudent(Student student) async {
-    if(student.reference!=null )
-      await collection.document(student.reference.documentID).updateData(student.toJson());
-      else{
-        //check this
-        student.reference =await addStudent(student);
-      }
+  void update(Serlizable serlizable) async {
+    if (serlizable.reference != null)
+      await collection
+          .document(serlizable.reference.documentID)
+          .updateData(serlizable.toJson());
+    else {
+      serlizable.reference = await add(serlizable);
+    }
   }
 
-  void deleteStudent(Student student) {
+  void delete(Serlizable serlizable) {
     try {
-      collection.document(student.reference.documentID)
-        .delete();
+      collection.document(serlizable.reference.documentID).delete();
     } catch (e) {
       print(e.toString());
-    } 
+    }
   }
 }

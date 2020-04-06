@@ -4,7 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum StudentStatus { SEARCHING, WORKING, FINISHED, IRRELEVANT }
 
-abstract class Student {
+abstract class Serlizable {
+  DocumentReference reference;
+  Map<String, dynamic> toJson();
+}
+
+abstract class Student implements Serlizable {
   String id;
   Name fullName;
   String phoneNumber;
@@ -66,8 +71,9 @@ class DBStudent implements Student {
   factory DBStudent.fromSnapshot(DocumentSnapshot snapshot){
     return DBStudent.fromJson(snapshot.data,reference: snapshot.reference);
   }
-  // 5
+
   Map<String, dynamic> toJson() => _DBStudentToJson(this);
+  
   @override
   String toString() => "DBStudent<$DBStudent>";
 }
