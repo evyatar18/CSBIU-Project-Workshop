@@ -6,7 +6,7 @@ List<String Function(dynamic)> getIsraeliIdValidators() =>
 
 List<String Function(dynamic)> _israeliIDValidators = [
   FormBuilderValidators.required(),
-  FormBuilderValidators.pattern("\\d{9}",
+  FormBuilderValidators.pattern("^\\d{9}\$",
       errorText: "Israeli ID must have 9 digits"),
   _israeliIdValidator
 ];
