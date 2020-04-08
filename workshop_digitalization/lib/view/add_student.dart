@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:workshop_digitalization/models/data/student.dart';
 
-import 'forms/types/form_name.dart';
-import 'forms/types/form_israeli_id.dart';
+import 'package:workshop_digitalization/view/forms/types/types.dart';
 
 class AddStudentForm extends StatefulWidget {
   Student student;
@@ -54,14 +53,17 @@ class _AddStudentFormState extends State<AddStudentForm> {
               FormBuilderTextField(
                   attribute: "id",
                   decoration: InputDecoration(labelText: "Person ID"),
-                  validators: getIsraeliIdValidators()),
+                  validators: validators.israeliId),
               FormBuilderTextField(
                 attribute: "name",
                 decoration: InputDecoration(labelText: "Name"),
-                validators: getNameValidators(),
-                valueTransformer: getNameValueTransformer(),
+                validators: validators.name,
+                valueTransformer: valueTransformers.nameFromString,
               ),
+              FormBuilderTextField(
+                attribute: "phoneNumber",
 
+              )
             ],
           )),
       Row(

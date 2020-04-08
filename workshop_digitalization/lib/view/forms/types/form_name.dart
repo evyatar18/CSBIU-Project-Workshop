@@ -16,9 +16,7 @@ final _validators = <String Function(dynamic)>[
 
 List<String Function(dynamic)> getNameValidators() => _validators.clone();
 
-dynamic Function(dynamic) getNameValueTransformer() {
-  return _nameValueTransformer;
-}
+dynamic Function(dynamic) getNameValueTransformer() => _nameValueTransformer;
 
 dynamic _nameValueTransformer(dynamic value) {
   if (value == null || !(value is String)) {
