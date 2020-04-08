@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:workshop_digitalization/models/data/student.dart';
-import 'package:workshop_digitalization/view/forms/validators/name.dart';
 
-import 'forms/validators/israeli_id.dart';
+import 'forms/types/form_name.dart';
+import 'forms/types/form_israeli_id.dart';
 
 class AddStudentForm extends StatefulWidget {
   Student student;
@@ -59,7 +59,9 @@ class _AddStudentFormState extends State<AddStudentForm> {
                 attribute: "name",
                 decoration: InputDecoration(labelText: "Name"),
                 validators: getNameValidators(),
-              )
+                valueTransformer: getNameValueTransformer(),
+              ),
+
             ],
           )),
       Row(
