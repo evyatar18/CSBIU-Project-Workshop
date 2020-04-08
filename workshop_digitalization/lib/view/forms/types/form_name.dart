@@ -25,11 +25,11 @@ dynamic _nameValueTransformer(dynamic value) {
 
   String str = value;
 
-  int firstNameEndIndex = str.lastIndexOf(" ");
+  int firstNameLastIndex = str.lastIndexOf(" ");
 
   // get first and last names
-  final firstName = str.substring(0, firstNameEndIndex);
-  final lastName = str.substring(firstNameEndIndex + 1);
+  final firstName = str.substring(0, firstNameLastIndex);
+  final lastName = str.substring(firstNameLastIndex + 1);
 
   return Name(first: firstName, last: lastName);
 }
