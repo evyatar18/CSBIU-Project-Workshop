@@ -7,6 +7,7 @@ enum StudentStatus { SEARCHING, WORKING, FINISHED, IRRELEVANT }
 abstract class Serlizable {
   DocumentReference reference;
   Map<String, dynamic> toJson();
+  Serlizable.fromJson(Map<dynamic, dynamic> json, {this.reference})
 }
 
 abstract class Student implements Serlizable {
