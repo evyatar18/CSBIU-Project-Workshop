@@ -51,9 +51,10 @@ class _AddStudentFormState extends State<AddStudentForm> {
           child: Column(
             children: <Widget>[
               FormBuilderTextField(
-                  attribute: "id",
-                  decoration: InputDecoration(labelText: "Person ID"),
-                  validators: validators.israeliId),
+                attribute: "id",
+                decoration: InputDecoration(labelText: "Person ID"),
+                validators: validators.israeliId,
+              ),
               FormBuilderTextField(
                 attribute: "name",
                 decoration: InputDecoration(labelText: "Name"),
@@ -62,7 +63,6 @@ class _AddStudentFormState extends State<AddStudentForm> {
               ),
               FormBuilderTextField(
                 attribute: "phoneNumber",
-
               )
             ],
           )),
