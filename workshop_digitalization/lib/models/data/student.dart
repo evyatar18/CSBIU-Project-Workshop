@@ -7,7 +7,8 @@ enum StudentStatus { SEARCHING, WORKING, FINISHED, IRRELEVANT }
 abstract class Serlizable {
   DocumentReference reference;
   Map<String, dynamic> toJson();
-  Serlizable.fromJson(Map<dynamic, dynamic> json, {this.reference})
+  Serlizable.fromList(List<dynamic> list);
+
 }
 
 abstract class Student implements Serlizable {
@@ -66,7 +67,9 @@ class DBStudent implements Student {
         lastUpdate =( json['lastUpdate'] as Timestamp).toDate();
       loadDate = json['loadDate'];
   }
-
+  DBStudent.fromList(List<dynamic> list){
+    
+  }
 
 
   factory DBStudent.fromSnapshot(DocumentSnapshot snapshot){

@@ -56,7 +56,14 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
     });
   }
 
-  void loadFiles() {}
+  void loadFiles() {
+    if(_path!=null||_paths!=null){
+      final bool isMultiPath = _paths != null && _paths.isNotEmpty;
+      if(isMultiPath){
+        
+      }
+    }
+  }
   Widget uploadButton() {
     return _path == null || _paths != null
         ? RaisedButton(
