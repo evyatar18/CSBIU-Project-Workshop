@@ -1,5 +1,5 @@
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:workshop_digitalization/extensions/list.dart';
+import 'package:workshop_digitalization/utils/extensions.dart';
 import 'package:workshop_digitalization/models/data/name.dart';
 
 final _validators = <String Function(dynamic)>[
@@ -16,9 +16,9 @@ final _validators = <String Function(dynamic)>[
 
 List<String Function(dynamic)> getNameValidators() => _validators.clone();
 
-dynamic Function(dynamic) getNameValueTransformer() => _nameValueTransformer;
+Name Function(dynamic) getNameValueTransformer() => _nameValueTransformer;
 
-dynamic _nameValueTransformer(dynamic value) {
+Name _nameValueTransformer(dynamic value) {
   if (value == null || !(value is String)) {
     throw "Full name value must not be null and be a string.";
   }
@@ -27,9 +27,14 @@ dynamic _nameValueTransformer(dynamic value) {
 
   int firstNameLastIndex = str.lastIndexOf(" ");
 
-  // get first and last names
-  final firstName = str.substring(0, firstNameLastIndex);
-  final lastName = str.substring(firstNameLastIndex + 1);
+  // we got both first and last names
+  if (firstNameLastIndex != -1) {
+    // get first and last names
+    final firstName = str.substring(0, firstNameLastIndex);
+    final lastName = str.substring(firstNameLastIndex + 1);
 
-  return Name(first: firstName, last: lastName);
+    return Name(first: firstName, last: lastName);
+  } else {
+    return Name(first: value, last: "");
+  }
 }

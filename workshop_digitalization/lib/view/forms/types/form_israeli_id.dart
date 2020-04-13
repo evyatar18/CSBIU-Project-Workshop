@@ -1,5 +1,5 @@
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:workshop_digitalization/extensions/list.dart';
+import 'package:workshop_digitalization/utils/extensions.dart';
 
 List<String Function(dynamic)> getIsraeliIdValidators() =>
     _israeliIDValidators.clone();

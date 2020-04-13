@@ -1,5 +1,6 @@
 library form_types;
 
+import 'package:workshop_digitalization/models/data/name.dart';
 import 'package:workshop_digitalization/view/forms/types/form_israeli_id.dart';
 import 'package:workshop_digitalization/view/forms/types/form_name.dart';
 
@@ -12,5 +13,5 @@ class _Validators {
 }
 
 class _ValueTransformers {
-  dynamic Function(dynamic) get nameFromString => getNameValueTransformer();
+  Name Function(dynamic) get nameFromString => getNameValueTransformer();
 }
