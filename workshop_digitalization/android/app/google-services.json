@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "818805500247",
+    "firebase_url": "https://workshop-a85eb.firebaseio.com",
+    "project_id": "workshop-a85eb",
+    "storage_bucket": "workshop-a85eb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818805500247:android:21152b5e72103e6e9e3612",
+        "android_client_info": {
+          "package_name": "com.example.workshop_digitalization"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "818805500247-hoclpjsb01i98qt84jrp1cqkimo9e90s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAmWvBs5umwBFKoDwh1L894hLmTJvYHZo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "818805500247-hoclpjsb01i98qt84jrp1cqkimo9e90s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
