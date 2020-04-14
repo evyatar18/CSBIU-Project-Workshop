@@ -9,9 +9,10 @@ abstract class FileParser {
 
 typedef Map<String, dynamic> _RowConverter(List<dynamic> row);
 
-class CsvFilePasrser implements FileParser {
+class CsvFileParser implements FileParser {
   @override
   Future<List<Map<String, dynamic>>> parse(String fileName, List<String> fieldOrder) async {
+
     final input = new File(fileName).openRead();
     List<Map<String, dynamic>> fields = await input
         .transform(utf8.decoder)
@@ -35,7 +36,7 @@ class CsvFilePasrser implements FileParser {
       Map<String, dynamic> current = json;
 
       for (int j = 0; j < path.length - 1; ++j) {
-        final subPath = path[i];
+        final subPath = path[j];
         if (!current.containsKey(subPath)) {
           current[subPath] = Map<String, dynamic>();
         }

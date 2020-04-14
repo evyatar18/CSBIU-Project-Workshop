@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:workshop_digitalization/loadScreen.dart';
 import 'package:workshop_digitalization/models/data/repository/dataRepository.dart';
+import 'package:workshop_digitalization/models/data/repository/singleDataRepsitory.dart';
 import 'package:workshop_digitalization/models/data/student.dart';
 
-void main() => runApp(MyApp());
-final DataRepository repository = FireBaseDataRepository("students");
+void main() => runApp(new LoadScreen());
+final DataRepository repository = SingleDataRepository("students");
 
 class MyApp extends StatelessWidget {
   @override
@@ -63,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         child: ListTile(
           title: Text(student.toJson().toString()),
-          onTap: () => repository.delete(student),
+          onTap: () => repository.add(student),
         ),
       ),
     );

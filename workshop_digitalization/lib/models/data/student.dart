@@ -27,7 +27,16 @@ abstract class Student implements Serlizable {
   DocumentReference reference;
 
   Map<String, dynamic> toJson();
+
+  @override
+  static List<String> getFields(){
+    return ['id','name.first','name.last','phoneNumber','email','year','status','lastUpdate','loadDate',];
+  }
 }
+
+// class LocalStudent extends Student{
+
+// }
 
 class DBStudent implements Student {
   String id;
@@ -56,21 +65,27 @@ class DBStudent implements Student {
       this.reference});
 
   DBStudent.fromJson(Map<dynamic, dynamic> json, {this.reference}) {
-      id = json['id'];
+      id = (json['id'].toString());
       fullName =  Name(first: json['name']['first'], last: json['name']['last']);
       phoneNumber = json['phone'];
       email = json['email'];
       studyYear = json['year'];
-      status = json['status'];
-      if(json['lastUpdate'] != null)
-        lastUpdate =( json['lastUpdate'] as Timestamp).toDate();
-      loadDate = json['loadDate'];
-  }
-  @override
-  static List<String> getFields(){
+      status = StudentStatus.values[json['status']];
+      if(json['lastUpdate'] != null){
+        if (json['lastUpdate'] is Timestamp)
+          lastUpdate =( json['lastUpdate'] as Timestamp).toDate();
+        else
+          lastUpdate = DateTime(
+          DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
-    return ['id','name.first','name.last','phoneNumber','email','year','status','lastUpdate','loadDate'];
+      }
+      if (json['loadDate'] == null)
+        loadDate = json['loadDate'];
+      else
+        loadDate = DateTime(
+          DateTime.now().year, DateTime.now().month, DateTime.now().day);
   }
+  
   
 
 
