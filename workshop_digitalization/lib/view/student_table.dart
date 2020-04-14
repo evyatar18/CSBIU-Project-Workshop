@@ -5,7 +5,7 @@ import 'package:workshop_digitalization/blocs/bloc.dart';
 import 'package:workshop_digitalization/blocs/table_bloc.dart';
 import 'package:workshop_digitalization/view/bidirectional_scroll.dart';
 import 'package:workshop_digitalization/view/forms/types/types.dart';
-import 'package:workshop_digitalization/view/table.dart';
+import 'package:workshop_digitalization/view/data_table.dart';
 
 typedef void SearchListener(BuildContext context, String query);
 

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:workshop_digitalization/utils/utils.dart';
-import 'package:workshop_digitalization/view/table.dart';
+import 'package:workshop_digitalization/view/data_table.dart';
 import 'package:workshop_digitalization/utils/extensions.dart';
 
 import 'bloc.dart';
@@ -11,31 +11,6 @@ class FirebaseTableBloc implements Bloc {
   final _controller = StreamController<BasicDataTableData>();
 
   Stream<BasicDataTableData> get dataStream => _controller.stream;
-
-  // void listen(CollectionReference ref, FirebaseSchema schema) {
-
-  //   var subscription = ref
-  //       .orderBy(schema.paths[0], descending: false)
-  //       .snapshots().listen()
-
-  //       subscription.listen(onData)
-  //       .forEach((snapshot) async {
-  //         // signal that there is data being parsed right now
-  //         _controller.sink.add(null);
-
-  //         final tableData = List<Map<String, dynamic>>();
-
-  //         for (var doc in snapshot.documents) {
-  //           if (doc.data == null) {
-  //             continue;
-  //           }
-
-  //           tableData.add(flattenMap(doc.data).map((path, value) => MapEntry(schema.getName(path), value)));
-  //         }
-
-  //         _controller.sink.add(BasicDataTableData(schema.names, schema.getName(schema.paths[0]), true, tableData));
-  //       })  ;
-  // }
 
   Future<void> issueRequest(
       CollectionReference ref, TableDataRequest requestData) async {
@@ -61,7 +36,7 @@ class FirebaseTableBloc implements Bloc {
         // finally convert into list
         .toList(growable: false);
 
-    _controller.add(BasicDataTableData(
+    _controller.sink.add(BasicDataTableData(
       requestData.requestSchema.names,
       requestData.requestSchema.getName(requestData.orderColumn),
       requestData.ascending,

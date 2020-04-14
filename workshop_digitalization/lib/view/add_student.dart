@@ -96,28 +96,8 @@ class _AddStudentFormState extends State<AddStudentForm> {
     final stud = widget.student;
 
     return Padding(
-        padding: EdgeInsets.all(18),
-        child: SingleChildScrollView(child: _studentForm({})));
-
-    // return Form(
-    //     key: _formKey,
-    //     child: Column(children: <Widget>[
-    //       Text("email"),
-    //       TextField(onChanged: (value) {
-    //         print(value);
-    //         stud.email = value;
-    //         print("h");
-    //       }),
-    //       _dropdown(),
-    //       RaisedButton(
-    //           onPressed: () {
-    //             if (_formKey.currentState.validate()) {
-    //               print("Submitted");
-    //               Scaffold.of(context)
-    //                   .showSnackBar(SnackBar(content: Text('Processing Data')));
-    //             }
-    //           },
-    //           child: Text("Submit"))
-    //     ]));
+      padding: EdgeInsets.all(18),
+      child: SingleChildScrollView(child: _studentForm({})),
+    );
   }
 }
