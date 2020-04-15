@@ -5,10 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:workshop_digitalization/models/data/repository/batchDataRepository.dart';
-import 'package:workshop_digitalization/models/data/repository/dataRepository.dart';
 
 import 'models/data/fileParser.dart';
-import 'models/data/repository/singleDataRepsitory.dart';
 import 'models/data/student.dart';
 
 void main() => runApp(new LoadScreen());
@@ -28,7 +26,7 @@ class _LoadScreenState extends State<LoadScreen> {
   String _extension = 'csv';
   bool _loadingPath = false;
   bool _multiPick = false;
-  BatchDataRepository _repository = new FirebaseBatchDataRepository('students');
+  BatchDataRepository _repository = new FirebaseBatchDataRepository('test');
   FilesListState _state;
 
   @override
@@ -49,8 +47,11 @@ class _LoadScreenState extends State<LoadScreen> {
       } else {
         _paths = null;
         _path = await FilePicker.getFilePath(
-          type: FileType.any,
-        );
+         type: FileType.custom,
+            allowedExtensions: (_extension?.isNotEmpty ?? false)
+                ? _extension?.replaceAll(' ', '')?.split(',')
+                : null);
+        
       }
     } on PlatformException catch (e) {
       print("Unsupported operation" + e.toString());
@@ -78,10 +79,11 @@ class _LoadScreenState extends State<LoadScreen> {
       }
 
       for (var json in jsons) {
-         _repository.add(DBStudent.fromJson(json));
+        await _repository.add(DBStudent.fromJson(json));
       }
       
-     
+    
+      await Future.delayed(Duration(seconds: 3));
       _path = null;
       _paths = null;
       setState(() {

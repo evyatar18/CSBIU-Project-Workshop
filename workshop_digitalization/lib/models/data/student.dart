@@ -120,7 +120,7 @@ Map<String, dynamic> _DBStudentToJson(DBStudent instance) => <String, dynamic>{
       'phone': instance.phoneNumber,
       'email': instance.email,
       'year': instance.studyYear,
-      'status': instance.status,
+      'status': instance.status.index,
       'lastUpdate': DateTime(
           DateTime.now().year, DateTime.now().month, DateTime.now().day),
       'loadDate': instance.loadDate

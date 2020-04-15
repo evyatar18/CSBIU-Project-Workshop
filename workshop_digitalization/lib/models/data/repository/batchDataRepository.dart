@@ -4,43 +4,82 @@ import '../student.dart';
 import 'dataRepository.dart';
 
 abstract class BatchDataRepository extends DataRepository {
-  void commit();
+  Future<void> commit();
+}
+
+class FirebaseTransactionDataRepository implements BatchDataRepository {
+  final collection;
+  List<Serlizable> updates = [];
+  List<Serlizable> adds = [];
+  List<Serlizable> deletes = [];
+  FirebaseTransactionDataRepository(String collectionName)
+      : collection = Firestore.instance.collection(collectionName);
+
+  Stream<QuerySnapshot> getStream() {
+    return collection.snapshots();
+  }
+   
+  void _init(){
+    updates = [];
+    adds =[];
+    deletes = [];
+  }
+
+  Future<DocumentReference> add(Serlizable serlizable) async {
+    var docRef = collection.document();
+    adds.add(serlizable);
+    return docRef;
+  }
+
+  Future<void> update(Serlizable serlizable) async {
+    updates.add(serlizable);
+  }
+
+  Future<void> commit() async {
+   var localAdds = adds; 
+   var localUpdates = updates;
+   var localDelets = deletes;
+   _init();
+
+  }
+
+  @override
+  Future<void> delete(Serlizable serlizable) async {
+    deletes.add(serlizable);
+  }
 }
 
 class FirebaseBatchDataRepository implements BatchDataRepository {
-  final  collection;
+  final collection;
   var batch;
   FirebaseBatchDataRepository(String collectionName)
       : collection = Firestore.instance.collection(collectionName);
 
-  
   Stream<QuerySnapshot> getStream() {
     return collection.snapshots();
   }
 
-  Future<DocumentReference> add(Serlizable serlizable) async{
-    if(batch==null) 
-      batch = Firestore.instance.batch();
+  Future<DocumentReference> add(Serlizable serlizable) async {
+    if (batch == null) batch = Firestore.instance.batch();
     var docRef = collection.document();
-    await batch.setData(docRef,serlizable.toJson());
-    return Future<DocumentReference>.value(docRef);
+    batch.setData(docRef, serlizable.toJson());
+    return docRef;
   }
 
-  void update(Serlizable serlizable) async {
-    if(batch==null) 
-      batch = Firestore.instance.batch();
-    batch.updateData(serlizable.reference,serlizable.toJson());
+  Future<void> update(Serlizable serlizable) async {
+    if (batch == null) batch = Firestore.instance.batch();
+    batch.updateData(serlizable.reference, serlizable.toJson());
   }
 
-  void commit() async{
-    await batch.commit();
+  Future<void> commit() async {
+    var localBatch = batch;
     batch = null;
+    await localBatch.commit();
   }
 
   @override
-  void delete(Serlizable serlizable) async{
-    if(batch==null) 
-      batch = Firestore.instance.batch();
+  Future<void> delete(Serlizable serlizable) async {
+    if (batch == null) batch = Firestore.instance.batch();
     batch.delete(serlizable.reference);
   }
 }

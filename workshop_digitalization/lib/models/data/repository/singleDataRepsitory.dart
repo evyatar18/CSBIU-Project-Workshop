@@ -18,7 +18,7 @@ class SingleDataRepository implements DataRepository {
     return collection.add(serlizable.toJson());
   }
 
-  void update(Serlizable serlizable) async {
+  Future<void> update(Serlizable serlizable) async {
     if (serlizable.reference != null)
       await collection
           .document(serlizable.reference.documentID)
@@ -28,7 +28,7 @@ class SingleDataRepository implements DataRepository {
     }
   }
 
-  void delete(Serlizable serlizable) {
+  Future<void> delete(Serlizable serlizable) {
     try {
       collection.document(serlizable.reference.documentID).delete();
     } catch (e) {
