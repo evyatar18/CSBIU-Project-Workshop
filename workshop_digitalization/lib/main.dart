@@ -55,12 +55,9 @@ class MockStudent implements Student {
 
   @override
   int studyYear = 2020;
-
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-
   @override
   Widget build(BuildContext context) {
     Firestore fs = Firestore.instance;
@@ -88,7 +85,13 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       // body: StudentForm(student: _MockStudent())
-      body: StudentTable(FirebaseSchema({
+      body: _buildStudentTable(),
+    );
+  }
+}
+
+Widget _buildStudentTable() => StudentTable(
+      FirebaseSchema({
         "name.first": "First Name",
         "name.last": "Last Name",
         "id": "ID",
@@ -98,7 +101,5 @@ class _MyHomePageState extends State<MyHomePage> {
         "status": "Status",
         "lastUpdate": "Last Update",
         "loadDate": "Load Date"
-      })),
+      }),
     );
-  }
-}
