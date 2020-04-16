@@ -1,5 +1,5 @@
 extension CloneList on List {
-  List clone() {
+  List<T> clone<T>() {
     return List.from(this);
   }
 }

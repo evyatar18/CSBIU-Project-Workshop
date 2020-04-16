@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:workshop_digitalization/utils/extensions.dart';
 
-List<String Function(dynamic)> getIsraeliIdValidators() =>
+List<FormFieldValidator> getIsraeliIdValidators() =>
     _israeliIDValidators.clone();
 
-List<String Function(dynamic)> _israeliIDValidators = [
+List<FormFieldValidator> _israeliIDValidators = [
   FormBuilderValidators.required(),
   FormBuilderValidators.pattern("^\\d{9}\$",
       errorText: "Israeli ID must have 9 digits"),

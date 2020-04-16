@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:workshop_digitalization/blocs/table_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:workshop_digitalization/models/data/name.dart';
+import 'package:workshop_digitalization/view/student_form.dart';
 import 'package:workshop_digitalization/view/student_table.dart';
+
+import 'models/data/student.dart';
 
 void main() => runApp(MyApp());
 
@@ -25,6 +29,33 @@ class MyHomePage extends StatefulWidget {
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
+}
+
+class MockStudent implements Student {
+  @override
+  String email = "test@ho.com";
+
+  @override
+  Name fullName = Name(first: "hey", last: "world");
+
+  @override
+  String id = "123456782";
+
+  @override
+  DateTime lastUpdate = DateTime.now().add(Duration(seconds: 10));
+
+  @override
+  DateTime loadDate = DateTime.now();
+
+  @override
+  String phoneNumber = "123-123123";
+
+  @override
+  StudentStatus status = StudentStatus.IRRELEVANT;
+
+  @override
+  int studyYear = 2020;
+
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -56,12 +87,17 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      // body: AddStudentForm(null)
+      // body: StudentForm(student: _MockStudent())
       body: StudentTable(FirebaseSchema({
         "name.first": "First Name",
         "name.last": "Last Name",
         "id": "ID",
         "year": "Year",
+        "email": "Email",
+        "phone": "Phone",
+        "status": "Status",
+        "lastUpdate": "Last Update",
+        "loadDate": "Load Date"
       })),
     );
   }

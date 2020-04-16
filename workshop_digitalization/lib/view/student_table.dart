@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:workshop_digitalization/blocs/bloc.dart';
 import 'package:workshop_digitalization/blocs/table_bloc.dart';
-import 'package:workshop_digitalization/view/bidirectional_scroll.dart';
+import 'package:workshop_digitalization/models/data/name.dart';
+import 'package:workshop_digitalization/models/data/student.dart';
 import 'package:workshop_digitalization/view/forms/types/types.dart';
 import 'package:workshop_digitalization/view/data_table.dart';
+import 'package:workshop_digitalization/view/student_form.dart';
 
 typedef void SearchListener(BuildContext context, String query);
 
@@ -48,12 +50,15 @@ class StudentTable extends StatelessWidget {
         bloc: _bloc,
         child: _InheritedTableRequestBuilder(
           requestBuilder,
-          child: Column(
-            children: <Widget>[
-              _SearchBar(_onSearch),
-              BidirectionalScrollViewSingleChild(
-                  child: _buildTable(_StudentTableListeners())),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                _SearchBar(_onSearch),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: _buildTable(_StudentTableListeners())),
+              ],
+            ),
           ),
         ),
       ),
@@ -100,7 +105,7 @@ class _StudentTableListeners implements BasicDataTableListeners {
   List<ColumnClickListener> get columnClick => [_onColumnClick];
 
   @override
-  List<RowClickListener> get rowClick => <RowClickListener>[];
+  List<RowClickListener> get rowClick => <RowClickListener>[_onRowClick];
 }
 
 class _SearchBar extends StatelessWidget {
@@ -149,4 +154,55 @@ void _onSearch(BuildContext context, String query) {
       (field) => (field is String) && (field as String).contains(name.last);
 
   bloc.studentRequest(requestBuilder.build());
+}
+
+void _onRowClick(BuildContext context, Map<String, dynamic> clickedRow) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => Scaffold(
+        appBar: AppBar(title: Text("Hello")),
+        body: StudentForm(student: _make(clickedRow)),
+      ),
+    ),
+  );
+}
+
+class _Stud implements Student {
+  @override
+  String email;
+
+  @override
+  Name fullName;
+
+  @override
+  String id;
+
+  @override
+  DateTime lastUpdate;
+
+  @override
+  DateTime loadDate;
+
+  @override
+  String phoneNumber;
+
+  @override
+  StudentStatus status;
+
+  @override
+  int studyYear;
+}
+
+Student _make(Map<String, dynamic> map) {
+  var s = _Stud();
+  s.email = map["Email"];
+  s.id = map["ID"];
+  s.lastUpdate = (map["Last Update"] as Timestamp).toDate();
+  s.loadDate = (map["Load Date"] as Timestamp).toDate();
+  s.fullName = Name(first: map["First Name"], last: map["Last Name"]);
+  s.phoneNumber = map["Phone"];
+  s.status = StudentStatus.values[map["Status"]];
+  s.studyYear = map["Year"];
+  return s;
 }

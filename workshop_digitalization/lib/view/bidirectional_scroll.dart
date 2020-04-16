@@ -7,11 +7,12 @@ class BidirectionalScrollViewSingleChild extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Bid
+    // return child;
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
+      scrollDirection: Axis.vertical,
       child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: child
+        scrollDirection: Axis.horizontal,
       ),
     );
   }
