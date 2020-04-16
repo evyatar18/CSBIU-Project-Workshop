@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:workshop_digitalization/blocs/table_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,18 +7,23 @@ import 'package:workshop_digitalization/view/student_form.dart';
 import 'package:workshop_digitalization/view/student_table.dart';
 
 import 'models/data/student.dart';
+import 'package:workshop_digitalization/loadScreen.dart';
+import 'package:workshop_digitalization/models/data/repository/dataRepository.dart';
+import 'package:workshop_digitalization/models/data/repository/singleDataRepsitory.dart';
+import 'package:workshop_digitalization/models/data/student.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(new LoadScreen());
+final DataRepository repository = SingleDataRepository("students");
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Students',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Students'),
     );
   }
 }
@@ -28,7 +34,9 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyHomePageState createState() {
+    return _MyHomePageState();
+  }
 }
 
 class MockStudent implements Student {
