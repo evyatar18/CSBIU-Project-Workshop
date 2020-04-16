@@ -63,6 +63,15 @@ class MockStudent implements Student {
 
   @override
   int studyYear = 2020;
+
+  @override
+  DocumentReference reference;
+
+  @override
+  Map<String, dynamic> toJson() {
+    // TODO: implement toJson
+    return null;
+  }
 }
 
 class _MyHomePageState extends State<MyHomePage> {
