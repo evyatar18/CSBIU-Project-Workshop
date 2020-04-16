@@ -1,5 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:workshop_digitalization/blocs/table_bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:workshop_digitalization/models/data/name.dart';
+import 'package:workshop_digitalization/view/student_form.dart';
+import 'package:workshop_digitalization/view/student_table.dart';
+
+import 'models/data/student.dart';
 import 'package:workshop_digitalization/loadScreen.dart';
 import 'package:workshop_digitalization/models/data/repository/dataRepository.dart';
 import 'package:workshop_digitalization/models/data/repository/singleDataRepsitory.dart';
@@ -13,76 +20,94 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Students',
-      home: MyHomePage(),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(title: 'Students'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key, this.title}) : super(key: key);
+
+  final String title;
+
   @override
   _MyHomePageState createState() {
     return _MyHomePageState();
   }
 }
 
+class MockStudent implements Student {
+  @override
+  String email = "test@ho.com";
+
+  @override
+  Name fullName = Name(first: "hey", last: "world");
+
+  @override
+  String id = "123456782";
+
+  @override
+  DateTime lastUpdate = DateTime.now().add(Duration(seconds: 10));
+
+  @override
+  DateTime loadDate = DateTime.now();
+
+  @override
+  String phoneNumber = "123-123123";
+
+  @override
+  StudentStatus status = StudentStatus.IRRELEVANT;
+
+  @override
+  int studyYear = 2020;
+}
+
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    Firestore fs = Firestore.instance;
+    // fs
+    //     .collection("students")
+    //     .document("04Vzpzh63aZhl6ywWyVu")
+    //     .get()
+    //     .asStream()
+    //     .expand((ds) => mapFlattener(ds.data).entries)
+    //     .forEach(print);
+
+    // var fname = "name.first";
+
+    // fs
+    //     .collection("students")
+    //     .where(fname, isEqualTo: "x")
+    //     .snapshots()
+    //     .expand((ds) => ds.documentChanges)
+    //     .where((dc) => dc.newIndex >= 0)
+    //     .map((dc) => dc.document)
+    //     .map((ds) => "${ds.documentID}, ${flattenMap(ds.data)}}")
+    //     .forEach(print);
     return Scaffold(
-      appBar: AppBar(title: Text('Students')),
-      body: _buildBody(context),
-    );
-  }
-
-  Widget _buildBody(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: repository.getStream(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return LinearProgressIndicator();
-        return _buildList(context, snapshot.data.documents);
-      },
-    );
-  }
-
-  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
-    return ListView(
-      padding: const EdgeInsets.only(top: 20.0),
-      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
-    );
-  }
-
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final student = DBStudent.fromSnapshot(data);
-    student.phoneNumber = '112';
-    
-    return Padding(
-      key: ValueKey(student.fullName),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        child: ListTile(
-          title: Text(student.toJson().toString()),
-          onTap: () => repository.add(student),
-        ),
+      appBar: AppBar(
+        title: Text(widget.title),
       ),
+      // body: StudentForm(student: _MockStudent())
+      body: _buildStudentTable(),
     );
   }
 }
 
-// class Record {
-//  final String id;
-//  final DocumentReference reference;
-
-//  Record.fromMap(Map<String, dynamic> map, {this.reference})
-//      : assert(map['id'] != null),
-//        id=map['id'];
-
-//  Record.fromSnapshot(DocumentSnapshot snapshot)
-//      : this.fromMap(snapshot.data, reference: snapshot.reference);
-
-//  @override
-//  String toString() => "Record<$id:>";
-// }
+Widget _buildStudentTable() => StudentTable(
+      FirebaseSchema({
+        "name.first": "First Name",
+        "name.last": "Last Name",
+        "id": "ID",
+        "year": "Year",
+        "email": "Email",
+        "phone": "Phone",
+        "status": "Status",
+        "lastUpdate": "Last Update",
+        "loadDate": "Load Date"
+      }),
+    );

@@ -5,4 +5,9 @@ class Name {
   final String last;
 
   Name({ @required this.first , @required this.last });
+
+  @override
+  String toString() {
+    return "{ Name: $first, $last }";
+  }
 }
