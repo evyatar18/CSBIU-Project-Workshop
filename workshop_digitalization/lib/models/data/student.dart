@@ -67,7 +67,7 @@ class DBStudent implements Student {
   DBStudent.fromJson(Map<dynamic, dynamic> json, {this.reference}) {
       id = (json['id'].toString());
       fullName =  Name(first: json['name']['first'], last: json['name']['last']);
-      phoneNumber = json['phone'];
+      phoneNumber = json['phoneNumber'].toString();
       email = json['email'];
       studyYear = json['year'];
       status = StudentStatus.values[json['status']];

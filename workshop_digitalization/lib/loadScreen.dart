@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:workshop_digitalization/models/data/repository/batchDataRepository.dart';
@@ -47,11 +44,10 @@ class _LoadScreenState extends State<LoadScreen> {
       } else {
         _paths = null;
         _path = await FilePicker.getFilePath(
-         type: FileType.custom,
+            type: FileType.custom,
             allowedExtensions: (_extension?.isNotEmpty ?? false)
                 ? _extension?.replaceAll(' ', '')?.split(',')
                 : null);
-        
       }
     } on PlatformException catch (e) {
       print("Unsupported operation" + e.toString());
@@ -81,15 +77,14 @@ class _LoadScreenState extends State<LoadScreen> {
       for (var json in jsons) {
         await _repository.add(DBStudent.fromJson(json));
       }
-      
-    
+
       await Future.delayed(Duration(seconds: 3));
       _path = null;
       _paths = null;
       setState(() {
         _state = FilesListState.AFTER;
       });
-      
+
       _repository.commit();
     }
   }
@@ -154,45 +149,45 @@ class _LoadScreenState extends State<LoadScreen> {
     return new MaterialApp(
       home: new Scaffold(
         body: new Align(
-          alignment: Alignment.topCenter,
+            alignment: Alignment.topCenter,
             child: new Padding(
-          padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-          child: new SingleChildScrollView(
-            child: new Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                new Padding(padding: const EdgeInsets.only( top:50)),
-                new ConstrainedBox(
-                  constraints: BoxConstraints.tightFor(width: 300.0),
-                  child: new Text(
-                    'Please load students table',
-                    style: TextStyle(fontSize: 20),
-                    textAlign: TextAlign.center,
-                  ),
+              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+              child: new SingleChildScrollView(
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    new Padding(padding: const EdgeInsets.only(top: 50)),
+                    new ConstrainedBox(
+                      constraints: BoxConstraints.tightFor(width: 300.0),
+                      child: new Text(
+                        'Please load students table',
+                        style: TextStyle(fontSize: 20),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    new ConstrainedBox(
+                      constraints: BoxConstraints.tightFor(width: 200.0),
+                      child: new SwitchListTile.adaptive(
+                        title: new Text('Pick multiple files',
+                            textAlign: TextAlign.right),
+                        onChanged: (bool value) =>
+                            setState(() => _multiPick = value),
+                        value: _multiPick,
+                      ),
+                    ),
+                    new Padding(
+                      padding: const EdgeInsets.only(top: 50.0, bottom: 20.0),
+                      child: new RaisedButton(
+                        onPressed: () => _openFileExplorer(),
+                        child: new Text("Load CSV"),
+                      ),
+                    ),
+                    filesList(),
+                    uploadButton(),
+                  ],
                 ),
-                new ConstrainedBox(
-                  constraints: BoxConstraints.tightFor(width: 200.0),
-                  child: new SwitchListTile.adaptive(
-                    title: new Text('Pick multiple files',
-                        textAlign: TextAlign.right),
-                    onChanged: (bool value) =>
-                        setState(() => _multiPick = value),
-                    value: _multiPick,
-                  ),
-                ),
-                new Padding(
-                  padding: const EdgeInsets.only(top: 50.0, bottom: 20.0),
-                  child: new RaisedButton(
-                    onPressed: () => _openFileExplorer(),
-                    child: new Text("Load CSV"),
-                  ),
-                ),
-                filesList(),
-                uploadButton(),
-              ],
-            ),
-          ),
-        )),
+              ),
+            )),
       ),
     );
   }

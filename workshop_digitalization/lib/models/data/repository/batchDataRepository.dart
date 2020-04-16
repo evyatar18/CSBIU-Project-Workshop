@@ -75,6 +75,7 @@ class FirebaseBatchDataRepository implements BatchDataRepository {
     var localBatch = batch;
     batch = null;
     await localBatch.commit();
+    print("commited");
   }
 
   @override
