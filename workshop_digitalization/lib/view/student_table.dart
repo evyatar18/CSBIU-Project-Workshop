@@ -192,6 +192,15 @@ class _Stud implements Student {
 
   @override
   int studyYear;
+
+  @override
+  DocumentReference reference;
+
+  @override
+  Map<String, dynamic> toJson() {
+    // TODO: implement toJson
+    return null;
+  }
 }
 
 Student _make(Map<String, dynamic> map) {

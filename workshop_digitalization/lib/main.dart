@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
 import 'package:workshop_digitalization/blocs/table_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,12 +13,70 @@ import 'package:workshop_digitalization/models/data/repository/dataRepository.da
 import 'package:workshop_digitalization/models/data/repository/singleDataRepsitory.dart';
 import 'package:workshop_digitalization/models/data/student.dart';
 
-void main() => runApp(new LoadScreen());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final firestore = Firestore.instance;
+  final root = firestore.collection('version').document('1');
+  Flamingo.configure(
+      firestore: firestore, storage: FirebaseStorage.instance, root: root);
+
+  runApp(new MyApp());
+}
+
 final DataRepository repository = SingleDataRepository("students");
+
+class User extends Document<User> {
+  User({
+    String id,
+    DocumentSnapshot snapshot,
+    Map<String, dynamic> values,
+  }) : super(id: id, snapshot: snapshot, values: values);
+
+  String name;
+  DocumentReference other;
+
+  // For save data
+  @override
+  Map<String, dynamic> toData() {
+    final data = <String, dynamic>{};
+    writeNotNull(data, 'name', name);
+    writeNotNull(data, 'other', other);
+    return data;
+  }
+
+  // For load data
+  @override
+  void fromData(Map<String, dynamic> data) {
+    name = valueFromKey<String>(data, 'name');
+  }
+
+  // Call after create, update, delete.
+  @override
+  void onCompleted(ExecuteType executeType) {
+    print('$executeType');
+  }
+}
+
+void runFirebase() async {
+  User u = User();
+  User u2 = User();
+
+  final da = DocumentAccessor();
+
+  await da.save(u);
+  await da.save(u2);
+
+  u.name = "hello";
+  u.other = u2.reference;
+
+  await da.update(u);
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    runFirebase();
     return MaterialApp(
       title: 'Students',
       theme: ThemeData(
