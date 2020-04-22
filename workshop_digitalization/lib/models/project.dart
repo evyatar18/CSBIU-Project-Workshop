@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flamingo/document.dart';
 import 'package:workshop_digitalization/models/person.dart';
 
-enum ProjectStatus { NEW, Continue }
+enum ProjectStatus { NEW, CONTINUE }
 
 abstract class Project {
   String initiatorFirstName;
