@@ -4,7 +4,7 @@ import 'package:flamingo/document.dart';
 abstract class Memo {
   String topic;
   String content;
-  DateTime creationDate;
+  DateTime get creationDate;
 }
 
 class FirebaseMemo extends Document<FirebaseMemo> implements Memo {
@@ -15,7 +15,9 @@ class FirebaseMemo extends Document<FirebaseMemo> implements Memo {
   String topic;
 
   @override
-  DateTime creationDate;
+  DateTime get creationDate{
+    return loadDate;
+  }
 
   FirebaseMemo({
     String id,
@@ -29,6 +31,7 @@ class FirebaseMemo extends Document<FirebaseMemo> implements Memo {
             collectionRef: collectionRef);
 
   @override
+
   DateTime get lastUpdate => super.updatedAt.toDate();
 
   @override
@@ -39,7 +42,6 @@ class FirebaseMemo extends Document<FirebaseMemo> implements Memo {
     final data = Map<String, dynamic>();
     writeNotNull(data, 'topic', topic);
     writeNotNull(data, 'content', content);
-    writeNotNull(data, 'creationDate', creationDate);
     return data;
   }
 
@@ -47,6 +49,5 @@ class FirebaseMemo extends Document<FirebaseMemo> implements Memo {
   void fromData(Map<String, dynamic> data) {
     topic = valueFromKey<String>(data, 'topic');
     content = valueFromKey<String>(data, 'comntent');
-    creationDate = valueFromKey<Timestamp>(data, 'creationDate').toDate();
   }
 }
