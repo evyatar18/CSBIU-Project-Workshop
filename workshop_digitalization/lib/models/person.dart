@@ -34,13 +34,12 @@ class FirebasePerson extends Model implements Person {
   String phoneNumber;
 
   factory FirebasePerson.fromPerson(Person person) {
-    FirebasePerson p;
-    p.email = person.email;
-    p.firstName = person.firstName;
-    p.lastName = person.lastName;
-    p.phoneNumber = person.phoneNumber;
-    p.job = person.job;
-    return p;
+    return new FirebasePerson(
+        email: person.email,
+        job: person.job,
+        firstName: person.firstName,
+        lastName: person.lastName,
+        phoneNumber: person.phoneNumber);
   }
 
   /// Data for save
@@ -58,10 +57,10 @@ class FirebasePerson extends Model implements Person {
 
   /// Data for load
   void fromData(Map<String, dynamic> data) {
-    firstName = data["firstName"];
-    lastName = data["lastName"];
-    phoneNumber = data["phone"];
-    email = data["email"];
-    job = data["job"];
+    firstName = valueFromKey(data,"firstName");
+    lastName = valueFromKey(data,"lastName");
+    phoneNumber = valueFromKey(data,"phone");
+    email = valueFromKey(data,"email");
+    job = valueFromKey(data,"job");
   }
 }
