@@ -20,11 +20,16 @@ class MyApp extends StatelessWidget {
       title: 'Workshop Digitalization',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        accentColor: Colors.redAccent
       ),
       home: Scaffold(
         appBar: AppBar(
           title: Text("Hello world"),
         ),
+
+        body: Center(
+          child: FloatingActionButton(onPressed: () => print("pressed"), child: Icon(Icons.add))
+        )
       ),
     );
   }
