@@ -43,8 +43,9 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
   Person get contact {
     return _contact;
   }
+
   @override
-  set contact(Person p){
+  set contact(Person p) {
     _contact = FirebasePerson.fromPerson(p);
   }
 
@@ -57,12 +58,11 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
   @override
   String initiatorLastName;
 
-  
-  @override 
+  @override
   Person get mentor => _mentor;
 
   @override
-  set mentor(Person p){
+  set mentor(Person p) {
     _mentor = FirebasePerson.fromPerson(p);
   }
 
@@ -106,8 +106,6 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
             values: values,
             collectionRef: collectionRef);
 
-
-  
   @override
   DateTime get lastUpdate => super.updatedAt.toDate();
 
@@ -137,25 +135,24 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
 
   /// Data for load
   void fromData(Map<String, dynamic> data) {
-    
-      comments =  valueListFromKey<String>(data,'comments');
-      contact = FirebasePerson(values: valueMapFromKey<String,dynamic>(data, 'contact'));
-      endDate = valueFromKey<Timestamp>(data,'endDate').toDate();
-      initiatorFirstName =  valueFromKey<String>(data,'initiatorFirstName');
-      initiatorLastName =valueFromKey<String>(data,'initiatorLastName');
-      mentor =  FirebasePerson(values: valueMapFromKey<String,dynamic>(data, 'mentor'));
-      projectChallenges=  valueListFromKey<String>(data, 'projectChallenges');
-      projectDomain = valueFromKey<String>(data,'projectDomain');
-      projectGoal = valueFromKey<String>(data,'projectGoal');
-      projectInnovativeDetails =valueListFromKey<String>(data, 'projectInnovativeDetails');
-      projectStatus = ProjectStatus.values[valueFromKey<int>(data,'projectStatus')];
-      projectSubject = valueFromKey<String>(data,'projectSubject');
-      skills = valueListFromKey<String>(data, 'skills');
-      numberOfStudents = valueFromKey<int>(data,'numberOfStudents');
-      mentorTechAbility = valueFromKey<String>(data,'mentorTechAbility');
-    
+    comments = valueListFromKey<String>(data, 'comments');
+    contact = FirebasePerson(
+        values: valueMapFromKey<String, dynamic>(data, 'contact'));
+    endDate = valueFromKey<Timestamp>(data, 'endDate').toDate();
+    initiatorFirstName = valueFromKey<String>(data, 'initiatorFirstName');
+    initiatorLastName = valueFromKey<String>(data, 'initiatorLastName');
+    mentor = FirebasePerson(
+        values: valueMapFromKey<String, dynamic>(data, 'mentor'));
+    projectChallenges = valueListFromKey<String>(data, 'projectChallenges');
+    projectDomain = valueFromKey<String>(data, 'projectDomain');
+    projectGoal = valueFromKey<String>(data, 'projectGoal');
+    projectInnovativeDetails =
+        valueListFromKey<String>(data, 'projectInnovativeDetails');
+    projectStatus =
+        ProjectStatus.values[valueFromKey<int>(data, 'projectStatus')];
+    projectSubject = valueFromKey<String>(data, 'projectSubject');
+    skills = valueListFromKey<String>(data, 'skills');
+    numberOfStudents = valueFromKey<int>(data, 'numberOfStudents');
+    mentorTechAbility = valueFromKey<String>(data, 'mentorTechAbility');
   }
-
-
-  
 }

@@ -57,10 +57,10 @@ class FirebasePerson extends Model implements Person {
 
   /// Data for load
   void fromData(Map<String, dynamic> data) {
-    firstName = valueFromKey(data,"firstName");
-    lastName = valueFromKey(data,"lastName");
-    phoneNumber = valueFromKey(data,"phone");
-    email = valueFromKey(data,"email");
-    job = valueFromKey(data,"job");
+    firstName = valueFromKey(data, "firstName");
+    lastName = valueFromKey(data, "lastName");
+    phoneNumber = valueFromKey(data, "phone");
+    email = valueFromKey(data, "email");
+    job = valueFromKey(data, "job");
   }
 }
