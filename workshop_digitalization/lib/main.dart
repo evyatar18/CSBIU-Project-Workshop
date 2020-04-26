@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
+import 'package:workshop_digitalization/views/studentUI/studentDetails.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -9,8 +10,8 @@ void main() {
   final root = firestore.collection('version').document('1');
   Flamingo.configure(
       firestore: firestore, storage: FirebaseStorage.instance, root: root);
-
-  runApp(new MyApp());
+  runApp(new StudentDetails());
+  //runApp(new MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -33,4 +34,7 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+
 }
+
+

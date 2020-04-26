@@ -5,6 +5,7 @@ abstract class Memo {
   String topic;
   String content;
   DateTime get creationDate;
+  DateTime get lastUpdate;
 }
 
 class FirebaseMemo extends Document<FirebaseMemo> implements Memo {
@@ -50,4 +51,6 @@ class FirebaseMemo extends Document<FirebaseMemo> implements Memo {
     topic = valueFromKey<String>(data, 'topic');
     content = valueFromKey<String>(data, 'comntent');
   }
+
+  
 }
