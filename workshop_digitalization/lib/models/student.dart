@@ -77,12 +77,12 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
 
   /// Data for load
   void fromData(Map<String, dynamic> data) {
-    personalID = data["id"];
-    firstName = data["firstName"];
-    lastName = data["lastName"];
-    phoneNumber = data["phone"];
-    email = data["email"];
-    studyYear = data["year"];
-    status = StudentStatus.values[data["status"]];
+    personalID = valueFromKey<String>(data, "id");
+    firstName = valueFromKey<String>(data, "firstName");
+    lastName = valueFromKey<String>(data, "lastName");
+    phoneNumber = valueFromKey<String>(data, "phone");
+    email = valueFromKey<String>(data, "email");
+    studyYear = valueFromKey<int>(data, "year");
+    status = StudentStatus.values[valueFromKey<int>(data, "status")];
   }
 }
