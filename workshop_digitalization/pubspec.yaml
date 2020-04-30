@@ -34,7 +34,19 @@ dependencies:
   firebase_core: ^0.4.0+9
   cloud_firestore: 0.13.4+2
   firebase_storage: 3.1.5
+
+  # using for firebase models https://pub.dev/packages/flamingo
   flamingo:
+
+  # using to open files in native apps https://pub.dev/packages/open_file
+  open_file:
+
+  # useful stream extensions https://pub.dev/packages/rxdart
+  rxdart: 0.24.0
+
+  # manage one state https://pub.dev/packages/redux
+  redux: 4.0.0
+  flutter_redux:
 
   # loading spinners https://pub.dev/packages/flutter_spinkit
   flutter_spinkit: 4.1.2+1
