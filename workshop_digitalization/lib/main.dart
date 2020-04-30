@@ -1,16 +1,11 @@
-import 'dart:io';
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
-import 'package:workshop_digitalization/models/files/container.dart';
-import 'package:workshop_digitalization/models/files/transfer.dart';
-import 'package:workshop_digitalization/models/list_modifier.dart';
 import 'package:workshop_digitalization/models/views/disposer.dart';
 
 import 'models/files/firebase.dart';
 import 'models/views/file_container.dart';
+import 'package:workshop_digitalization/views/studentUI/studentDetails.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +17,8 @@ void main() {
 
   // testModel();
 
-  runApp(new MyApp());
+  // runApp(new MyApp());
+  runApp(new StudentDetails());
 }
 
 class MyApp extends StatelessWidget {
@@ -45,6 +41,7 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+
 }
 
 // class MyApps extends StatefulWidget {
