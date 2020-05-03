@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
-import 'package:workshop_digitalization/models/views/disposer.dart';
+import 'package:workshop_digitalization/views/disposer.dart';
+import 'package:workshop_digitalization/views/progress/progress.dart';
+import 'package:workshop_digitalization/views/progress/progress_bar.dart';
+import 'package:workshop_digitalization/views/progress/progress_displayer.dart';
+import 'package:workshop_digitalization/views/progress/progress_repo.dart';
 
 import 'models/files/firebase.dart';
-import 'models/views/file_container.dart';
+import 'views/file_view.dart';
 import 'package:workshop_digitalization/views/studentUI/studentDetails.dart';
 
 void main() {
@@ -17,8 +21,8 @@ void main() {
 
   // testModel();
 
-  // runApp(new MyApp());
-  runApp(new StudentDetails());
+  runApp(new MyApp());
+  // runApp(new StudentDetails());
 }
 
 class MyApp extends StatelessWidget {
@@ -32,16 +36,67 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: Text("Hello world"),
         ),
-        body: Disposer(
-          create: () => FBFileContainer(Firestore.instance.collection("files")),
-          builder: (context, container) {
-            return FileContainerDisplayer(container: container);
-          },
-        ),
+        body: fileContainer(),
       ),
     );
   }
+}
 
+Widget fileContainer() {
+  return Disposer(
+    create: () => FBFileContainer(Firestore.instance.collection("files")),
+    builder: (context, container) {
+      return Disposer(
+        create: () => ProgressRepository(),
+        builder: (context, repo) {
+          return FileContainerDisplayer(container: container, repo: repo);
+        },
+      );
+    },
+  );
+}
+
+Widget progressIndicators() {
+  var progress = ProgressSnapshot("task1", "in progress...", 0.74);
+  var success = ProgressSnapshot("task2", "done", 1);
+  var error = ProgressSnapshot("task3", "ERROR", 0.41, failed: true);
+
+  return Column(
+    children: <Widget>[
+      LinearProgressBar(snapshot: progress),
+      LinearProgressBar(snapshot: success),
+      LinearProgressBar(snapshot: error)
+    ],
+  );
+}
+
+Widget progressPopup() {
+  return Builder(builder: (context) {
+    var items = List.generate(
+        10, (i) => createDummyProgressStream("task $i").asBroadcastStream());
+    // items.forEach((st) => st.listen((snap) => print(
+    //     "${snap.taskName}, ${snap.progress}, failed:${snap.failed}, ${snap.message}")));
+
+    return FlatButton(
+        onPressed: () => showUpdatingSnapshotsDialog(context, items),
+        child: Text("PRESS ME!"));
+  });
+}
+
+Widget progressScaffold() {
+  final repo = ProgressRepository();
+  var items = List.generate(
+      10, (i) => createDummyProgressStream("task $i").asBroadcastStream());
+
+  items.forEach((stream) async {
+    int id = await repo.createId(await stream.first);
+
+    stream.listen((update) {
+      repo.pushUpdate(id, update);
+    });
+  });
+
+  return ProgressScaffold(repo: repo, body: Text("current active progresses"));
 }
 
 // class MyApps extends StatefulWidget {

@@ -25,7 +25,7 @@ String _generateMessage(FileTransferStatus status, int bytesTransferred, int tot
       case FileTransferStatus.IN_PROGRESS:
         {
           final percents = (100 * bytesTransferred / totalByteCount).round();
-          return "in progress $bytesTransferred/$totalByteCount retrieved ($percents%).";
+          return "in progress $bytesTransferred/$totalByteCount transferred ($percents%).";
         }
       case FileTransferStatus.SUCCESS:
         return "complete";

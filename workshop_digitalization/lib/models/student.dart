@@ -29,7 +29,7 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
             id: id,
             snapshot: snapshot,
             values: values,
-            collectionRef: collectionRef) {}
+            collectionRef: collectionRef);
 
   @override
   String email;

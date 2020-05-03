@@ -3,29 +3,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:workshop_digitalization/views/progress/progress.dart';
 
-class ProgressSnapshot {
-  final String taskName;
-  final String message;
-  final double progress;
-  final bool failed;
-
-  bool get isSuccess => progress >= 1.0 && !failed;
-  bool get isInProgress => progress < 1.0 && !failed;
-
-  /// `progress` is a number from 0 to 1 indicating how much progress from the total
-  /// progress has been done
-  /// `taskName` is the name of the task
-  /// `message` is a message indicating the progress
-  /// `failed` is whether this task failed
-  ProgressSnapshot(this.taskName, this.message, this.progress,
-      {this.failed = false});
-}
-
-class LinearProgressSnapshotIndicator extends StatelessWidget {
+class LinearProgressBar extends StatelessWidget {
   final ProgressSnapshot snapshot;
 
-  LinearProgressSnapshotIndicator({@required this.snapshot});
+  LinearProgressBar({@required this.snapshot});
 
   Widget _statusBar(TextStyle baseFont, int percents) {
     return Align(
@@ -104,7 +87,7 @@ class MultipleProgressSnapshotIndicators extends StatelessWidget {
     return Column(
       children: snapshots
           .map(
-              (snapshot) => LinearProgressSnapshotIndicator(snapshot: snapshot))
+              (snapshot) => LinearProgressBar(snapshot: snapshot))
           .toList(),
     );
   }

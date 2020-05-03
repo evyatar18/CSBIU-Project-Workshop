@@ -31,6 +31,7 @@ Stream<FileRetrievalSnapshot> downloadFirebaseFile(
   }
 
   // do the actual download, in the future we hope to have a stream which reports download progress
+  // TODO:: when there's a stream which reports donwload progress, use it
   Future<FileRetrievalSnapshot> download() async {
     final downloadTask = fileRef.writeToFile(localFile);
 
