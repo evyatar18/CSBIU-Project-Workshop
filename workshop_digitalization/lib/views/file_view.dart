@@ -2,14 +2,13 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:workshop_digitalization/models/files/container.dart';
-import 'package:workshop_digitalization/models/files/transfer.dart';
 
 class FileContainerDisplayer extends StatelessWidget {
   final FileContainer container;
 
   FileContainerDisplayer({@required this.container});
 
-  String _sizeAsString(int bytes) {
+  static String _sizeAsString(int bytes) {
     int kb = 1000;
     int mb = kb * kb;
 
@@ -41,6 +40,7 @@ class FileContainerDisplayer extends StatelessWidget {
         ),
         onTap: () {
           _openFile(info);
+          // showDialog(context: null, barrierDismissible: )
         },
       );
     });
