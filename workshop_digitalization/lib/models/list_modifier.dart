@@ -82,9 +82,6 @@ class ListModifierHandler<T> {
   Iterable<T> where(bool Function(T) where) => latestItems.where(where);
 
   Stream<List<T>> get items async* {
-    // TODO:: Remove delay
-    await Future.delayed(Duration(seconds: 3));
-
     yield latestItems;
 
     await for (var item in _store.onChange) {
