@@ -5,6 +5,8 @@ import 'package:workshop_digitalization/models/tableHeaders.dart';
 
 enum StudentStatus { SEARCHING, WORKING, FINISHED, IRRELEVANT }
 
+StudentStatus DEFAULT_STATUS = StudentStatus.SEARCHING;
+
 // student interface
 abstract class Student implements Jsonable{
   String personalID;
@@ -33,7 +35,7 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
             id: id,
             snapshot: snapshot,
             values: values,
-            collectionRef: collectionRef) {}
+            collectionRef: collectionRef);
 
   @override
   String email;
@@ -50,8 +52,10 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
   @override
   String phoneNumber;
 
+  StudentStatus _status;
   @override
-  StudentStatus status;
+  StudentStatus get status => _status ?? DEFAULT_STATUS;
+  set status(StudentStatus stat) => _status = stat;
 
   @override
   int studyYear;
@@ -81,13 +85,13 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
 
   /// Data for load
   void fromData(Map<String, dynamic> data) {
-    personalID = data["id"];
-    firstName = data["firstName"];
-    lastName = data["lastName"];
-    phoneNumber = data["phone"];
-    email = data["email"];
-    studyYear = data["year"];
-    status = StudentStatus.values[data["status"]];
+    personalID = valueFromKey<String>(data, "id");
+    firstName = valueFromKey<String>(data, "firstName");
+    lastName = valueFromKey<String>(data, "lastName");
+    phoneNumber = valueFromKey<String>(data, "phone");
+    email = valueFromKey<String>(data, "email");
+    studyYear = valueFromKey<int>(data, "year");
+    status = StudentStatus.values[valueFromKey<int>(data, "status")];
   }
 
   @override
