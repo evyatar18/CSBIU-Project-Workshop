@@ -4,9 +4,12 @@ import 'package:workshop_digitalization/models/student.dart';
 import 'package:workshop_digitalization/views/studentUI/tabs/detailsTab/details.dart';
 import 'package:workshop_digitalization/views/studentUI/tabs/memosTab/memosUI.dart';
 import 'package:workshop_digitalization/views/studentUI/tabs/utils/tabName.dart';
+import 'package:workshop_digitalization/views/table/jsonableDetails.dart';
 
-class StudentDetails extends StatelessWidget {
-  Student s = new Stud();
+class StudentDetails extends StatelessWidget implements JsonableDetails{
+  Student s ;
+  StudentDetails(this.s);
+
   @override
   Widget build(BuildContext context) {
     Color color = Theme.of(context).canvasColor;
@@ -37,7 +40,7 @@ class StudentDetails extends StatelessWidget {
           ),
           body: TabBarView(
             children: [
-              StudentForm(student: s),
+              StudentDetailsForm(student: s),
               MemoList(memos: new List<Memo>.generate(100, (i) => new Mem())),
               Icon(Icons.directions_bike),
             ],
@@ -88,14 +91,16 @@ class Stud implements Student {
 
   @override
   int studyYear;
+  static int allID= 1;
   Stud({
     this.email = 'abc@gmail.com',
     this.firstName = 'abab',
     this.lastName = 'cdcd',
-    this.personalID = '1212121',
+    this.personalID = '',
     this.phoneNumber = '054123141',
-    this.studyYear = 2020,
-  });
+    this.studyYear = 2019,
+  }){this.personalID = allID.toString();
+  allID++;}
 
   @override
   // TODO: implement lastUpdate
@@ -106,4 +111,23 @@ class Stud implements Student {
   // TODO: implement loadDate
   DateTime get loadDate =>
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+   Map<String, dynamic> toData() {
+    final data = Map<String, dynamic>();
+
+    data[ "id"] =  personalID;
+    data[ "firstName"]= firstName;
+   data[ "lastName"]= lastName;
+    data[ "phone"] = phoneNumber;
+    data[ "email"] = email;
+    data[ "year"]= studyYear;
+    //data[ "status"] = status.index;
+
+    return data;
+  }
+
+  
+  @override
+  Map<String, dynamic> toJson() {
+    return toData();
+  }
 }

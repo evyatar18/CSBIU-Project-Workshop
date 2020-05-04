@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
+import 'package:workshop_digitalization/views/projectUI/projectTableScreen.dart';
+import 'package:workshop_digitalization/views/table/studentsTableScreen.dart';
+
+import 'models/student.dart';
 import 'package:workshop_digitalization/views/disposer.dart';
 import 'package:workshop_digitalization/views/progress/progress.dart';
 import 'package:workshop_digitalization/views/progress/progress_bar.dart';
@@ -18,11 +22,14 @@ void main() {
   final root = firestore.collection('version').document('1');
   Flamingo.configure(
       firestore: firestore, storage: FirebaseStorage.instance, root: root);
-
-  // testModel();
-
-  runApp(new MyApp());
-  // runApp(new StudentDetails());
+  DocumentAccessor documentAccessor = DocumentAccessor();
+  List<Student> students = List<FirebaseStudent>.generate(1, (i) => new FirebaseStudent()..firstName='aAAA'..lastName='bbbb')
+  ..forEach((s) async{
+    await documentAccessor.save(s);
+    print('ad');
+  });
+  runApp(new TableScreen());
+  //runApp(new MyApp());
 }
 
 class MyApp extends StatelessWidget {

@@ -34,12 +34,15 @@ class MemoContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         child: InkWell(
-            onTap: ()=>{Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MemoView(memo: this.memo)))},
+            onTap: () => {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MemoView(memo: this.memo)))
+                },
             child: ListTile(
-      title: Text(memo.topic),
-      subtitle: Text(memo.creationDate.toString()),
-    )));
+              title: Text(memo.topic),
+              subtitle: Text(memo.creationDate.toString()),
+            )));
   }
 }
