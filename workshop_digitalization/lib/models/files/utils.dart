@@ -51,7 +51,18 @@ Stream<FileRetrievalSnapshot> downloadFirebaseFile(
     }
   }
 
-  return Stream.fromFuture(download());
+  var down = download();
+
+  return Stream.fromFutures([
+    Future.value(
+      FileRetrievalSnapshot(FileTransferStatus.IN_PROGRESS, 0, 1, fileName,
+          () async {
+        await down;
+        return localFile;
+      }()),
+    ),
+    down,
+  ]);
 }
 
 Future<StorageFile> uploadFirebaseFile(
@@ -66,7 +77,7 @@ Future<StorageFile> uploadFirebaseFile(
 }
 
 Stream<FileUploadSnapshot> convertUploaderStream(
-    Stream<StorageTaskEvent> uploaderStream) {
+    Stream<StorageTaskEvent> uploaderStream) async* {
   var onComplete = () async {
     await for (var update in uploaderStream) {
       if (update.type == StorageTaskEventType.failure ||
@@ -76,30 +87,36 @@ Stream<FileUploadSnapshot> convertUploaderStream(
     }
   }();
 
-  return uploaderStream.map((event) {
-    final fileName = getFilenameFromPath(event.snapshot.ref.path);
+  var fileName;
 
-    var status;
+  try {
+    await for (var event in uploaderStream) {
+      fileName = getFilenameFromPath(event.snapshot.ref.path);
+      var status;
 
-    switch (event.type) {
-      case StorageTaskEventType.failure:
-        return FileUploadSnapshot.error(fileName);
-      case StorageTaskEventType.resume:
-      case StorageTaskEventType.progress:
-      case StorageTaskEventType.pause:
-        {
-          status = FileTransferStatus.IN_PROGRESS;
+      switch (event.type) {
+        case StorageTaskEventType.failure:
+          yield FileUploadSnapshot.error(fileName);
           break;
-        }
+        case StorageTaskEventType.resume:
+        case StorageTaskEventType.progress:
+        case StorageTaskEventType.pause:
+          {
+            status = FileTransferStatus.IN_PROGRESS;
+            break;
+          }
 
-      case StorageTaskEventType.success:
-        {
-          status = FileTransferStatus.SUCCESS;
-          break;
-        }
+        case StorageTaskEventType.success:
+          {
+            status = FileTransferStatus.SUCCESS;
+            break;
+          }
+      }
+
+      yield FileUploadSnapshot(status, event.snapshot.bytesTransferred,
+          event.snapshot.totalByteCount, fileName, onComplete);
     }
-
-    return FileUploadSnapshot(status, event.snapshot.bytesTransferred,
-        event.snapshot.totalByteCount, fileName, onComplete);
-  });
+  } catch (e) {
+    yield FileUploadSnapshot.error(fileName);
+  }
 }

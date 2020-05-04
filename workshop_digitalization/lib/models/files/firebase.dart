@@ -111,7 +111,7 @@ class FBFileContainer implements FileContainer {
     var task = FirebaseStorage.instance.ref().child(firebasePath).putFile(f);
 
     // convert to this project's upload type
-    var uploaderStream = convertUploaderStream(task.events);
+    var uploaderStream = convertUploaderStream(task.events).asBroadcastStream();
 
     // add file metadata to firestore when upload successful
     uploaderStream.listen((snapshot) async {
