@@ -2,6 +2,8 @@ import 'package:flamingo/flamingo.dart';
 
 enum StudentStatus { SEARCHING, WORKING, FINISHED, IRRELEVANT }
 
+StudentStatus DEFAULT_STATUS = StudentStatus.SEARCHING;
+
 // student interface
 abstract class Student {
   String personalID;
@@ -46,8 +48,10 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
   @override
   String phoneNumber;
 
+  StudentStatus _status;
   @override
-  StudentStatus status;
+  StudentStatus get status => _status ?? DEFAULT_STATUS;
+  set status(StudentStatus stat) => _status = stat;
 
   @override
   int studyYear;
