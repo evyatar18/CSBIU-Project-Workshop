@@ -1,9 +1,12 @@
 import 'package:flamingo/flamingo.dart';
+import 'package:json_table/json_table.dart';
+import 'package:workshop_digitalization/models/jsonable.dart';
+import 'package:workshop_digitalization/models/tableHeaders.dart';
 
 enum StudentStatus { SEARCHING, WORKING, FINISHED, IRRELEVANT }
 
 // student interface
-abstract class Student {
+abstract class Student implements Jsonable{
   String personalID;
   String firstName, lastName;
   String phoneNumber;
@@ -16,7 +19,8 @@ abstract class Student {
   DateTime get lastUpdate;
   DateTime get loadDate;
 
-
+  Map<String, dynamic> toJson();
+  
 }
 
 class FirebaseStudent extends Document<FirebaseStudent> implements Student {
@@ -55,10 +59,10 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
 
   // TODO: convert timezones if needed
   @override
-  DateTime get lastUpdate => super.updatedAt.toDate();
+  DateTime get lastUpdate => super.updatedAt!=null?super.updatedAt.toDate():null;
 
   @override
-  DateTime get loadDate => super.createdAt.toDate();
+  DateTime get loadDate => super.createdAt!=null ?super.createdAt.toDate():null;
 
   /// Data for save
   Map<String, dynamic> toData() {
@@ -70,7 +74,7 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
     writeNotNull(data, "phone", phoneNumber);
     writeNotNull(data, "email", email);
     writeNotNull(data, "year", studyYear);
-    writeNotNull(data, "status", status.index);
+    if (status!=null) writeNotNull(data, "status", status.index);
 
     return data;
   }
@@ -84,5 +88,10 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
     email = data["email"];
     studyYear = data["year"];
     status = StudentStatus.values[data["status"]];
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return toData();
   }
 }

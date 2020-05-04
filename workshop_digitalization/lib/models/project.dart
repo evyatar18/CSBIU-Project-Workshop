@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flamingo/document.dart';
+import 'package:workshop_digitalization/models/jsonable.dart';
+import 'package:workshop_digitalization/models/memo.dart';
 import 'package:workshop_digitalization/models/person.dart';
 
 enum ProjectStatus { NEW, CONTINUE }
 
-abstract class Project {
+abstract class Project implements Jsonable{
   String initiatorFirstName;
   String initiatorLastName;
 
@@ -18,7 +20,7 @@ abstract class Project {
 
   int numberOfStudents;
 
-  List<String> skills;
+  Memo skills;
 
   Person mentor;
 
@@ -29,12 +31,12 @@ abstract class Project {
 
   String mentorTechAbility;
 
-  List<String> comments;
+  Memo comments;
 }
 
 class FirebaseProject extends Document<FirebaseProject> implements Project {
   @override
-  List<String> comments;
+  Memo comments;
 
   FirebasePerson _contact;
   @override
@@ -85,7 +87,7 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
   String projectSubject;
 
   @override
-  List<String> skills;
+  Memo skills;
 
   @override
   int numberOfStudents;
@@ -133,7 +135,7 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
 
   /// Data for load
   void fromData(Map<String, dynamic> data) {
-    comments = valueListFromKey<String>(data, 'comments');
+    comments = valueFromKey<Memo>(data, 'comments');
     contact = FirebasePerson(
         values: valueMapFromKey<String, dynamic>(data, 'contact'));
     endDate = valueFromKey<Timestamp>(data, 'endDate').toDate();
@@ -149,8 +151,13 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
     projectStatus =
         ProjectStatus.values[valueFromKey<int>(data, 'projectStatus')];
     projectSubject = valueFromKey<String>(data, 'projectSubject');
-    skills = valueListFromKey<String>(data, 'skills');
+    skills = valueFromKey<Memo>(data, 'skills');
     numberOfStudents = valueFromKey<int>(data, 'numberOfStudents');
     mentorTechAbility = valueFromKey<String>(data, 'mentorTechAbility');
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return toData();
   }
 }

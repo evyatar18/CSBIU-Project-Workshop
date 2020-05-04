@@ -1,42 +1,48 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:intl/intl.dart';
 import 'package:workshop_digitalization/models/student.dart';
 
-
-class StudentForm extends StatefulWidget{
+class StudentForm extends StatefulWidget {
+  Map<String, dynamic> initials;
+  bool canRead = false;
+  GlobalKey<FormBuilderState> fbKey;
+  StudentForm({
+    this.initials = const {"status": StudentStatus.SEARCHING, 'year': 2020},
+    this.canRead,
+    this.fbKey,
+  });
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return null;
+    return _StudentFromState();
   }
-
 }
 
-class  _StudentFromState extends State<StudentForm> {
+final _dateFormat = DateFormat.yMd().add_Hms();
+
+class _StudentFromState extends State<StudentForm> {
   @override
-  Widget studentForm(
-      {Map<String, dynamic> initials = const {
-        "status": StudentStatus.SEARCHING
-      },
-      bool canRead = false,var key}) {
+  Widget build(BuildContext context) {
     return Column(children: <Widget>[
       FormBuilder(
-          key: key,
-          initialValue: initials,
-          readOnly: canRead,
+          key: widget.fbKey,
+          initialValue: widget.initials,
+          readOnly: widget.canRead,
           autovalidate: true,
           child: Column(
             children: <Widget>[
               FormBuilderTextField(
-                attribute: "id",
+                attribute: 'id',
                 decoration: InputDecoration(labelText: "Person ID"),
                 //validators: validators.israeliId,
               ),
               FormBuilderTextField(
-                attribute: "name",
-                decoration: InputDecoration(labelText: "Name"),
-                //validators: validators.name,
-                //valueTransformer: valueTransformers.nameFromString,
+                attribute: "firstName",
+                decoration: InputDecoration(labelText: "First Name"),
+              ),
+              FormBuilderTextField(
+                attribute: "lastName",
+                decoration: InputDecoration(labelText: "Last Name"),
               ),
 
               // TODO:: add option to choose phone providers
@@ -60,21 +66,14 @@ class  _StudentFromState extends State<StudentForm> {
                   FormBuilderValidators.email()
                 ],
               ),
-              FormBuilderChoiceChip(
-                attribute: "year",
-                options: [
-                  FormBuilderFieldOption(
-                    value: 2020,
-                    child: Text("2020"),
-                  ),
-                  FormBuilderFieldOption(
-                    value: 2019,
-                    child: Text("2019"),
-                  )
-                ],
-                decoration: InputDecoration(border: InputBorder.none),
-                validators: [FormBuilderValidators.required()],
+              FormBuilderTouchSpin(
+                decoration: InputDecoration(labelText: "Stepper"),
+                attribute: 'year',
+                step: 1,
+                addIcon: Icon(Icons.arrow_right),
+                subtractIcon: Icon(Icons.arrow_left),
               ),
+
               FormBuilderChoiceChip(
                 attribute: "status",
                 options: [
@@ -111,46 +110,9 @@ class  _StudentFromState extends State<StudentForm> {
                 readOnly: true,
                 decoration: InputDecoration(labelText: "Load Date"),
                 valueTransformer: (value) => _dateFormat.parse(value),
-              )
+              ),
             ],
-          )),
-      saveSection(),
+          ))
     ]);
   }
-
-Widget saveSection() {
-    return _readOnly == false
-        ? Container(
-            child: ButtonBar(
-              children: <Widget>[
-                RaisedButton(
-                  child: Text("Submit"),
-                  onPressed: () => _onSubmit(_fbKey),
-                ),
-                MaterialButton(
-                  child: Text("Reset"),
-                  onPressed: () {
-                    _fbKey.currentState.reset();
-                    openOrExitEdit();
-                  },
-                ),
-              ],
-            ),
-          )
-        : Container();
-  }
-
- 
-    
-   void _onSubmit(GlobalKey<FormBuilderState> key) {
-    if (key.currentState.saveAndValidate()) {
-      // add or edit student code
-      print(key.currentState.value);
-    } else {}
-  }
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return null;
-  }
-  
 }
