@@ -6,7 +6,11 @@ class NewStudentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: StudentForm(),
+        appBar: AppBar(
+          title: Text('Create New Student'),
+        ),
+        body: SingleChildScrollView(child: StudentForm(),) ,
+        resizeToAvoidBottomPadding: false
       ),
     );
   }

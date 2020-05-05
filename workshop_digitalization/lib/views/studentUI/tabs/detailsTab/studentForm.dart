@@ -23,7 +23,10 @@ final _dateFormat = DateFormat.yMd().add_Hms();
 class _StudentFromState extends State<StudentForm> {
   @override
   Widget build(BuildContext context) {
-    return Column(children: <Widget>[
+    return Container(
+      padding: new EdgeInsets.all(10),
+      child: Column(children: <Widget>[
+      
       FormBuilder(
           key: widget.fbKey,
           initialValue: widget.initials,
@@ -113,6 +116,7 @@ class _StudentFromState extends State<StudentForm> {
               ),
             ],
           ))
-    ]);
+    ]),
+    );
   }
 }

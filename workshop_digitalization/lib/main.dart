@@ -19,6 +19,14 @@ void main() {
   final root = firestore.collection('version').document('1');
   Flamingo.configure(
       firestore: firestore, storage: FirebaseStorage.instance, root: root);
+  // DocumentAccessor documentAccessor = DocumentAccessor();
+  // List<Student> students = List<FirebaseStudent>.generate(1, (i) => new FirebaseStudent()..firstName='aAAA'..lastName='bbbb')
+  // ..forEach((s) async{
+  //   await root.collection("students").document().setData(s.toData());
+  //   print('ad');
+  // });
+  runApp(new ProjectTableScreen());
+  //runApp(new MyApp());
   runApp(new TableScreen());
   // runApp(new MyApp());
 }

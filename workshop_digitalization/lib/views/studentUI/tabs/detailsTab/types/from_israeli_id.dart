@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:workshop_digitalization/utils/extensions.dart';
 
 List<FormFieldValidator> getIsraeliIdValidators() =>
     _israeliIDValidators.clone();
