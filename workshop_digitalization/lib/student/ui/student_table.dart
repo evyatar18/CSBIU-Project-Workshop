@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:workshop_digitalization/bloc/table_bloc.dart';
-import 'package:workshop_digitalization/models/jsonable.dart';
-import 'package:workshop_digitalization/models/student.dart';
-import 'package:workshop_digitalization/views/studentUI/newStudentScreen.dart';
-import 'package:workshop_digitalization/views/studentUI/studentDetails.dart';
-import 'package:workshop_digitalization/views/table/jsonableDetails.dart';
-import 'package:workshop_digitalization/views/table/table.dart';
+import 'package:workshop_digitalization/global/json/jsonable.dart';
+import 'package:workshop_digitalization/global/json/jsonable_details.dart';
+import 'package:workshop_digitalization/student/student.dart';
+import 'package:workshop_digitalization/student/ui/new_student_view.dart';
+import 'package:workshop_digitalization/student/ui/student_view.dart';
+import 'package:workshop_digitalization/table/ui/table.dart';
 
 class TableScreen extends StatefulWidget {
   @override
@@ -17,7 +16,8 @@ class TableScreen extends StatefulWidget {
 
 class TableScreenState extends State<TableScreen> {
   final FirebaseTableBloc _bloc = FirebaseTableBloc();
-  List<Student> students = List<Student>.generate(100, (i) => new Stud());
+  List<Student> students =
+      List<Student>.generate(100, (i) => throw "no students");
 
   Widget _buildTable() {
     // return StreamBuilder(
@@ -31,13 +31,14 @@ class TableScreenState extends State<TableScreen> {
     //               color: Theme.of(context).accentColor, size: 80.0));
     //     }
 
-        return new JsonDataTable(
-            jsonableObjects: students,
-            factory: StudentDetailsFactry(),
-          );
-      // },
+    return new JsonDataTable(
+      jsonableObjects: students,
+      factory: StudentDetailsFactry(),
+    );
+    // },
     // );
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -66,7 +67,5 @@ class TableScreenState extends State<TableScreen> {
 
 class StudentDetailsFactry implements JsonableDetailsFactory {
   @override
-  JsonableDetails create(Jsonable s) {
-    return new StudentDetails(s);
-  }
+  JsonableDetails create(Jsonable s) => StudentDetails(student: s);
 }

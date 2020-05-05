@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flamingo/document.dart';
 import 'package:flamingo/flamingo.dart';
-import 'package:workshop_digitalization/models/jsonable.dart';
-import 'package:workshop_digitalization/models/student.dart';
+import 'package:workshop_digitalization/global/json/jsonable.dart';
+import 'package:workshop_digitalization/student/firebase_student.dart';
 
 import 'bloc.dart';
 
@@ -21,8 +21,8 @@ class FirebaseTableBloc implements Bloc {
     // from snapshot
     var jsonables = snapshot.documents.map((item) => FirebaseStudent(snapshot: item)).toList();
 
-    _controller.sink.add(jsonables);
-    
+    // _controller.sink.add(jsonables);
+
   }
 
   @override

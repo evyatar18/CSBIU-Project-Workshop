@@ -1,5 +1,5 @@
+import 'package:workshop_digitalization/global/json/jsonable.dart';
 import 'package:workshop_digitalization/memos/memo.dart';
-import 'package:workshop_digitalization/models/jsonable.dart';
 import 'package:workshop_digitalization/person/person.dart';
 
 enum ProjectStatus { NEW, CONTINUE }
@@ -30,4 +30,7 @@ abstract class Project implements Jsonable {
   String mentorTechAbility;
 
   Memo comments;
+
+  DateTime get lastUpdate;
+  DateTime get loadDate;
 }

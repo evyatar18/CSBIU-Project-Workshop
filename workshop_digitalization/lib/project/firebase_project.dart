@@ -76,10 +76,8 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
             values: values,
             collectionRef: collectionRef);
 
-  @override
   DateTime get lastUpdate => super.updatedAt.toDate();
 
-  @override
   DateTime get loadDate => super.createdAt.toDate();
 
   /// Data for save

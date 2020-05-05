@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:workshop_digitalization/views/studentUI/tabs/detailsTab/studentForm.dart';
+
+import 'student_form.dart';
 
 class NewStudentScreen extends StatelessWidget {
   @override

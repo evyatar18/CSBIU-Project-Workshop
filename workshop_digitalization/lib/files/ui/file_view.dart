@@ -22,13 +22,13 @@ class FileContainerDisplayer extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO:: check if UI looks right
     return ProgressScaffold(
-        repo: repo,
-        body: Scaffold(
-          body: _buildFileList(context),
-          floatingActionButton: _buildAddButton(),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-        ));
+      repo: repo,
+      body: Scaffold(
+        body: _buildFileList(context),
+        floatingActionButton: _buildAddButton(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      ),
+    );
 
     // return Scaffold(
     //   body: ProgressScaffold(repo: repo, body: _buildFileList(context)),

@@ -1,5 +1,5 @@
 import 'package:workshop_digitalization/files/container.dart';
-import 'package:workshop_digitalization/models/jsonable.dart';
+import 'package:workshop_digitalization/global/json/jsonable.dart';
 
 enum StudentStatus { SEARCHING, WORKING, FINISHED, IRRELEVANT }
 

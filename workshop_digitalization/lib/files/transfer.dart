@@ -87,7 +87,7 @@ class FileUploadSnapshot extends FileTransferSnapshot {
 
 /// Converts a `FileTransferSnapshot` to a `ProgressSnapshot`
 ProgressSnapshot fileTransferAsProgress(FileTransferSnapshot fs,
-    {String taskName = null}) {
+    {String taskName}) {
   return ProgressSnapshot(
     "${taskName ?? fs.fileName}",
     fs.message,

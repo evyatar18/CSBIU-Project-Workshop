@@ -1,7 +1,6 @@
+import 'package:flutter/material.dart';
 
-
-import 'package:flutter/cupertino.dart';
-import 'package:workshop_digitalization/models/jsonable.dart';
+import 'jsonable.dart';
 
 abstract class JsonableDetails implements Widget {
   JsonableDetails(Jsonable s);

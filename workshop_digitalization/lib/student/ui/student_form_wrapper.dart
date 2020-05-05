@@ -1,13 +1,16 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:workshop_digitalization/models/student/student.dart';
-import 'package:workshop_digitalization/views/studentUI/tabs/detailsTab/studentForm.dart';
+import 'package:workshop_digitalization/student/student.dart';
+
+import 'student_form.dart';
 
 class StudentDetailsForm extends StatefulWidget {
-  Student student;
+  final Student student;
 
-  StudentDetailsForm({this.student});
+  StudentDetailsForm({
+    @required this.student,
+  });
 
   @override
   _StudentDetailsFormState createState() => _StudentDetailsFormState();
@@ -58,7 +61,6 @@ class _StudentDetailsFormState extends State<StudentDetailsForm> {
     } else {}
   }
 
-
   Map<String, dynamic> _makeInitials(Student s) => s.toJson();
   // {
 
@@ -77,28 +79,28 @@ class _StudentDetailsFormState extends State<StudentDetailsForm> {
     Color color = Theme.of(context).primaryColor;
 
     return Padding(
-        padding: EdgeInsets.all(18),
-        child: SingleChildScrollView(
-          child: widget.student == null
-              ? StudentForm()
-              : Column(
-                  children: <Widget>[
-                    ListTile(
-                      title: Text("Edit by clicking"),
-                      trailing: FlatButton(
-                          onPressed: () {
-                            openOrExitEdit();
-                          },
-                          child: Icon(Icons.edit, color: color)),
-
-                    ),
-                    StudentForm(
-                        initials: _makeInitials(widget.student),
-                        canRead: _readOnly,
-                        fbKey: _fbKey),
-                    saveSection(),
-                  ],
-                ),
-        ));
+      padding: EdgeInsets.all(18),
+      child: SingleChildScrollView(
+        child: widget.student == null
+            ? StudentForm()
+            : Column(
+                children: <Widget>[
+                  ListTile(
+                    title: Text("Edit by clicking"),
+                    trailing: FlatButton(
+                        onPressed: () {
+                          openOrExitEdit();
+                        },
+                        child: Icon(Icons.edit, color: color)),
+                  ),
+                  StudentForm(
+                      initials: _makeInitials(widget.student),
+                      canRead: _readOnly,
+                      fbKey: _fbKey),
+                  saveSection(),
+                ],
+              ),
+      ),
+    );
   }
 }

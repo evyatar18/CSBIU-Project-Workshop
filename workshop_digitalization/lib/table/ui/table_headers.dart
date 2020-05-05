@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:workshop_digitalization/models/tableHeaders.dart';
 
 class JsonTableHeader extends StatelessWidget {
   String header;
@@ -19,13 +18,15 @@ class JsonTableHeader extends StatelessWidget {
       decoration: BoxDecoration(
           border: Border.all(width: 0.5), color: Colors.grey[300]),
       child: FlatButton(
+        onPressed: () {},
         child: Text(
           header,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.display1.copyWith(
-              fontWeight: FontWeight.w700,
-              fontSize: 14.0,
-              color: Colors.black87),
+                fontWeight: FontWeight.w700,
+                fontSize: 14.0,
+                color: Colors.black87,
+              ),
         ),
       ),
     );

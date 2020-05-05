@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class TabName extends StatelessWidget {
-  String topic;
-  TabName(this.topic);
+  final String title;
+  TabName({@required this.title});
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.center,
-      child: Text(topic),
+      child: Text(title),
     );
   }
 }

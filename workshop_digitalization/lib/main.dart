@@ -2,15 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
 
-import 'package:workshop_digitalization/views/disposer.dart';
-import 'package:workshop_digitalization/views/progress/progress.dart';
-import 'package:workshop_digitalization/views/progress/progress_bar.dart';
-import 'package:workshop_digitalization/views/progress/progress_displayer.dart';
-import 'package:workshop_digitalization/views/progress/progress_repo.dart';
-import 'package:workshop_digitalization/views/table/studentsTableScreen.dart';
-
-import 'models/files/firebase.dart';
-import 'views/file_view.dart';
+import 'files/firebase.dart';
+import 'files/ui/file_view.dart';
+import 'global/ui/disposer.dart';
+import 'progress/progress.dart';
+import 'progress/progress_repo.dart';
+import 'progress/ui/multiple_progress_bars.dart';
+import 'progress/ui/progress_bar.dart';
+import 'progress/ui/progress_displayer.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,16 +18,8 @@ void main() {
   final root = firestore.collection('version').document('1');
   Flamingo.configure(
       firestore: firestore, storage: FirebaseStorage.instance, root: root);
-  // DocumentAccessor documentAccessor = DocumentAccessor();
-  // List<Student> students = List<FirebaseStudent>.generate(1, (i) => new FirebaseStudent()..firstName='aAAA'..lastName='bbbb')
-  // ..forEach((s) async{
-  //   await root.collection("students").document().setData(s.toData());
-  //   print('ad');
-  // });
-  runApp(new ProjectTableScreen());
-  //runApp(new MyApp());
-  runApp(new TableScreen());
-  // runApp(new MyApp());
+
+  runApp(new MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -105,9 +96,7 @@ Widget progressScaffold() {
   return ProgressScaffold(repo: repo, body: Text("current active progresses"));
 }
 
-Widget student() {
-
-}
+Widget student() => null;
 
 // class MyApps extends StatefulWidget {
 //   @override
