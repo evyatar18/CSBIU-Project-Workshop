@@ -1,38 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flamingo/document.dart';
-import 'package:workshop_digitalization/models/jsonable.dart';
-import 'package:workshop_digitalization/models/memo.dart';
-import 'package:workshop_digitalization/models/person.dart';
-
-enum ProjectStatus { NEW, CONTINUE }
-
-abstract class Project implements Jsonable{
-  String initiatorFirstName;
-  String initiatorLastName;
-
-  Person contact;
-
-  String projectSubject;
-  String projectDomain;
-  String projectGoal;
-
-  DateTime endDate;
-
-  int numberOfStudents;
-
-  Memo skills;
-
-  Person mentor;
-
-  List<String> projectChallenges;
-  List<String> projectInnovativeDetails;
-
-  ProjectStatus projectStatus;
-
-  String mentorTechAbility;
-
-  Memo comments;
-}
+import 'package:flamingo/flamingo.dart';
+import 'package:workshop_digitalization/memos/memo.dart';
+import 'package:workshop_digitalization/person/person.dart';
+import 'package:workshop_digitalization/person/firebase_person.dart';
+import 'package:workshop_digitalization/project/project.dart';
 
 class FirebaseProject extends Document<FirebaseProject> implements Project {
   @override

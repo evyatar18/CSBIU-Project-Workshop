@@ -1,12 +1,6 @@
 import 'package:flamingo/flamingo.dart';
 
-abstract class Person {
-  String firstName;
-  String lastName;
-  String email;
-  String phoneNumber;
-  String job;
-}
+import 'person.dart';
 
 class FirebasePerson extends Model implements Person {
   FirebasePerson({
