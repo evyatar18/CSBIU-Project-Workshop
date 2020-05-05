@@ -53,6 +53,9 @@ dependencies:
   json_table: ^1.4.0
   intl:
 
+  # html editor https://pub.dev/packages/html_editor#-readme-tab-
+  html_editor: ^0.0.2+1
+
 
   # https://pub.dev/packages/mutex
   mutex:

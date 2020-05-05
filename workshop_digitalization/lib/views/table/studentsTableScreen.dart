@@ -20,23 +20,23 @@ class TableScreenState extends State<TableScreen> {
   List<Student> students = List<Student>.generate(100, (i) => new Stud());
 
   Widget _buildTable() {
-    return StreamBuilder(
-      stream: _bloc.dataStream,
-      builder: (context, snapshot) {
-        final data = snapshot.data;
+    // return StreamBuilder(
+    //   stream: _bloc.dataStream,
+    //   builder: (context, snapshot) {
+    //     final data = snapshot.data;
 
-        if (data == null) {
-          return Center(
-              child: SpinKitChasingDots(
-                  color: Theme.of(context).accentColor, size: 80.0));
-        }
+    //     if (data == null) {
+    //       return Center(
+    //           child: SpinKitChasingDots(
+    //               color: Theme.of(context).accentColor, size: 80.0));
+    //     }
 
         return new JsonDataTable(
-            jsonableObjects: data,
+            jsonableObjects: students,
             factory: StudentDetailsFactry(),
           );
-      },
-    );
+      // },
+    // );
   }
   @override
   Widget build(BuildContext context) {
