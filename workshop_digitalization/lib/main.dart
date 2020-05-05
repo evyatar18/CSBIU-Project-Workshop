@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
+import 'package:workshop_digitalization/student/ui/student_view.dart';
 
 import 'files/firebase.dart';
 import 'files/ui/file_view.dart';
@@ -29,12 +30,7 @@ class MyApp extends StatelessWidget {
       title: 'Workshop Digitalization',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Hello world"),
-        ),
-        body: fileContainer(),
-      ),
+      home: student(),
     );
   }
 }
@@ -96,7 +92,9 @@ Widget progressScaffold() {
   return ProgressScaffold(repo: repo, body: Text("current active progresses"));
 }
 
-Widget student() => null;
+Widget student() {
+  return StudentDetails(student: sampleStudent());
+}
 
 // class MyApps extends StatefulWidget {
 //   @override

@@ -106,7 +106,6 @@ class ProgressRepository implements Disposable {
   Future<void> dispose() async {
     _running = false;
     await _pendingChanges.close();
-    await snapshots.last;
   }
 }
 

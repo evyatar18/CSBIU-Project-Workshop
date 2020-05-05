@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
+import 'package:workshop_digitalization/global/ui/disposer.dart';
 
 import 'package:workshop_digitalization/global/ui/utils.dart';
 import 'package:workshop_digitalization/global/strings.dart';
@@ -170,4 +171,12 @@ class FileContainerDisplayer extends StatelessWidget {
       repo.removeId(taskId);
     }
   }
+}
+
+Widget createFileContainerDisplayer(
+    {@required FileContainer container}) {
+  return Disposer<ProgressRepository>(
+    create: () => ProgressRepository(),
+    builder: (context, repo) => FileContainerDisplayer(container: container, repo: repo),
+  );
 }

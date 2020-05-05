@@ -1,5 +1,6 @@
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
+import 'package:workshop_digitalization/files/ui/file_view.dart';
 import 'package:workshop_digitalization/global/json/jsonable_details.dart';
 import 'package:workshop_digitalization/global/ui/tab_title.dart';
 import 'package:workshop_digitalization/memos/dummy_memo.dart';
@@ -46,7 +47,7 @@ class StudentDetails extends StatelessWidget implements JsonableDetails {
             children: [
               StudentDetailsForm(student: student),
               MemosListView(memos: new List<Memo>.generate(100, (i) => Mem())),
-              Icon(Icons.directions_bike),
+              createFileContainerDisplayer(container: student.files),
             ],
           ),
         ),
