@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:workshop_digitalization/models/disposable.dart';
+import '../disposable.dart';
 
 class Disposer<T extends Disposable> extends StatefulWidget {
   final T Function() create;

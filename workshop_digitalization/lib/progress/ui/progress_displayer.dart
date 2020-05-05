@@ -1,67 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:workshop_digitalization/views/progress/progress.dart';
-import 'package:workshop_digitalization/views/progress/progress_bar.dart';
-import 'package:workshop_digitalization/views/progress/progress_repo.dart';
 
-class ProgressBarList extends StatelessWidget {
-  final ProgressRepository repo;
-  final Comparator<IdentifiedProgressSnapshot> comp;
-
-  ProgressBarList(this.repo, {this.comp = _snapshotComparator});
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<List<IdentifiedProgressSnapshot>>(
-      initialData: repo.latestSnapshots,
-      stream: repo.snapshots,
-      builder: (context, repoSnapshot) {
-        final data = List<IdentifiedProgressSnapshot>.from(repoSnapshot.data);
-        data.sort(comp);
-
-        return ListView.builder(
-          itemCount: data.length,
-          itemBuilder: (context, index) {
-            final currentSnapshot = data[index];
-
-            return Row(
-              children: <Widget>[
-                Expanded(child: LinearProgressBar(snapshot: currentSnapshot)),
-                IconButton(
-                  icon: Icon(Icons.remove),
-                  onPressed: () => repo.removeId(currentSnapshot.id),
-                )
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-int _valueSnapshot(ProgressSnapshot snap) {
-  if (snap.isInProgress) {
-    return 0;
-  }
-
-  if (snap.failed) {
-    return 1;
-  }
-
-  return 2;
-}
-
-int _snapshotComparator(
-    IdentifiedProgressSnapshot s1, IdentifiedProgressSnapshot s2) {
-  int res = _valueSnapshot(s1) - _valueSnapshot(s2);
-
-  // prefer showing newer snapshots over old ones
-  if (res == 0) {
-    return -(s1.id - s2.id);
-  }
-
-  return res;
-}
+import '../progress_repo.dart';
+import 'progress_list_view.dart';
 
 class ProgressScaffold extends StatefulWidget {
   final ProgressRepository repo;
@@ -77,14 +19,18 @@ class _ProgressScaffoldState extends State<ProgressScaffold>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation<Offset> _buttonAnimation;
+  StreamSubscription _newSnapshotSubscription;
 
   @override
   void initState() {
     super.initState();
+
+    // initialize controller
     _controller =
         AnimationController(duration: Duration(seconds: 1), vsync: this);
 
-    widget.repo.newSnapshotListener.listen((i) async {
+    // when a new snapshot was created
+    _newSnapshotSubscription = widget.repo.newSnapshotListener.listen((i) async {
       try {
         _controller.stop();
       } catch (e) {}
@@ -96,6 +42,7 @@ class _ProgressScaffoldState extends State<ProgressScaffold>
       } catch (e) {}
     });
 
+    // the popping button animation
     _buttonAnimation = Tween<Offset>(
       begin: Offset(-1, 0),
       end: Offset(0.1, 0),
@@ -108,10 +55,12 @@ class _ProgressScaffoldState extends State<ProgressScaffold>
   @override
   void dispose() {
     super.dispose();
+    _newSnapshotSubscription.cancel();
     _controller.dispose();
   }
 
   Widget _animatedButton() {
+    // the button itself
     final button = Builder(
       builder: (context) {
         return FloatingActionButton(
@@ -122,6 +71,7 @@ class _ProgressScaffoldState extends State<ProgressScaffold>
       },
     );
 
+    // animate the button
     return SlideTransition(position: _buttonAnimation, child: button);
   }
 
@@ -135,7 +85,10 @@ class _ProgressScaffoldState extends State<ProgressScaffold>
                 alignment: Alignment.bottomLeft,
                 child: Text(
                   "Ongoing Tasks",
-                  style: Theme.of(context).textTheme.display1.apply(color: Colors.white),
+                  style: Theme.of(context)
+                      .textTheme
+                      .display1
+                      .apply(color: Colors.white),
                 ),
               ),
               decoration: BoxDecoration(color: Colors.blue),
@@ -143,7 +96,7 @@ class _ProgressScaffoldState extends State<ProgressScaffold>
             width: double.infinity,
             height: 120,
           ),
-          Expanded(child: ProgressBarList(widget.repo))
+          Expanded(child: ProgressBarListView(widget.repo))
         ],
       ),
     );

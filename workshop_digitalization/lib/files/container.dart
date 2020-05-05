@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:workshop_digitalization/models/disposable.dart';
+import 'package:workshop_digitalization/global/disposable.dart';
 
 import 'transfer.dart';
 
@@ -16,7 +16,9 @@ abstract class FileInfo {
 
 abstract class FileContainer implements Disposable {
   Stream<List<FileInfo>> get files;
+
   List<FileInfo> get latestFiles;
+  bool get isLoaded;
 
   Stream<FileUploadSnapshot> addFile(File f, {String name, String type});
   Future<void> removeFile(FileInfo file);

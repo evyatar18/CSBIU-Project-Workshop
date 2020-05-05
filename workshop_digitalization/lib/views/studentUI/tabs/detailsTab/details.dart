@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:workshop_digitalization/models/student.dart';
+import 'package:workshop_digitalization/models/student/student.dart';
 import 'package:workshop_digitalization/views/studentUI/tabs/detailsTab/studentForm.dart';
 
 class StudentDetailsForm extends StatefulWidget {
@@ -58,10 +58,10 @@ class _StudentDetailsFormState extends State<StudentDetailsForm> {
     } else {}
   }
 
-  
+
   Map<String, dynamic> _makeInitials(Student s) => s.toJson();
   // {
-        
+
   //       // "id": s.personalID,
   //       // "name": "${s.firstName} ${s.lastName}",
   //       // "phone": s.phoneNumber,
@@ -90,7 +90,7 @@ class _StudentDetailsFormState extends State<StudentDetailsForm> {
                             openOrExitEdit();
                           },
                           child: Icon(Icons.edit, color: color)),
-                      
+
                     ),
                     StudentForm(
                         initials: _makeInitials(widget.student),

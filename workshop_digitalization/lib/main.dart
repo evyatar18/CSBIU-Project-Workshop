@@ -1,19 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
-import 'package:workshop_digitalization/views/projectUI/projectTableScreen.dart';
-import 'package:workshop_digitalization/views/table/studentsTableScreen.dart';
 
-import 'models/student.dart';
 import 'package:workshop_digitalization/views/disposer.dart';
 import 'package:workshop_digitalization/views/progress/progress.dart';
 import 'package:workshop_digitalization/views/progress/progress_bar.dart';
 import 'package:workshop_digitalization/views/progress/progress_displayer.dart';
 import 'package:workshop_digitalization/views/progress/progress_repo.dart';
+import 'package:workshop_digitalization/views/table/studentsTableScreen.dart';
 
 import 'models/files/firebase.dart';
 import 'views/file_view.dart';
-import 'package:workshop_digitalization/views/studentUI/studentDetails.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +27,8 @@ void main() {
   // });
   runApp(new ProjectTableScreen());
   //runApp(new MyApp());
+  runApp(new TableScreen());
+  // runApp(new MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -104,6 +103,10 @@ Widget progressScaffold() {
   });
 
   return ProgressScaffold(repo: repo, body: Text("current active progresses"));
+}
+
+Widget student() {
+
 }
 
 // class MyApps extends StatefulWidget {
