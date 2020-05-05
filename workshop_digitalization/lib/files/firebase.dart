@@ -3,12 +3,14 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:workshop_digitalization/models/files/transfer.dart';
-import 'package:workshop_digitalization/models/files/utils.dart';
-import 'package:workshop_digitalization/models/list_modifier.dart';
+import 'package:workshop_digitalization/global/list_modifier.dart';
 
 import 'container.dart';
+import 'firebase_utils.dart';
+import 'transfer.dart';
+import 'file_utils.dart';
 
+// These fields specify the firebase property names of a `FileInfo` instance
 final _fnameField = "name";
 final _fsizeField = "size";
 final _ftypeField = "type";
@@ -53,17 +55,25 @@ class _FBFileInfo implements FileInfo {
       return Stream.value(_downloaded);
     }
 
-    final download = downloadFirebaseFile(
-            fileRef: FirebaseStorage.instance.ref().child(path),
-            downloadPath: "${Directory.systemTemp.path}/$path",
-            fileName: fileName)
-        .asBroadcastStream();
+    try {
+      // create file
+      final file = createFileSync("${Directory.systemTemp.path}/$path");
 
-    // save file snapshot if it was succcessful (local caching)
-    download.listen((snapshot) => _downloaded =
-        snapshot.status == FileTransferStatus.SUCCESS ? snapshot : null);
+      // download
+      final download = downloadFirebaseFile(
+              fileRef: FirebaseStorage.instance.ref().child(path),
+              localFile: file,
+              fileName: fileName)
+          .asBroadcastStream();
 
-    return download;
+      // save file snapshot if it was succcessful (local caching for _FBInfo object lifetime)
+      download.listen((snapshot) => _downloaded =
+          snapshot.status == FileTransferStatus.SUCCESS ? snapshot : null);
+
+      return download;
+    } on FileCreationException catch (e) {
+      return Stream.value(FileRetrievalSnapshot.error(e.message));
+    }
   }
 }
 
@@ -83,7 +93,14 @@ class FBFileContainer implements FileContainer {
   @override
   Stream<List<FileInfo>> get files => _listHolder.items;
 
+  bool _loadedOnce = false;
+
+  @override
+  bool get isLoaded => _loadedOnce;
+
   void _onFirebaseUpdate(QuerySnapshot event) {
+    _loadedOnce = true;
+
     final newList = event.documents
         // get only existent documents
         .where((doc) => doc.exists && doc.data != null)
@@ -93,6 +110,8 @@ class FBFileContainer implements FileContainer {
         .map((data) => _FBFileInfo.of(data))
         .toList();
 
+    // this makes sure that when one file is updated, we create new _FBFileInfo instances
+    // so there shouldn't be issues with the local caching in _FBFileInfo
     _listHolder.setItems(newList);
   }
 
@@ -111,7 +130,7 @@ class FBFileContainer implements FileContainer {
     var task = FirebaseStorage.instance.ref().child(firebasePath).putFile(f);
 
     // convert to this project's upload type
-    var uploaderStream = convertUploaderStream(task.events).asBroadcastStream();
+    var uploaderStream = convertUploaderStream(name, task.events).asBroadcastStream();
 
     // add file metadata to firestore when upload successful
     uploaderStream.listen((snapshot) async {
@@ -126,13 +145,12 @@ class FBFileContainer implements FileContainer {
 
   @override
   Future<void> removeFile(FileInfo file) async {
-    final fInfo = _listHolder.where((info) => info.path == file.path).first;
-
-    if (fInfo == null) {
+    // if there are no file info instances with matching path, then ignore this call
+    if (!_listHolder.latestItems.any((info) => info.path == file.path)) {
       return;
     }
 
-    // delete documents metadata in firestore
+    // delete documents metadata on firestore
     var docs = await metadataCollection
         .where(_fpathField, isEqualTo: file.path)
         .getDocuments();
@@ -147,7 +165,7 @@ class FBFileContainer implements FileContainer {
 
     // delete document on storage
     try {
-      await FirebaseStorage.instance.ref().child(fInfo.path).delete();
+      await FirebaseStorage.instance.ref().child(file.path).delete();
     } catch (e) {
       print(e);
     }

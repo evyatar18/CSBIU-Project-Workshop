@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:mutex/mutex.dart';
-import 'package:workshop_digitalization/models/disposable.dart';
-import 'package:workshop_digitalization/views/progress/progress.dart';
+import 'package:workshop_digitalization/global/disposable.dart';
+
+import 'progress.dart';
 
 class IdentifiedProgressSnapshot implements ProgressSnapshot {
   final int id;

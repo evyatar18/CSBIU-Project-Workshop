@@ -3,33 +3,18 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/foundation.dart';
-import 'package:workshop_digitalization/models/files/transfer.dart';
+import 'transfer.dart';
 
-String getFilenameFromPath(String path) =>
-    path.substring(path.lastIndexOf("/") + 1);
-
-getTypeFromPath(String path) =>
-    path.contains(".") ? path.substring(path.lastIndexOf(".") + 1) : "";
-
+///
+/// downloads a file from the firebase storage
+///
+/// `fileRef` a reference to the file on the online storage
+///
+/// `downloadPath` the path the file should be downloaded to
 Stream<FileRetrievalSnapshot> downloadFirebaseFile(
     {@required StorageReference fileRef,
-    @required String downloadPath,
+    @required File localFile,
     @required String fileName}) {
-  final localFile = File(downloadPath);
-
-  try {
-    // delete local file if exists
-    if (localFile.existsSync()) {
-      localFile.deleteSync();
-    }
-
-    // create from zero
-    localFile.createSync(recursive: true);
-  } catch (e) {
-    print("Error while initializing local file: $e");
-    return Stream.value(FileRetrievalSnapshot.error(fileName));
-  }
-
   // do the actual download, in the future we hope to have a stream which reports download progress
   // TODO:: when there's a stream which reports donwload progress, use it
   Future<FileRetrievalSnapshot> download() async {
@@ -51,51 +36,38 @@ Stream<FileRetrievalSnapshot> downloadFirebaseFile(
     }
   }
 
-  var down = download();
+  // create download task
+  final down = download();
 
-  return Stream.fromFutures([
-    Future.value(
-      FileRetrievalSnapshot(FileTransferStatus.IN_PROGRESS, 0, 1, fileName,
-          () async {
-        await down;
-        return localFile;
-      }()),
-    ),
-    down,
-  ]);
+  // based on the download task, create the first snapshot.
+  // we have to wait until the download task completes and then we return the file
+  final file = down.then((val) => val.file);
+  final initialSnapshot = FileRetrievalSnapshot(
+      FileTransferStatus.IN_PROGRESS, 0, 1, fileName, file);
+
+  // TODO:: currently just 2 snapshots because the firebase API does not support yet
+  // progress snapshots on downloads
+  return Stream.fromFutures([Future.value(initialSnapshot), down]);
 }
 
-Future<StorageFile> uploadFirebaseFile(
-    Storage storageReference, String storagePath, File f,
-    {String name, String type}) async {
-  if (type == null) {
-    return await storageReference.save(storagePath, f, fileName: name);
-  } else {
-    return await storageReference.save(storagePath, f,
-        fileName: name, mimeType: type);
-  }
-}
-
+///
+/// Converts a `Stream<StorageTaskEvent>` to a corresponding `Stream<FileUploadSnapshot>`
+///
 Stream<FileUploadSnapshot> convertUploaderStream(
-    Stream<StorageTaskEvent> uploaderStream) async* {
-  var onComplete = () async {
-    await for (var update in uploaderStream) {
-      if (update.type == StorageTaskEventType.failure ||
-          update.type == StorageTaskEventType.success) {
-        break;
-      }
-    }
-  }();
-
-  var fileName;
+    String fileName, Stream<StorageTaskEvent> uploaderStream) async* {
+  uploaderStream = uploaderStream.asBroadcastStream();
+  // this future completes when the upload is done (failure/success)
+  final onComplete = uploaderStream.singleWhere((event) => event.type == StorageTaskEventType.failure ||
+    event.type == StorageTaskEventType.success).then((val) {});
 
   try {
+    // wait for events from the uploader stream
     await for (var event in uploaderStream) {
-      fileName = getFilenameFromPath(event.snapshot.ref.path);
       var status;
 
       switch (event.type) {
         case StorageTaskEventType.failure:
+          // report error
           yield FileUploadSnapshot.error(fileName);
           break;
         case StorageTaskEventType.resume:
@@ -113,10 +85,12 @@ Stream<FileUploadSnapshot> convertUploaderStream(
           }
       }
 
+      // report normal upload event
       yield FileUploadSnapshot(status, event.snapshot.bytesTransferred,
           event.snapshot.totalByteCount, fileName, onComplete);
     }
   } catch (e) {
+    // report error
     yield FileUploadSnapshot.error(fileName);
   }
 }

@@ -1,41 +1,28 @@
 import 'package:flamingo/flamingo.dart';
-import 'package:json_table/json_table.dart';
-import 'package:workshop_digitalization/models/jsonable.dart';
-import 'package:workshop_digitalization/models/tableHeaders.dart';
+import 'package:workshop_digitalization/files/container.dart';
+import 'package:workshop_digitalization/files/firebase.dart';
 
-enum StudentStatus { SEARCHING, WORKING, FINISHED, IRRELEVANT }
-
-StudentStatus DEFAULT_STATUS = StudentStatus.SEARCHING;
-
-// student interface
-abstract class Student implements Jsonable{
-  String personalID;
-  String firstName, lastName;
-  String phoneNumber;
-  String email;
-
-  int studyYear;
-
-  StudentStatus status;
-
-  DateTime get lastUpdate;
-  DateTime get loadDate;
-
-  Map<String, dynamic> toJson();
-  
-}
+import 'student.dart';
 
 class FirebaseStudent extends Document<FirebaseStudent> implements Student {
+  FBFileContainer _files;
+
   FirebaseStudent({
     String id,
     DocumentSnapshot snapshot,
     Map<String, dynamic> values,
     CollectionReference collectionRef,
   }) : super(
-            id: id,
-            snapshot: snapshot,
-            values: values,
-            collectionRef: collectionRef);
+          id: id,
+          snapshot: snapshot,
+          values: values,
+          collectionRef: collectionRef,
+        ) {
+    _files = FBFileContainer(super.reference.collection("files"));
+  }
+
+  @override
+  FileContainer get files => _files;
 
   @override
   String email;
@@ -60,13 +47,14 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
   @override
   int studyYear;
 
-
   // TODO: convert timezones if needed
   @override
-  DateTime get lastUpdate => super.updatedAt!=null?super.updatedAt.toDate():null;
+  DateTime get lastUpdate =>
+      super.updatedAt != null ? super.updatedAt.toDate() : null;
 
   @override
-  DateTime get loadDate => super.createdAt!=null ?super.createdAt.toDate():null;
+  DateTime get loadDate =>
+      super.createdAt != null ? super.createdAt.toDate() : null;
 
   /// Data for save
   Map<String, dynamic> toData() {
@@ -78,7 +66,7 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
     writeNotNull(data, "phone", phoneNumber);
     writeNotNull(data, "email", email);
     writeNotNull(data, "year", studyYear);
-    if (status!=null) writeNotNull(data, "status", status.index);
+    if (status != null) writeNotNull(data, "status", status.index);
 
     return data;
   }
