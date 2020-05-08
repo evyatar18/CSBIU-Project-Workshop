@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
+import 'package:workshop_digitalization/student/firebase_student.dart';
 import 'package:workshop_digitalization/student/ui/student_view.dart';
 
 import 'files/firebase.dart';
 import 'files/ui/file_view.dart';
 import 'global/ui/disposer.dart';
+import 'memos/memo.dart';
 import 'progress/progress.dart';
 import 'progress/progress_repo.dart';
 import 'progress/ui/multiple_progress_bars.dart';
@@ -20,7 +22,19 @@ void main() {
   Flamingo.configure(
       firestore: firestore, storage: FirebaseStorage.instance, root: root);
 
+  // saveMemo();
+
   runApp(new MyApp());
+}
+
+void saveMemo() async {
+  final stud = FirebaseStudent();
+  DocumentAccessor a = DocumentAccessor();
+  a.save(stud);
+
+  Memo m = await stud.memos.createEmpty();
+  m.content = "hello world";
+  await stud.memos.save(m);
 }
 
 class MyApp extends StatelessWidget {
@@ -93,7 +107,13 @@ Widget progressScaffold() {
 }
 
 Widget student() {
-  return StudentDetails(student: sampleStudent());
+  final stud = FirebaseStudent();
+  DocumentAccessor a = DocumentAccessor();
+  a.save(stud);
+
+  stud.memos.createEmpty();
+
+  return StudentDetails(student: stud);
 }
 
 // class MyApps extends StatefulWidget {

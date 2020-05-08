@@ -61,19 +61,6 @@ class _StudentDetailsFormState extends State<StudentDetailsForm> {
     } else {}
   }
 
-  Map<String, dynamic> _makeInitials(Student s) => s.toJson();
-  // {
-
-  //       // "id": s.personalID,
-  //       // "name": "${s.firstName} ${s.lastName}",
-  //       // "phone": s.phoneNumber,
-  //       // "email": s.email,
-  //       // "year": s.studyYear,
-  //       // "status": s.status ?? StudentStatus.SEARCHING,
-  //       // "lastUpdate": s.lastUpdate!=null ? _dateFormat.format(s.lastUpdate):null,
-  //       // "loadDate": s.loadDate!=null? _dateFormat.format(s.loadDate):null,
-  //     };
-
   @override
   Widget build(BuildContext context) {
     Color color = Theme.of(context).primaryColor;
@@ -94,7 +81,7 @@ class _StudentDetailsFormState extends State<StudentDetailsForm> {
                         child: Icon(Icons.edit, color: color)),
                   ),
                   StudentForm(
-                      initials: _makeInitials(widget.student),
+                      student: widget.student,
                       canRead: _readOnly,
                       fbKey: _fbKey),
                   saveSection(),

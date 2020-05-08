@@ -4,11 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:workshop_digitalization/student/student.dart';
 
 class StudentForm extends StatefulWidget {
-  Map<String, dynamic> initials;
+  Student student;
   bool canRead = false;
   GlobalKey<FormBuilderState> fbKey;
   StudentForm({
-    this.initials = const {"status": StudentStatus.SEARCHING, 'year': 2020},
+    this.student,
     this.canRead,
     this.fbKey,
   });
@@ -21,15 +21,29 @@ class StudentForm extends StatefulWidget {
 final _dateFormat = DateFormat.yMd().add_Hms();
 
 class _StudentFromState extends State<StudentForm> {
+  Map<String, dynamic> _makeInitials(Student s) {
+    return {
+      "id": s.personalID,
+      "firstName": s.firstName,
+      "lastName": s.lastName,
+      "phone": s.phoneNumber,
+      "email": s.email,
+      "year": s.studyYear,
+      "status": s.status,
+      "lastUpdate": s.lastUpdate.toString(),
+      "loadDate": s.loadDate.toString()
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: new EdgeInsets.all(10),
       child: Column(children: <Widget>[
-      
+
       FormBuilder(
           key: widget.fbKey,
-          initialValue: widget.initials,
+          initialValue: _makeInitials(widget.student),
           readOnly: widget.canRead,
           autovalidate: true,
           child: Column(

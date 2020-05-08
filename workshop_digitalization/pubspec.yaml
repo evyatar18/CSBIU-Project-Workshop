@@ -48,6 +48,9 @@ dependencies:
   redux: 4.0.0
   flutter_redux:
 
+  # https://pub.dev/packages/provider
+  provider:
+
   # loading spinners https://pub.dev/packages/flutter_spinkit
   flutter_spinkit: 4.1.2+1
   json_table: ^1.4.0

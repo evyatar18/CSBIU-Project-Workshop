@@ -1,5 +1,6 @@
 import 'package:workshop_digitalization/files/container.dart';
 import 'package:workshop_digitalization/global/json/jsonable.dart';
+import 'package:workshop_digitalization/memos/memo.dart';
 
 enum StudentStatus { SEARCHING, WORKING, FINISHED, IRRELEVANT }
 
@@ -20,6 +21,8 @@ abstract class Student implements Jsonable {
 
   DateTime get lastUpdate;
   DateTime get loadDate;
+
+  MemoManager get memos;
 
   Map<String, dynamic> toJson();
 }

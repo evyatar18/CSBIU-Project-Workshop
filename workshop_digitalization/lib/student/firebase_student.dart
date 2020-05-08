@@ -1,11 +1,14 @@
 import 'package:flamingo/flamingo.dart';
 import 'package:workshop_digitalization/files/container.dart';
 import 'package:workshop_digitalization/files/firebase.dart';
+import 'package:workshop_digitalization/memos/firebase_memo.dart';
+import 'package:workshop_digitalization/memos/memo.dart';
 
 import 'student.dart';
 
 class FirebaseStudent extends Document<FirebaseStudent> implements Student {
   FBFileContainer _files;
+  MemoManager<Memo> _memos;
 
   FirebaseStudent({
     String id,
@@ -19,25 +22,29 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
           collectionRef: collectionRef,
         ) {
     _files = FBFileContainer(super.reference.collection("files"));
+    _memos = FirebaseMemoManager(super.reference.collection("memos"));
   }
 
   @override
   FileContainer get files => _files;
 
   @override
-  String email;
+  MemoManager<Memo> get memos => _memos;
 
   @override
-  String firstName;
+  String email = "";
 
   @override
-  String lastName;
+  String firstName = "";
 
   @override
-  String personalID;
+  String lastName = "";
 
   @override
-  String phoneNumber;
+  String personalID = "";
+
+  @override
+  String phoneNumber = "";
 
   StudentStatus _status;
   @override
@@ -45,16 +52,16 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
   set status(StudentStatus stat) => _status = stat;
 
   @override
-  int studyYear;
+  int studyYear = DateTime.now().year;
 
   // TODO: convert timezones if needed
   @override
   DateTime get lastUpdate =>
-      super.updatedAt != null ? super.updatedAt.toDate() : null;
+      super.updatedAt != null ? super.updatedAt.toDate() : DateTime.now();
 
   @override
   DateTime get loadDate =>
-      super.createdAt != null ? super.createdAt.toDate() : null;
+      super.createdAt != null ? super.createdAt.toDate() : DateTime.now();
 
   /// Data for save
   Map<String, dynamic> toData() {

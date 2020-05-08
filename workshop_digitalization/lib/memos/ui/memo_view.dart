@@ -6,8 +6,11 @@ import '../memo.dart';
 
 class MemoView extends StatefulWidget {
   final Memo memo;
+  final MemoManager<Memo> manager;
+
   MemoView({
-    this.memo,
+    @required this.memo,
+    @required this.manager
   });
 
   @override
@@ -71,10 +74,15 @@ class MemoViewState extends State<MemoView> {
 
   void _save() async {
     final txt = await keyEditor.currentState.getText();
+
+    // update memo data
     setState(() {
       widget.memo.content = txt;
       widget.memo.topic = _topicController.text;
     });
+
+    // save
+    widget.manager.save(widget.memo);
   }
 
   Widget bottomButtonSection() {
@@ -153,24 +161,25 @@ class MemoViewState extends State<MemoView> {
     return new WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-          appBar: appBarSection(),
-          body: Card(
-            child: Column(
-              children: <Widget>[
-                dates(),
-                subject(),
-                HtmlEditor(
-                  hint: "Your text here...",
-                  value: widget.memo.content,
-                  key: keyEditor,
-                  height: 400,
-                  decoration: BoxDecoration(),
-                ),
-                bottomButtonSection(),
-              ],
-            ),
+        appBar: appBarSection(),
+        body: Card(
+          child: Column(
+            children: <Widget>[
+              dates(),
+              subject(),
+              HtmlEditor(
+                hint: "Your text here...",
+                value: widget.memo.content,
+                key: keyEditor,
+                height: 400,
+                decoration: BoxDecoration(),
+              ),
+              bottomButtonSection(),
+            ],
           ),
-          resizeToAvoidBottomPadding: false),
+        ),
+        resizeToAvoidBottomPadding: false,
+      ),
     );
   }
 }

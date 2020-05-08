@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
 import 'package:workshop_digitalization/global/json/jsonable_details.dart';
 import 'package:workshop_digitalization/global/ui/tab_title.dart';
-import 'package:workshop_digitalization/memos/dummy_memo.dart';
-import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/memos/ui/memos_list.dart';
 import 'package:workshop_digitalization/student/firebase_student.dart';
 
@@ -46,7 +44,9 @@ class StudentDetails extends StatelessWidget implements JsonableDetails {
           body: TabBarView(
             children: [
               StudentDetailsForm(student: student),
-              MemosListView(memos: new List<Memo>.generate(100, (i) => Mem())),
+              MemosListView(
+                memoManager: student.memos,
+              ),
               createFileContainerDisplayer(container: student.files),
             ],
           ),

@@ -1,14 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:workshop_digitalization/global/const.dart';
 
 import '../memo.dart';
 import 'memo_view.dart';
 
+class MemoScaffold extends StatelessWidget {
+  final MemoManager memoManager;
+
+  MemoScaffold({
+    @required this.memoManager,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(onPressed: () => _openCreate()),
+    );
+  }
+}
+
 ///
 /// Displays a `ListView` containing clickable cards of memos
+///
 class MemosListView extends StatefulWidget {
-  final List<Memo> memos;
+  final MemoManager memoManager;
+
   MemosListView({
-    @required this.memos,
+    @required this.memoManager,
   });
 
   @override
@@ -20,24 +38,43 @@ class _MemosListViewState extends State<MemosListView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: ListView.builder(
-        itemCount: widget.memos.length,
-        itemBuilder: (context, index) => MemoCard(memo: widget.memos[index]),
-      ),
+    return StreamBuilder(
+      stream: widget.memoManager.memos,
+      initialData: widget.memoManager.latestMemos,
+      builder: (context, snapshot) {
+        List<Memo> memos = snapshot.data;
+
+        return Container(
+          child: ListView.builder(
+            itemCount: snapshot.data.length,
+            itemBuilder: (context, index) =>
+                MemoCard(memo: memos[index], manager: widget.memoManager),
+          ),
+        );
+      },
     );
   }
 }
 
 class MemoCard extends StatelessWidget {
   final Memo memo;
+  final MemoManager<Memo> manager;
+
   MemoCard({
     @required this.memo,
+    @required this.manager,
   });
 
   void _openMemoPage(BuildContext context) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => MemoView(memo: this.memo)));
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MemoView(
+          memo: this.memo,
+          manager: manager,
+        ),
+      ),
+    );
   }
 
   @override
@@ -47,7 +84,8 @@ class MemoCard extends StatelessWidget {
         onTap: () => _openMemoPage(context),
         child: ListTile(
           title: Text(memo.topic),
-          subtitle: Text("Created: ${memo.creationDate} | Edited: ${memo.lastUpdate}"),
+          subtitle: Text(
+              "Created: ${dateDisplayFormat.format(memo.creationDate)} | Edited: ${dateDisplayFormat.format(memo.lastUpdate)}"),
         ),
       ),
     );

@@ -30,6 +30,7 @@ class FirebaseMemo extends Document<FirebaseMemo> implements Memo {
     // default container is FirebaseFileContainer
     _container = FBFileContainer(
         super.reference.collection(Definitions.filesCollection));
+      print(super.reference.path);
   }
 
   @override
@@ -42,10 +43,10 @@ class FirebaseMemo extends Document<FirebaseMemo> implements Memo {
   DateTime get creationDate => super.createdAt.toDate();
 
   @override
-  String content;
+  String content = "";
 
   @override
-  String topic;
+  String topic = "";
 
   @override
   FileContainer get attachedFiles => _container;
@@ -63,7 +64,6 @@ class FirebaseMemo extends Document<FirebaseMemo> implements Memo {
     topic = valueFromKey<String>(data, Definitions.topicField);
     content = valueFromKey<String>(data, Definitions.contentField);
   }
-
 }
 
 class FirebaseMemoManager implements MemoManager<FirebaseMemo> {
@@ -82,15 +82,18 @@ class FirebaseMemoManager implements MemoManager<FirebaseMemo> {
   List<FirebaseMemo> get latestMemos => _memoList.latestItems;
 
   void _onFirebaseUpdate(QuerySnapshot snapshot) {
-    _memoList.setItems((snapshot)
-        .documents
-        .where((doc) => doc.exists)
-        .map((doc) => FirebaseMemo(snapshot: doc)));
+    _memoList.setItems(
+      (snapshot)
+          .documents
+          .where((doc) => doc.exists)
+          .map((doc) => FirebaseMemo(snapshot: doc, collectionRef: _memoCollection))
+          .toList(),
+    );
   }
 
   @override
   Future<FirebaseMemo> createEmpty() async {
-    final memo = FirebaseMemo();
+    final memo = FirebaseMemo(collectionRef: _memoCollection);
 
     // save creation date
     await _docAccessor.save(memo);
@@ -111,5 +114,4 @@ class FirebaseMemoManager implements MemoManager<FirebaseMemo> {
   Future<void> save(FirebaseMemo m) async {
     await _docAccessor.update(m);
   }
-
 }
