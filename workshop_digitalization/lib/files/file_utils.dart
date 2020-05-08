@@ -1,6 +1,8 @@
 // gets the filename from a given `path`
 import 'dart:io';
 
+import 'package:workshop_digitalization/files/container.dart';
+
 String getFilenameFromPath(String path) =>
     path.substring(path.lastIndexOf("/") + 1);
 
@@ -38,4 +40,17 @@ File createFileSync(String path) {
   } catch (e) {
     throw FileCreationException(getFilenameFromPath(path), path, customMessage: e.toString());
   }
+}
+
+Future<void> clearFileContainer(FileContainer fc) async {
+  final fileDeletions = fc.latestFiles.map((fi) => fc.removeFile(fi));
+
+  for (final deletionFuture in fileDeletions) {
+    try { await deletionFuture; }
+    catch (e) {
+      print("error deleting file: $e");
+    }
+  }
+
+  await fc.dispose();
 }
