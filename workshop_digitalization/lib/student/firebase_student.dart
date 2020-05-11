@@ -20,16 +20,21 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
           snapshot: snapshot,
           values: values,
           collectionRef: collectionRef,
-        ) {
-    _files = FBFileContainer(super.reference.collection("files"));
-    _memos = FirebaseMemoManager(super.reference.collection("memos"));
+        );
+
+  @override
+  FileContainer get files {
+    if (_files == null)
+      _files = FBFileContainer(super.reference.collection("files"));
+    return _files;
   }
 
   @override
-  FileContainer get files => _files;
-
-  @override
-  MemoManager<Memo> get memos => _memos;
+  MemoManager<Memo> get memos {
+    if (_memos == null)
+      _memos = FirebaseMemoManager(super.reference.collection("memos"));
+    return _memos;
+  }
 
   @override
   String email = "";

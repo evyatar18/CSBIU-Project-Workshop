@@ -44,7 +44,7 @@ class StudentDetails extends StatelessWidget implements JsonableDetails {
           body: TabBarView(
             children: [
               StudentDetailsForm(student: student),
-              MemosListView(
+              MemoScaffold(
                 memoManager: student.memos,
               ),
               createFileContainerDisplayer(container: student.files),

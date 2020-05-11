@@ -7,10 +7,12 @@ import '../memo.dart';
 class MemoView extends StatefulWidget {
   final Memo memo;
   final MemoManager<Memo> manager;
+  final Function() onCancel;
 
   MemoView({
     @required this.memo,
-    @required this.manager
+    @required this.manager,
+    this.onCancel
   });
 
   @override
@@ -37,7 +39,12 @@ class MemoViewState extends State<MemoView> {
                   child: new Text('No'),
                 ),
                 new FlatButton(
-                  onPressed: () => Navigator.of(context).pop(true),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                    if (widget.onCancel != null) {
+                      widget.onCancel();
+                    }
+                  },
                   child: new Text('Yes'),
                 ),
               ],

@@ -1,12 +1,15 @@
 import 'package:redux/redux.dart';
 
-enum RequestType { ADD, REMOVE, CLEAR_LIST }
+enum RequestType { ADD, REMOVE, CLEAR_LIST, FOR_EACH }
+
+typedef void ForEach<T>(T elem);
 
 class _ListChangeRequest<T> {
   final T subject;
   final RequestType request;
+  ForEach<T> forEach;
 
-  _ListChangeRequest(this.subject, this.request);
+  _ListChangeRequest(this.subject, this.request, [this.forEach]);
 
   factory _ListChangeRequest.add(T subject) =>
       _ListChangeRequest(subject, RequestType.ADD);
@@ -16,6 +19,9 @@ class _ListChangeRequest<T> {
 
   factory _ListChangeRequest.clear() =>
       _ListChangeRequest(null, RequestType.CLEAR_LIST);
+
+  factory _ListChangeRequest.forEach(ForEach<T> func) =>
+      _ListChangeRequest(null, RequestType.FOR_EACH, func);
 }
 
 void _doAction<T>(List<T> l, _ListChangeRequest<T> action) {
@@ -28,6 +34,11 @@ void _doAction<T>(List<T> l, _ListChangeRequest<T> action) {
       break;
     case RequestType.CLEAR_LIST:
       l.clear();
+      break;
+    case RequestType.FOR_EACH:
+      try {
+        l.forEach(action.forEach);
+      } catch (e) {}
       break;
   }
 }
@@ -77,6 +88,20 @@ class ListModifierHandler<T> {
       _ListChangeRequest<T>.clear(),
       ...items.map((item) => _ListChangeRequest<T>.add(item))
     ]);
+  }
+
+  void forEach(ForEach<T> func) {
+    _store.dispatch(_ListChangeRequest.forEach(func));
+  }
+
+  void forEachAndSet(ForEach<T> func, List<T> items) {
+    final actions = [
+      _ListChangeRequest.forEach(func),
+      _ListChangeRequest<T>.clear(),
+      ...items.map((item) => _ListChangeRequest<T>.add(item))
+    ];
+
+    _store.dispatch(actions);
   }
 
   Iterable<T> where(bool Function(T) where) => latestItems.where(where);

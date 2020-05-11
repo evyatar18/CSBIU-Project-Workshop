@@ -26,8 +26,11 @@ class CastingMemoManager<MemoType extends Memo> implements MemoManager<Memo> {
   }
 
   @override
-  Future<void> delete(Memo m) => _originalManager.save(_getOriginalMemo(m));
+  Future<void> delete(Memo m) => _originalManager.delete(_getOriginalMemo(m));
 
   @override
   Future<MemoType> save(Memo m) => _originalManager.save(_getOriginalMemo(m));
+
+  @override
+  Future<void> dispose() => _originalManager.dispose();
 }

@@ -173,6 +173,7 @@ class FBFileContainer implements FileContainer {
 
   @override
   Future<void> dispose() async {
-    _metadataSubscription.cancel();
+    if (_metadataSubscription != null)
+      _metadataSubscription.cancel();
   }
 }

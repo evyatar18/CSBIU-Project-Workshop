@@ -107,11 +107,11 @@ Widget progressScaffold() {
 }
 
 Widget student() {
-  final stud = FirebaseStudent();
+  final stud = FirebaseStudent(id: "hwDaXlndqUWVjIzQ0Lfp");
   DocumentAccessor a = DocumentAccessor();
   a.save(stud);
 
-  stud.memos.createEmpty();
+  // stud.memos.createEmpty();
 
   return StudentDetails(student: stud);
 }

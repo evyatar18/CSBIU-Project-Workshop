@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flamingo/flamingo.dart';
 import 'package:workshop_digitalization/files/container.dart';
 import 'package:workshop_digitalization/files/file_utils.dart';
 import 'package:workshop_digitalization/files/firebase.dart';
+import 'package:workshop_digitalization/global/disposable.dart';
 import 'package:workshop_digitalization/global/list_modifier.dart';
 
 import 'memo.dart';
@@ -13,9 +16,7 @@ class Definitions {
   static final filesCollection = "files";
 }
 
-class FirebaseMemo extends Document<FirebaseMemo> implements Memo {
-  FileContainer _container;
-
+class FirebaseMemo extends Document<FirebaseMemo> implements Memo, Disposable {
   FirebaseMemo({
     String id,
     DocumentSnapshot snapshot,
@@ -26,12 +27,7 @@ class FirebaseMemo extends Document<FirebaseMemo> implements Memo {
           snapshot: snapshot,
           values: values,
           collectionRef: collectionRef,
-        ) {
-    // default container is FirebaseFileContainer
-    _container = FBFileContainer(
-        super.reference.collection(Definitions.filesCollection));
-      print(super.reference.path);
-  }
+        ) {}
 
   @override
   String get id => super.id;
@@ -48,8 +44,18 @@ class FirebaseMemo extends Document<FirebaseMemo> implements Memo {
   @override
   String topic = "";
 
+  FileContainer _container;
   @override
-  FileContainer get attachedFiles => _container;
+  FileContainer get attachedFiles {
+    if (_container != null) return _container;
+
+    // default container is FirebaseFileContainer, load lazily
+    // THIS IS VERY IMPORTANT
+    // since we use the FirebaseMemo instance when we view memos of an object
+    // but there's no need to load all the files when we just view a memo
+    return _container = FBFileContainer(
+        super.reference.collection(Definitions.filesCollection));
+  }
 
   /// Data for save
   Map<String, dynamic> toData() {
@@ -64,15 +70,24 @@ class FirebaseMemo extends Document<FirebaseMemo> implements Memo {
     topic = valueFromKey<String>(data, Definitions.topicField);
     content = valueFromKey<String>(data, Definitions.contentField);
   }
+
+  @override
+  Future<void> dispose() {
+    if (_container != null) {
+      return _container.dispose();
+    }
+    return Future.value();
+  }
 }
 
 class FirebaseMemoManager implements MemoManager<FirebaseMemo> {
   CollectionReference _memoCollection;
   final _memoList = ListModifierHandler<FirebaseMemo>();
   final _docAccessor = DocumentAccessor();
+  StreamSubscription _subscription;
 
   FirebaseMemoManager(this._memoCollection) {
-    _memoCollection.snapshots().listen(_onFirebaseUpdate);
+    _subscription = _memoCollection.snapshots().listen(_onFirebaseUpdate);
   }
 
   @override
@@ -81,13 +96,19 @@ class FirebaseMemoManager implements MemoManager<FirebaseMemo> {
   @override
   List<FirebaseMemo> get latestMemos => _memoList.latestItems;
 
+  static void _disposeMemo(FirebaseMemo fbMemo) => fbMemo.dispose();
+
   void _onFirebaseUpdate(QuerySnapshot snapshot) {
-    _memoList.setItems(
-      (snapshot)
+    final newMemos = (snapshot)
           .documents
           .where((doc) => doc.exists)
-          .map((doc) => FirebaseMemo(snapshot: doc, collectionRef: _memoCollection))
-          .toList(),
+          .map((doc) =>
+              FirebaseMemo(snapshot: doc, collectionRef: _memoCollection))
+          .toList();
+
+    _memoList.forEachAndSet(
+      _disposeMemo,
+      newMemos,
     );
   }
 
@@ -113,5 +134,10 @@ class FirebaseMemoManager implements MemoManager<FirebaseMemo> {
   @override
   Future<void> save(FirebaseMemo m) async {
     await _docAccessor.update(m);
+  }
+
+  @override
+  Future<void> dispose() async {
+    await _subscription.cancel();
   }
 }
