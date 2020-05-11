@@ -89,6 +89,7 @@ class FileContainerDisplayer extends StatelessWidget {
   Widget _buildAddButton() {
     return Builder(builder: (context) {
       return FloatingActionButton(
+        heroTag: randomString(20),
         onPressed: () => _addFiles(context),
         child: Icon(Icons.add),
       );

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:workshop_digitalization/global/strings.dart';
 
 import '../progress_repo.dart';
 import 'progress_list_view.dart';
@@ -64,6 +65,7 @@ class _ProgressScaffoldState extends State<ProgressScaffold>
     final button = Builder(
       builder: (context) {
         return FloatingActionButton(
+          heroTag: randomString(20),
           onPressed: () => Scaffold.of(context).openDrawer(),
           child: Icon(Icons.arrow_forward),
           backgroundColor: Colors.orangeAccent,

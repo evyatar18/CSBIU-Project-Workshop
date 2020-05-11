@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:html_editor/html_editor.dart';
 import 'package:intl/intl.dart';
+import 'package:workshop_digitalization/files/ui/file_view.dart';
 
 import '../memo.dart';
 
@@ -9,11 +10,7 @@ class MemoView extends StatefulWidget {
   final MemoManager<Memo> manager;
   final Function() onCancel;
 
-  MemoView({
-    @required this.memo,
-    @required this.manager,
-    this.onCancel
-  });
+  MemoView({@required this.memo, @required this.manager, this.onCancel});
 
   @override
   State<StatefulWidget> createState() => MemoViewState();
@@ -92,6 +89,30 @@ class MemoViewState extends State<MemoView> {
     widget.manager.save(widget.memo);
   }
 
+  bool _opening = false;
+  void _openFiles() {
+    if (_opening) return;
+
+    _opening = true;
+    try {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Scaffold(
+            appBar: AppBar(title: Text("Memo Files")),
+            body: createFileContainerDisplayer(
+              container: widget.memo.attachedFiles,
+            ),
+          ),
+        ),
+      );
+    } catch (e) {
+      print("error opening files view(memo_view.dart): $e");
+    } finally {
+      _opening = false;
+    }
+  }
+
   Widget bottomButtonSection() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -121,12 +142,12 @@ class MemoViewState extends State<MemoView> {
       title: Text('Edit your Memo'),
       actions: <Widget>[
         FlatButton(
-          onPressed: _reset,
-          child: Icon(Icons.refresh),
+          onPressed: _openFiles,
+          child: Icon(Icons.folder, color: Colors.white),
         ),
         FlatButton(
           onPressed: _save,
-          child: Icon(Icons.save),
+          child: Icon(Icons.save, color: Colors.white),
         ),
       ],
     );

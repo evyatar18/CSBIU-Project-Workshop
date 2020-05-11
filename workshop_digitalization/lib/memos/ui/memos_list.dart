@@ -108,7 +108,7 @@ class _MemoOpener {
 
   _MemoOpener(MemoManager manager);
 
-  Mutex _openMutex;
+  final _openMutex = Mutex();
   Future<bool> _tryOpening() async {
     if (_opening) return false;
 
@@ -119,6 +119,7 @@ class _MemoOpener {
       }
 
       _opening = true;
+      return true;
     } finally {
       _openMutex.release();
     }
