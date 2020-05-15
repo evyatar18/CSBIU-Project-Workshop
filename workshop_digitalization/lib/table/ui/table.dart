@@ -3,15 +3,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:json_table/json_table.dart';
 import 'package:workshop_digitalization/global/json/jsonable.dart';
-import 'package:workshop_digitalization/global/json/jsonable_details.dart';
 
 import 'table_headers.dart';
 
 // Decode your json string
-class JsonDataTable extends StatefulWidget {
-  List<Jsonable> jsonableObjects;
-  JsonableDetailsFactory factory;
-  JsonDataTable({this.jsonableObjects, this.factory});
+class JsonDataTable<T extends Jsonable> extends StatefulWidget {
+  final List<T> jsonableObjects;
+  final void Function(T) onItemClick;
+
+  JsonDataTable({
+    this.jsonableObjects,
+    this.onItemClick,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -36,15 +39,9 @@ class JsonDataTableState extends State<JsonDataTable> {
         return JsonTableHeader(header: header);
       },
       showColumnToggle: true,
-      onRowSelect: (index, map) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                widget.factory.create(widget.jsonableObjects[index]),
-          ),
-        );
-      },
+      onRowSelect: (index, map) =>
+          widget.onItemClick(widget.jsonableObjects[index]),
+
     );
   }
 }
