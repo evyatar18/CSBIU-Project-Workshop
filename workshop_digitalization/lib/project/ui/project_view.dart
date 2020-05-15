@@ -34,7 +34,7 @@ class ProjectDetailsView extends StatelessWidget implements JsonableDetails {
                 project: this.project,
               ),
               MemosListView(
-                  memos: new List<Memo>.generate(100, (i) => throw "no memo")),
+                  ),
               Icon(Icons.directions_bike),
             ],
           ),
