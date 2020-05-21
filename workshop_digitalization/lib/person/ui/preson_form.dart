@@ -3,10 +3,9 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:workshop_digitalization/person/person.dart';
 
 class PersonForm extends StatefulWidget {
-  Person person;
-  bool canRead = false;
-  Map<String, dynamic> initials;
-  GlobalKey<FormBuilderState> fbKey;
+  final Person person;
+  final bool canRead ;
+  final GlobalKey<FormBuilderState> fbKey;
   PersonForm({
     this.person,
     this.canRead,
@@ -19,11 +18,20 @@ class PersonForm extends StatefulWidget {
 }
 
 class _PersonFromState extends State<PersonForm> {
+  Map<String, dynamic> _makeInitials(Person person) {
+    return {
+      "firstName": person.firstName,
+      "lastName": person.lastName,
+      "phone": person.phoneNumber,
+      "email": person.email,
+      
+    };
+  }
   @override
   Widget build(BuildContext context) {
     return FormBuilder(
       key: widget.fbKey,
-      initialValue: widget.initials,
+      initialValue: _makeInitials(widget.person),
       readOnly: widget.canRead,
       autovalidate: true,
       child: Column(

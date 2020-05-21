@@ -3,6 +3,7 @@ import 'package:workshop_digitalization/global/json/jsonable_details.dart';
 import 'package:workshop_digitalization/global/ui/tab_title.dart';
 import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/memos/ui/memos_list.dart';
+import 'package:workshop_digitalization/project/ui/project_form_warper.dart';
 
 import '../project.dart';
 import 'project_form.dart';
@@ -30,9 +31,7 @@ class ProjectDetailsView extends StatelessWidget implements JsonableDetails {
           ),
           body: TabBarView(
             children: [
-              ProjectDetailsForm(
-                project: this.project,
-              ),
+              ProjectFormWarper(project: this.project),
               MemosListView(
                   ),
               Icon(Icons.directions_bike),
