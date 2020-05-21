@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:workshop_digitalization/global/disposable.dart';
 
 /* built according to the tutorial https://www.raywenderlich.com/4074597-getting-started-with-the-bloc-pattern */
 
-abstract class Bloc {
-
-  void dispose();
+abstract class Bloc implements Disposable {
 }
 
 class BlocProvider<T extends Bloc> extends StatefulWidget {

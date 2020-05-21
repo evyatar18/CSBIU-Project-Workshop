@@ -2,22 +2,27 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:workshop_digitalization/filter/filterable.dart';
 import 'package:workshop_digitalization/table/table_data_controller.dart';
 
 class BasicTableDataController<T> implements TableDataController<T> {
+  ValueStream<List<T>> supplier;
+  @override
+  ValueStream<List<T>> get unfilteredValues => supplier;
+
   StreamSubscription _subscription;
   StreamSubscription get dataSubscription => _subscription;
 
   final Map<String, dynamic> Function(T) jsoner;
 
   int _currentFilter = 0;
-  final _filters = <int, TableFilter<T>>{};
+  final _filters = <int, ObjectFilter<T>>{};
 
   String sortColumn;
-  bool ascending;
+  bool ascending = true;
 
   BasicTableDataController({
-    @required ValueStream<List<T>> supplier,
+    @required this.supplier,
     @required this.jsoner,
   }) {
     _subscription = supplier.listen(_dataListener);
@@ -46,40 +51,49 @@ class BasicTableDataController<T> implements TableDataController<T> {
     final emittedObjects = objects.map((e) => e[0]).toList();
     final cols = data.length > 0 ? jsoner(data[0]).keys : <String>[];
 
-    final emit = TableData<T>(cols, sortCol, asc, emittedObjects, jsoner);
+    final emit = TableData<T>(cols.toList(), sortCol, asc, emittedObjects.cast<T>(), jsoner);
     _controller.add(emit);
   }
 
   @override
   ValueStream<TableData<T>> get data => _controller;
 
+  void _onDataChange() async {
+    _dataListener(supplier.value);
+  }
+
   @override
   void orderBy(String columnName, bool ascending) {
     sortColumn = columnName;
     this.ascending = ascending;
+    _onDataChange();
   }
 
   @override
   void deleteFilter(int id) {
     _filters.remove(id);
+    _onDataChange();
   }
 
   @override
-  int filterWith(TableFilter<T> filter) {
+  int filterWith(ObjectFilter<T> filter) {
     int id = _currentFilter++;
     _filters[id] = filter;
+    _onDataChange();
     return id;
   }
 
   @override
-  void setFilter(int id, TableFilter<T> filter) {
+  void setFilter(int id, ObjectFilter<T> filter) {
     _filters[id] = filter;
+    _onDataChange();
   }
 
   @override
   void clearFilters() {
     _filters.clear();
     _currentFilter = 0;
+    _onDataChange();
   }
 
   @override

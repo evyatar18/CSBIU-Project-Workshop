@@ -46,7 +46,8 @@ class JsonTableHeader extends StatelessWidget {
         child: Row(
           children: <Widget>[
             text,
-            ...(symbol == null ? [symbol] : [])
+            if (symbol != null)
+              symbol
           ],
         ),
       ),

@@ -6,6 +6,7 @@ import 'package:workshop_digitalization/student/ui/student_view.dart';
 
 import 'files/firebase.dart';
 import 'files/ui/file_view.dart';
+import 'filter/test/basic_filterable.dart';
 import 'global/ui/disposer.dart';
 import 'memos/memo.dart';
 import 'progress/progress.dart';
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
       title: 'Workshop Digitalization',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: student(),
+      home: createFilterableTableScaffold(),
     );
   }
 }
@@ -115,6 +116,29 @@ Widget student() {
 
   return StudentDetails(student: stud);
 }
+
+// Widget filter() {
+//   return Scaffold(
+//       body: Column(
+//     children: <Widget>[
+//       TextFilter(
+//         initialValue: "hii",
+//         onChange: (value) {
+//           print(value);
+//           return "";
+//         },
+//       ),
+//       SelectionFilter(
+//         initialValue: 12,
+//         values: {12: "12!!!!", 13: "13!!!", 1123: "1123!!!!!!!!!!"},
+//         onChange: (value) {
+//           print(value);
+//           return "";
+//         },
+//       )
+//     ],
+//   ));
+// }
 
 // class MyApps extends StatefulWidget {
 //   @override

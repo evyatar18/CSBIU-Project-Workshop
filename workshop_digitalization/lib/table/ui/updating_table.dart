@@ -43,16 +43,18 @@ class UpdatingTable<T> extends StatelessWidget {
         );
       },
       showColumnToggle: true,
-      onRowSelect: (index, map) => onClick(jsons[index].object),
+      onRowSelect: onClick == null ? null : (index, map) => onClick(jsons[index].object),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    print(controller.data.value);
     return StreamBuilder<TableData<dynamic>>(
       initialData: controller.data.value,
       stream: controller.data,
       builder: (context, snapshot) {
+        print("data: ${(snapshot.data == null)}");
         if (!snapshot.hasData || snapshot.data == null) {
           return Center(
             child: SpinKitChasingDots(
