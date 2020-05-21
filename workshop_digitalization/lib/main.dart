@@ -1,6 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
+import 'package:workshop_digitalization/person/firebase_person.dart';
+import 'package:workshop_digitalization/person/person.dart';
+import 'package:workshop_digitalization/project/dummy_project.dart';
+import 'package:workshop_digitalization/project/firebase_project.dart';
+import 'package:workshop_digitalization/project/project.dart';
+import 'package:workshop_digitalization/project/ui/project_form.dart';
+import 'package:workshop_digitalization/project/ui/project_form_warper.dart';
+import 'package:workshop_digitalization/project/ui/project_view.dart';
 import 'package:workshop_digitalization/student/firebase_student.dart';
 import 'package:workshop_digitalization/student/ui/student_view.dart';
 
@@ -46,10 +54,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       home: createFilterableTableScaffold(),
+      // home: Scaffold(
+      //   body: ProjectDetailsView(project: DummyProject()),
+
+      // )
     );
   }
 }
-
 Widget fileContainer() {
   return Disposer(
     create: () => FBFileContainer(Firestore.instance.collection("files")),
