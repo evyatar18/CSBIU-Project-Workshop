@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
       title: 'Workshop Digitalization',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: createFilterableTableScaffold(),
+      home: createFilterableTableScaffold2(),
       // home: Scaffold(
       //   body: ProjectDetailsView(project: DummyProject()),
 

@@ -12,6 +12,11 @@ class DisplayedFieldFilter<Object, FilterType, InputType>
   final bool showFieldName;
   final bool showFilterChoice;
 
+  final String initialFilter;
+  final InputType initialValue;
+
+  final void Function(String filterName, InputType value) onFilterChange;
+
   DisplayedFieldFilter({
     Key key,
     @required this.filterable,
@@ -19,20 +24,34 @@ class DisplayedFieldFilter<Object, FilterType, InputType>
     @required this.filterId,
     this.showFieldName = true,
     this.showFilterChoice = true,
+    this.initialFilter,
+    this.initialValue,
+    this.onFilterChange,
   }) : super(key: key);
 
   @override
-  _DisplayedFieldFilterState createState() => _DisplayedFieldFilterState<Object, FilterType, InputType>();
+  _DisplayedFieldFilterState createState() =>
+      _DisplayedFieldFilterState<Object, FilterType, InputType>();
 }
 
-class _DisplayedFieldFilterState<Object, FilterType, InputType> extends State<DisplayedFieldFilter> {
+class _DisplayedFieldFilterState<Object, FilterType, InputType>
+    extends State<DisplayedFieldFilter> {
   String _currentFilter;
   InputType _currentValue;
 
   @override
   void initState() {
     super.initState();
-    _changeFilter(widget.field.filterCreators.keys.first);
+
+    final initialFilter =
+        widget.initialFilter ?? widget.field.filterCreators.keys.first;
+    _changeFilter(initialFilter, initialValue: widget.initialValue);
+  }
+
+  void _onChange() {
+    if (widget.onFilterChange != null) {
+      widget.onFilterChange(_currentFilter, _currentValue);
+    }
   }
 
   void _changeFilterValue(InputType val) {
@@ -43,14 +62,18 @@ class _DisplayedFieldFilterState<Object, FilterType, InputType> extends State<Di
     });
 
     _currentValue = val;
+    _onChange();
   }
 
-  void _changeFilter(String filterName) {
+  void _changeFilter(String filterName, {InputType initialValue}) {
     setState(() {
+      // when changing filter, reset the filter(it accepts any object)
       widget.filterable.setFilter(widget.filterId, (obj, json) => true);
-      _currentValue = null;
+      _currentValue = initialValue;
       _currentFilter = filterName;
     });
+
+    _onChange();
   }
 
   DropdownMenuItem<String> _buildDropdownFilter(String filterName) {
@@ -66,7 +89,8 @@ class _DisplayedFieldFilterState<Object, FilterType, InputType> extends State<Di
 
   DropdownButton _buildFilterChoiceButton() {
     return DropdownButton<String>(
-      items: widget.field.filterCreators.keys.map(_buildDropdownFilter).toList(),
+      items:
+          widget.field.filterCreators.keys.map(_buildDropdownFilter).toList(),
 
       // when filter type changed
       onChanged: _changeFilter,
@@ -75,6 +99,9 @@ class _DisplayedFieldFilterState<Object, FilterType, InputType> extends State<Di
   }
 
   Map<FilterType, String> _getFieldValues(List<dynamic> objects) {
+    if (objects == null) {
+      return Map.fromEntries(<MapEntry<FilterType, String>>[]);
+    }
     final entries = objects
         .map(widget.field.field.getter)
         .toSet()

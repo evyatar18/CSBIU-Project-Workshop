@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:workshop_digitalization/filter/filterable.dart';
 import 'package:workshop_digitalization/filter/ui/filterable_field.dart';
-import 'package:workshop_digitalization/filter/ui/filters.dart';
+import 'package:workshop_digitalization/filter/ui/filters_scaffold.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/table/basic_table_data_controller.dart';
+import 'package:workshop_digitalization/table/ui/filterable_table.dart';
 import 'package:workshop_digitalization/table/ui/updating_table.dart';
 
 class MyObject {
@@ -38,6 +39,8 @@ Stream<List<MyObject>> myObjectsStream() async* {
       ..year = year;
   });
 
+  print(items.map((e) => e.year).toList());
+
   while (true) {
     await Future.delayed(Duration(seconds: 5));
 
@@ -54,17 +57,27 @@ BasicTableDataController createController() {
   );
 }
 
+void moveToFilters(BuildContext context, Filterable controller,
+    Map<int, FilterWidgetCreator> filterWidgets) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => FiltersScaffold(
+        filterable: controller,
+        fields: [
+          createCastingFilterableField(createTextFilterable(objectTitleField)),
+          createCastingFilterableField(
+              createSelectionFilterable(objectYearField)),
+        ],
+        filterWidgets: filterWidgets,
+      ),
+    ),
+  );
+}
+
 Widget createFilterableTableScaffold() {
   final controller = createController();
-  final filtersKey = UniqueKey();
-  final scaffold = FiltersScaffold(
-    key: filtersKey,
-    filterable: controller,
-    fields: [
-      createCastingFilterableField(createTextFilterable(objectTitleField)),
-      createCastingFilterableField(createSelectionFilterable(objectYearField))
-    ],
-  );
+  final filterWidgets = <int, FilterWidgetCreator>{};
 
   return Builder(builder: (context) {
     return Scaffold(
@@ -72,16 +85,23 @@ Widget createFilterableTableScaffold() {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.filter_list),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => scaffold),
-              );
-            },
+            onPressed: () => moveToFilters(context, controller, filterWidgets),
           )
         ],
       ),
       body: UpdatingTable(controller: controller),
     );
   });
+}
+
+Widget createFilterableTableScaffold2() {
+  return FilterableTable(
+    objects: myObjectsStream(),
+    textFields: [objectTitleField],
+    otherFilterables: [
+      createCastingFilterableField(createSelectionFilterable(objectYearField))
+    ],
+    shownFields: [objectYearField.name],
+    onClick: null,
+  );
 }

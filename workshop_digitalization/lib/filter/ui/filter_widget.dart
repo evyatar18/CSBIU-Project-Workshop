@@ -119,6 +119,11 @@ Widget textFilterBuilder(
 
 Widget selectionFilterBuilder<T>(
     Map<T, String> values, T initialValue, void Function(T) onChange) {
+
+  if (values.length == 0) {
+    return SelectionFilter(initialValue: null, values: values);
+  }
+
   return SelectionFilter(
     initialValue: initialValue ?? values.keys.first,
     values: values,

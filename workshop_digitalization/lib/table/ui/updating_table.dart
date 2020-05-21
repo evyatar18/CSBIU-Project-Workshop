@@ -36,14 +36,19 @@ class UpdatingTable<T> extends StatelessWidget {
       js,
       paginationRowCount: 25,
       tableHeaderBuilder: (String header) {
+        bool isOrderedBy = orderColumn != null && header == orderColumn;
         return JsonTableHeader(
           header: header,
-          isOrderedBy: orderColumn != null && header == orderColumn,
+          isOrderedBy: isOrderedBy,
           ascending: ascending,
+          onClick: () {
+            controller.orderBy(header, isOrderedBy ? !ascending : true);
+          },
         );
       },
       showColumnToggle: true,
-      onRowSelect: onClick == null ? null : (index, map) => onClick(jsons[index].object),
+      onRowSelect:
+          onClick == null ? null : (index, map) => onClick(jsons[index].object),
     );
   }
 

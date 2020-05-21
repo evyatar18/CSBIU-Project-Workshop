@@ -31,6 +31,10 @@ class BasicTableDataController<T> implements TableDataController<T> {
   final _controller = BehaviorSubject<TableData<T>>();
 
   void _dataListener(List<T> data) {
+    if (data == null) {
+      return;
+    }
+
     final sortCol = sortColumn;
     final asc = ascending;
     final comparatorFactor = asc ? 1 : -1;
