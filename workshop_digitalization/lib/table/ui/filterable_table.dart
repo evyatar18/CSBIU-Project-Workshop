@@ -99,8 +99,7 @@ class _FilterableTableState<Object> extends State<FilterableTable> {
   Widget build(BuildContext context) {
     _subscription ??= _stream.connect();
 
-    final shownFields =
-        List<Row>.generate(staticFilters.length, (index) {
+    final shownFields = List<Row>.generate(staticFilters.length, (index) {
       final field = staticFilters[index];
       final id = staticFiltersIds[index];
 
@@ -122,7 +121,24 @@ class _FilterableTableState<Object> extends State<FilterableTable> {
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
-          ...shownFields,
+          ...List<Row>.generate(staticFilters.length, (index) {
+            final field = staticFilters[index];
+            final id = staticFiltersIds[index];
+
+            return Row(
+              children: <Widget>[
+                Text("${field.field.name}"),
+                SizedBox(width: 10),
+                DisplayedFieldFilter(
+                  field: field,
+                  filterId: id,
+                  filterable: _controller,
+                  showFieldName: false,
+                  showFilterChoice: false,
+                )
+              ],
+            );
+          }),
           IconButton(
             icon: Icon(Icons.filter_list),
             onPressed: () =>

@@ -20,6 +20,8 @@ class ObjectField<Object, Type> {
 }
 
 abstract class Filterable<T> {
+  static final ObjectFilter acceptingAll = (obj, json) => true;
+
   ValueStream<List<T>> get unfilteredValues;
 
   int filterWith(ObjectFilter<T> filter);

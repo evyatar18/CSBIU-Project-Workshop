@@ -72,6 +72,15 @@ class UpdatingTable<T> extends StatelessWidget {
             .map((e) => _JsonableType<T>(e, snapshot.data.jsoner))
             .toList();
 
+        if (jsonables.isEmpty) {
+          return Container(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            child: Text(
+              "No available data. Either no data in collection or all data was filtered.",
+            ),
+          );
+        }
+
         return tableData.sorted
             ? _buildTable(jsonables, tableData.sortColumn, tableData.ascending)
             : _buildTable(jsonables);

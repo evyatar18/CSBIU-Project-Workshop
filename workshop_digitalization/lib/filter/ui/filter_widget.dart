@@ -60,8 +60,8 @@ class _SelectionFilterState extends State<SelectionFilter> {
   dynamic _value;
   @override
   void initState() {
-    super.initState();
     _value = widget.initialValue;
+    super.initState();
   }
 
   void _onChanged(dynamic value) {
@@ -89,6 +89,7 @@ class _SelectionFilterState extends State<SelectionFilter> {
   Widget build(BuildContext context) {
     final buttons =
         widget.values.entries.map((e) => _build(e.key, e.value)).toList();
+
     return DropdownButton(
       value: _value,
       items: buttons,
@@ -120,8 +121,8 @@ Widget textFilterBuilder(
 Widget selectionFilterBuilder<T>(
     Map<T, String> values, T initialValue, void Function(T) onChange) {
 
-  if (values.length == 0) {
-    return SelectionFilter(initialValue: null, values: values);
+  if (values == null || values.length == 0) {
+    return SelectionFilter(initialValue: null, values: Map.fromEntries([]).cast<dynamic, String>());
   }
 
   return SelectionFilter(

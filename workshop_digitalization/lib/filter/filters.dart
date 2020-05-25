@@ -34,7 +34,7 @@ Map<String, FilterCreator<String, String>> textFilters = {
   "contains": stringContains,
   "starts-with": startsWith,
   "ends-with": endsWith,
-  "matches": matches
+  "regex": matches
 };
 
 Map<String, FilterCreator> selectionFilters = {

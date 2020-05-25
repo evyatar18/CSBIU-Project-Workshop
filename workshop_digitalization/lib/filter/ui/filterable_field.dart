@@ -33,22 +33,52 @@ FilterableField<Object, String, String> createTextFilterable<Object>(
 
 FilterableField<Object, T, T> createSelectionFilterable<Object, T>(
     ObjectField<Object, T> field) {
+  final emptyChoice = null;
+
+  final withEmptyChoice = Map.of(selectionFilters)
+      .map<String, bool Function(dynamic) Function(dynamic)>(
+          (key, value) => MapEntry(key, (filterValue) {
+                if (filterValue == emptyChoice) {
+                  return (val) => Filterable.acceptingAll(val, null);
+                }
+
+                return value(filterValue as T);
+              }));
+
   return FilterableField<Object, T, T>(
     field: field,
-    filterCreators: selectionFilters,
-    filterBuilder: selectionFilterBuilder,
+    filterCreators: withEmptyChoice,
+    filterBuilder: (values, initialValue, onChange) {
+      values = Map.fromEntries([
+        MapEntry(emptyChoice, "any"),
+        if (values != null) ...values.entries
+      ]);
+
+      return selectionFilterBuilder(values, initialValue, onChange);
+    },
   );
 }
 
-FilterableField createCastingFilterableField<Object, T, FilterInputType>(FilterableField<Object, T, FilterInputType> field) {
+FilterableField createCastingFilterableField<Object, T, FilterInputType>(
+    FilterableField<Object, T, FilterInputType> field) {
   return FilterableField(
-    field: ObjectField(name: field.field.name, getter: (obj) => field.field.getter(obj as Object), stringer: (val) => field.field.stringer(val as T)),
-    filterCreators: field.filterCreators.map((key, value) => MapEntry(key, (x) {
-      final func = value(x as FilterInputType);
-      return (val) => func(val as T);
-    })),
+    field: ObjectField(
+      name: field.field.name,
+      getter: (obj) => field.field.getter(obj as Object),
+      stringer: (val) => field.field.stringer(val as T),
+    ),
+    filterCreators: field.filterCreators.map(
+      (key, value) => MapEntry(key, (x) {
+        final func = value(x as FilterInputType);
+        return (val) => func(val as T);
+      }),
+    ),
     filterBuilder: (values, initialValue, onChange) {
-      return field.filterBuilder(values.cast<T, String>(), initialValue as T, onChange);
+      return field.filterBuilder(
+        values.cast<T, String>(),
+        initialValue as T,
+        onChange,
+      );
     },
   );
 }

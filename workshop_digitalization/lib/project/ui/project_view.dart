@@ -1,12 +1,15 @@
+import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
 import 'package:workshop_digitalization/global/json/jsonable_details.dart';
 import 'package:workshop_digitalization/global/ui/tab_title.dart';
-import 'package:workshop_digitalization/memos/memo.dart';
+import 'package:workshop_digitalization/memos/firebase_memo.dart';
 import 'package:workshop_digitalization/memos/ui/memos_list.dart';
 import 'package:workshop_digitalization/project/ui/project_form_warper.dart';
 
 import '../project.dart';
-import 'project_form.dart';
+
+final dummy_memos =
+    FirebaseMemoManager(Flamingo.instance.rootReference.collection("memos"));
 
 class ProjectDetailsView extends StatelessWidget implements JsonableDetails {
   final Project project;
@@ -25,18 +28,17 @@ class ProjectDetailsView extends StatelessWidget implements JsonableDetails {
               tabs: [
                 Tab(child: TabName(title: 'Project Details')),
                 Tab(child: TabName(title: 'Memos')),
-                Tab(child: TabName(title: 'Documents')),
-                Tab(child: TabName(title: 'Students'))
+                // Tab(child: TabName(title: 'Documents')),
+                // Tab(child: TabName(title: 'Students'))
               ],
             ),
           ),
           body: TabBarView(
             children: [
               ProjectFormWarper(project: this.project),
-              MemosListView(
-                  ),
+              // MemoScaffold(memoManager: dummy_memos),
               Icon(Icons.directions_bike),
-              Icon(Icons.directions_bike),
+              Icon(Icons.ac_unit),
             ],
           ),
         ),
