@@ -1,10 +1,11 @@
-import 'package:workshop_digitalization/global/json/jsonable.dart';
+import 'package:workshop_digitalization/global/identified_type.dart';
 import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/person/person.dart';
+import 'package:workshop_digitalization/student/student.dart';
 
 enum ProjectStatus { NEW, CONTINUE }
 
-abstract class Project implements Jsonable {
+abstract class Project implements StringIdentified {
   String initiatorFirstName;
   String initiatorLastName;
 
@@ -33,4 +34,7 @@ abstract class Project implements Jsonable {
 
   DateTime get lastUpdate;
   DateTime get loadDate;
+
+  List<String> studentIds;
+  List<Student> get students;
 }

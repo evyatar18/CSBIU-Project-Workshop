@@ -39,6 +39,7 @@ class StudentDetails extends StatelessWidget implements JsonableDetails {
                 Tab(child: TabName(title: 'Memos')),
                 Tab(child: TabName(title: 'Documents')),
                 Tab(child: TabName(title: 'Project')),
+
               ],
             ),
           ),
