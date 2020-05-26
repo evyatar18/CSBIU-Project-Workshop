@@ -190,7 +190,7 @@ class MemoViewState extends State<MemoView> {
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: appBarSection(),
-        body: Card(
+        body: SingleChildScrollView(child:Card(
           child: Column(
             children: <Widget>[
               dates(),
@@ -206,6 +206,8 @@ class MemoViewState extends State<MemoView> {
             ],
           ),
         ),
+         ),
+        
         resizeToAvoidBottomPadding: false,
       ),
     );

@@ -19,7 +19,7 @@ class StudentDetails extends StatelessWidget implements JsonableDetails {
 
     return MaterialApp(
       home: DefaultTabController(
-        length: 3,
+        length: 4,
         child: Scaffold(
           appBar: AppBar(
             title: Text("${student.firstName} ${student.lastName}"),
