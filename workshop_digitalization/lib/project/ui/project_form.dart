@@ -153,6 +153,14 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
               decoration: InputDecoration(labelText: "Load Date"),
               valueTransformer: (value) => _dateFormat.parse(value),
             ),
+            FormBuilderTextField(
+              attribute: 'skills',
+              decoration: InputDecoration(labelText: "Skills needed for the project"),
+            ),
+            FormBuilderTextField(
+              attribute: 'comments',
+              decoration: InputDecoration(labelText: "Comments"),
+            ),
           ],
         ),
       ),

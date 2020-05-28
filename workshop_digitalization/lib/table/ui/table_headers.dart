@@ -22,7 +22,7 @@ class JsonTableHeader extends StatelessWidget {
       child: Text(
         header,
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.headline4.copyWith(
+        style: Theme.of(context).textTheme.headline.copyWith(
               fontWeight: FontWeight.w700,
               fontSize: 14.0,
               color: Colors.black87,

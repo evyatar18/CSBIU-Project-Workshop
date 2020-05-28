@@ -2,10 +2,11 @@ import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/person/firebase_person.dart';
 import 'package:workshop_digitalization/person/person.dart';
 import 'package:workshop_digitalization/project/project.dart';
+import 'package:workshop_digitalization/student/student.dart';
 
 class DummyProject implements Project {
   @override
-  Memo comments;
+  String comments;
 
   @override
   Person contact = FirebasePerson();
@@ -47,7 +48,7 @@ class DummyProject implements Project {
   String projectSubject;
 
   @override
-  Memo skills;
+  String skills;
 
   @override
   // TODO: implement lastUpdate
@@ -62,5 +63,16 @@ class DummyProject implements Project {
     // TODO: implement toJson
     return null;
   }
+
+  @override
+  List<String> studentIds;
+
+  @override
+  // TODO: implement id
+  String get id => null;
+
+  @override
+  // TODO: implement students
+  List<Student> get students => null;
   
 }

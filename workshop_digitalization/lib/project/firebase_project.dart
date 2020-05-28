@@ -3,10 +3,11 @@ import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/person/person.dart';
 import 'package:workshop_digitalization/person/firebase_person.dart';
 import 'package:workshop_digitalization/project/project.dart';
+import 'package:workshop_digitalization/student/student.dart';
 
 class FirebaseProject extends Document<FirebaseProject> implements Project {
   @override
-  Memo comments;
+  String comments;
 
   FirebasePerson _contact;
   @override
@@ -57,7 +58,7 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
   String projectSubject;
 
   @override
-  Memo skills;
+  String skills;
 
   @override
   int numberOfStudents;
@@ -103,7 +104,7 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
 
   /// Data for load
   void fromData(Map<String, dynamic> data) {
-    comments = valueFromKey<Memo>(data, 'comments');
+    comments = valueFromKey<String>(data, 'comments');
     contact = FirebasePerson(
         values: valueMapFromKey<String, dynamic>(data, 'contact'));
     endDate = valueFromKey<Timestamp>(data, 'endDate').toDate();
@@ -119,7 +120,7 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
     projectStatus =
         ProjectStatus.values[valueFromKey<int>(data, 'projectStatus')];
     projectSubject = valueFromKey<String>(data, 'projectSubject');
-    skills = valueFromKey<Memo>(data, 'skills');
+    skills = valueFromKey<String>(data, 'skills');
     numberOfStudents = valueFromKey<int>(data, 'numberOfStudents');
     mentorTechAbility = valueFromKey<String>(data, 'mentorTechAbility');
   }
@@ -128,4 +129,11 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
   Map<String, dynamic> toJson() {
     return toData();
   }
+
+  @override
+  List<String> studentIds;
+
+  @override
+  // TODO: implement students
+  List<Student> get students => null;
 }

@@ -19,7 +19,7 @@ abstract class Project implements StringIdentified {
 
   int numberOfStudents;
 
-  Memo skills;
+  String skills;
 
   Person mentor;
 
@@ -30,7 +30,7 @@ abstract class Project implements StringIdentified {
 
   String mentorTechAbility;
 
-  Memo comments;
+  String comments;
 
   DateTime get lastUpdate;
   DateTime get loadDate;

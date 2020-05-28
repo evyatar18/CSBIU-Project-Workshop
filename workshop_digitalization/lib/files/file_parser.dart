@@ -32,18 +32,7 @@ class CsvFileParser implements FileParser {
     if (fieldOrder.length != row.length) throw ("");
 
     for (var i = 0; i < row.length; i++) {
-      final path = fieldOrder[i].split('.');
-      Map<String, dynamic> current = json;
-
-      for (int j = 0; j < path.length - 1; ++j) {
-        final subPath = path[j];
-        if (!current.containsKey(subPath)) {
-          current[subPath] = Map<String, dynamic>();
-        }
-        current = current[subPath];
-      }
-
-      current[path[path.length - 1]] = row[i];
+      json[fieldOrder[i]] = row[i];
     }
     return json;
   }

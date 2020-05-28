@@ -1,16 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
-import 'package:workshop_digitalization/person/firebase_person.dart';
-import 'package:workshop_digitalization/person/person.dart';
-import 'package:workshop_digitalization/project/dummy_project.dart';
-import 'package:workshop_digitalization/project/firebase_project.dart';
-import 'package:workshop_digitalization/project/project.dart';
-import 'package:workshop_digitalization/project/ui/project_form.dart';
-import 'package:workshop_digitalization/project/ui/project_form_warper.dart';
-import 'package:workshop_digitalization/project/ui/project_view.dart';
+
+import 'package:workshop_digitalization/student/dummy_student.dart';
 import 'package:workshop_digitalization/student/firebase_student.dart';
+import 'package:workshop_digitalization/student/student.dart';
 import 'package:workshop_digitalization/student/ui/student_view.dart';
+import 'package:workshop_digitalization/table/ui/student_filterable_table.dart';
 
 import 'files/firebase.dart';
 import 'files/ui/file_view.dart';
@@ -45,6 +41,19 @@ void saveMemo() async {
   await stud.memos.save(m);
 }
 
+Stream<List<Student>> getStudents() async* {
+  final items =  new List<Student>.generate(20, (i){
+    return new DummyStudent();
+  });
+   while (true) {
+    await Future.delayed(Duration(seconds: 5));
+
+    // print(items.map((e) => "title: ${e.title}, year: ${e.year}").join(", "));
+
+    yield items;
+  }
+}
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -53,7 +62,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       home: Scaffold(
-        body: ProjectDetailsView(project: DummyProject()),
+        body: createFilterableTableScaffold3(getStudents()),
 
       )
     );
