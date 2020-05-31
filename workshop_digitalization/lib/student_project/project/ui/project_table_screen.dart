@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:workshop_digitalization/global/json/jsonable.dart';
 import 'package:workshop_digitalization/global/json/jsonable_details.dart';
-import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/person/person.dart';
 import 'package:workshop_digitalization/table/ui/table.dart';
+import 'package:workshop_digitalization/student/student.dart';
+import 'package:workshop_digitalization/student/ui/new_student_view.dart';
 
 import '../../student/ui/new_student_view.dart';
 import '../project.dart';
@@ -25,12 +26,12 @@ class ProjectTableScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Center(
-        child: new JsonDataTable(
-          jsonableObjects: projects,
-          factory: ProjectDetailsFactory(),
-        ),
-      ),
+      // body: Center(
+      //   child: new JsonDataTable(
+      //     jsonableObjects: projects,
+      //     factory: ProjectDetailsFactory(),
+      //   ),
+      // ),
     );
   }
 }
@@ -45,7 +46,7 @@ class ProjectDetailsFactory implements JsonableDetailsFactory {
 
 class Proj implements Project {
   @override
-  Memo comments;
+  String comments;
 
   @override
   Person contact;
@@ -87,7 +88,7 @@ class Proj implements Project {
   String projectSubject;
 
   @override
-  Memo skills;
+  String skills;
   Proj({
     this.comments,
     this.contact,
@@ -121,4 +122,15 @@ class Proj implements Project {
   @override
   // TODO: implement loadDate
   DateTime get loadDate => null;
+
+  @override
+  List<String> studentIds;
+
+  @override
+  // TODO: implement id
+  String get id => null;
+
+  @override
+  // TODO: implement students
+  List<Student> get students => null;
 }

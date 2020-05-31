@@ -5,10 +5,12 @@ import 'package:workshop_digitalization/person/person.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
 
 import 'project.dart';
+import 'package:workshop_digitalization/project/project.dart';
+import 'package:workshop_digitalization/student/student.dart';
 
 class DummyProject implements Project {
   @override
-  Memo comments;
+  String comments;
 
   @override
   Person contact = FirebasePerson();
@@ -50,7 +52,7 @@ class DummyProject implements Project {
   String projectSubject;
 
   @override
-  Memo skills;
+  String skills;
 
   @override
   // TODO: implement lastUpdate
@@ -84,5 +86,12 @@ class DummyProject implements Project {
   @override
   // TODO: implement students
   Future<List<Student>> get students => throw UnimplementedError();
+
+  // TODO: implement id
+  String get id => null;
+
+  @override
+  // TODO: implement students
+  List<Student> get students => null;
 
 }

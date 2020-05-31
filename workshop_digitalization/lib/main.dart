@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:workshop_digitalization/student_project/student/firebase_student.dart';
 import 'package:workshop_digitalization/student_project/student/ui/student_view.dart';
 
+import 'package:workshop_digitalization/student/dummy_student.dart';
+import 'package:workshop_digitalization/student/firebase_student.dart';
+import 'package:workshop_digitalization/student/student.dart';
+import 'package:workshop_digitalization/student/ui/student_view.dart';
+import 'package:workshop_digitalization/table/ui/student_filterable_table.dart';
+
 import 'files/firebase.dart';
 import 'files/ui/file_view.dart';
-import 'filter/test/basic_filterable.dart';
 import 'global/ui/disposer.dart';
 import 'memos/memo.dart';
 import 'progress/progress.dart';
@@ -38,6 +43,19 @@ void saveMemo() async {
   await stud.memos.save(m);
 }
 
+Stream<List<Student>> getStudents() async* {
+  final items =  new List<Student>.generate(20, (i){
+    return new DummyStudent();
+  });
+   while (true) {
+    await Future.delayed(Duration(seconds: 5));
+
+    // print(items.map((e) => "title: ${e.title}, year: ${e.year}").join(", "));
+
+    yield items;
+  }
+}
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -45,11 +63,10 @@ class MyApp extends StatelessWidget {
       title: 'Workshop Digitalization',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: createFilterableTableScaffold2(),
-      // home: Scaffold(
-      //   body: ProjectDetailsView(project: DummyProject()),
-      // )
-      // home: student(),
+      home: Scaffold(
+        body: createFilterableTableScaffold3(getStudents()),
+
+      )
     );
   }
 }
@@ -119,29 +136,6 @@ Widget student() {
 
   return StudentDetails(student: stud);
 }
-
-// Widget filter() {
-//   return Scaffold(
-//       body: Column(
-//     children: <Widget>[
-//       TextFilter(
-//         initialValue: "hii",
-//         onChange: (value) {
-//           print(value);
-//           return "";
-//         },
-//       ),
-//       SelectionFilter(
-//         initialValue: 12,
-//         values: {12: "12!!!!", 13: "13!!!", 1123: "1123!!!!!!!!!!"},
-//         onChange: (value) {
-//           print(value);
-//           return "";
-//         },
-//       )
-//     ],
-//   ));
-// }
 
 // class MyApps extends StatefulWidget {
 //   @override

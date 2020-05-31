@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:workshop_digitalization/bloc/table_bloc.dart';
 import 'package:workshop_digitalization/global/json/jsonable.dart';
 import 'package:workshop_digitalization/global/json/jsonable_details.dart';
 import 'package:workshop_digitalization/student/student.dart';

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
+import 'package:workshop_digitalization/global/ui/expandable_item.dart';
 import 'package:workshop_digitalization/person/ui/preson_form.dart';
 
 import '../project.dart';
@@ -10,11 +11,21 @@ class ProjectDetailsForm extends StatefulWidget {
   final Project project;
   final bool canRead ;
   final GlobalKey<FormBuilderState> fbKey ;
+  final GlobalKey<FormBuilderState> mentorKey = GlobalKey<FormBuilderState>();
+  final GlobalKey<FormBuilderState> contantKey = GlobalKey<FormBuilderState>();
+
   ProjectDetailsForm({
     this.project,
     this.canRead,
     this.fbKey,
   });
+
+  void reset(){
+    fbKey.currentState.reset();
+    mentorKey.currentState.reset();
+    contantKey.currentState.reset();
+  }
+
   @override
   State<StatefulWidget> createState() {
     return ProjectDetailsFormState();
@@ -32,7 +43,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
       headerValue: 'Mentor',
       inner: Card(
         child: PersonForm(
-          fbKey: GlobalKey<FormBuilderState>(),
+          fbKey: widget.mentorKey,
           canRead: widget.canRead,
           person: widget.project.mentor,
         ),
@@ -42,7 +53,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
       headerValue: 'Contant',
       inner: Card(
         child: PersonForm(
-          fbKey: GlobalKey<FormBuilderState>(),
+          fbKey: widget.contantKey,
           canRead: widget.canRead,
           person: widget.project.contact,
         ),
@@ -142,6 +153,14 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
               decoration: InputDecoration(labelText: "Load Date"),
               valueTransformer: (value) => _dateFormat.parse(value),
             ),
+            FormBuilderTextField(
+              attribute: 'skills',
+              decoration: InputDecoration(labelText: "Skills needed for the project"),
+            ),
+            FormBuilderTextField(
+              attribute: 'comments',
+              decoration: InputDecoration(labelText: "Comments"),
+            ),
           ],
         ),
       ),
@@ -169,13 +188,4 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
   }
 }
 
-class ExapndableItem {
-  Widget inner;
-  String headerValue;
-  bool isExpanded;
-  ExapndableItem({
-    this.inner,
-    this.headerValue,
-    this.isExpanded = false,
-  });
-}
+
