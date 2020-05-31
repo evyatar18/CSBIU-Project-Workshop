@@ -1,7 +1,10 @@
+import 'package:workshop_digitalization/files/container.dart';
 import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/person/firebase_person.dart';
 import 'package:workshop_digitalization/person/person.dart';
-import 'package:workshop_digitalization/project/project.dart';
+import 'package:workshop_digitalization/student_project/student/student.dart';
+
+import 'project.dart';
 
 class DummyProject implements Project {
   @override
@@ -62,5 +65,24 @@ class DummyProject implements Project {
     // TODO: implement toJson
     return null;
   }
-  
+
+  @override
+  List<String> studentIds;
+
+  @override
+  // TODO: implement files
+  FileContainer get files => throw UnimplementedError();
+
+  @override
+  // TODO: implement id
+  String get id => throw UnimplementedError();
+
+  @override
+  // TODO: implement memos
+  MemoManager<Memo> get memos => throw UnimplementedError();
+
+  @override
+  // TODO: implement students
+  Future<List<Student>> get students => throw UnimplementedError();
+
 }

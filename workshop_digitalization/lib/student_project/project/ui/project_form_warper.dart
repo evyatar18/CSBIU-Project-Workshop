@@ -1,10 +1,9 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:workshop_digitalization/project/project.dart';
-import 'package:workshop_digitalization/student/student.dart';
 
 import 'project_form.dart';
+import '../project.dart';
 
 class ProjectFormWarper extends StatefulWidget {
   final Project project;

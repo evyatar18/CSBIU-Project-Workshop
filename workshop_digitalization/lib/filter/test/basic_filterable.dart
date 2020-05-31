@@ -102,6 +102,6 @@ Widget createFilterableTableScaffold2() {
       createCastingFilterableField(createSelectionFilterable(objectYearField))
     ],
     shownFields: [objectYearField.name],
-    onClick: null,
+    onClick: (context, obj) => print("${obj.title}, ${obj.year}"),
   );
 }

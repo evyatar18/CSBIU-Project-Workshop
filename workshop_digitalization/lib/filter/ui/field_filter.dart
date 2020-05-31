@@ -45,7 +45,11 @@ class _DisplayedFieldFilterState<Object, FilterType, InputType>
 
     final initialFilter =
         widget.initialFilter ?? widget.field.filterCreators.keys.first;
-    _changeFilter(initialFilter, initialValue: widget.initialValue);
+    _changeFilter(initialFilter);
+
+    if (widget.initialValue != null) {
+      _changeFilterValue(widget.initialValue);
+    }
   }
 
   void _onChange() {
@@ -65,11 +69,10 @@ class _DisplayedFieldFilterState<Object, FilterType, InputType>
     _onChange();
   }
 
-  void _changeFilter(String filterName, {InputType initialValue}) {
+  void _changeFilter(String filterName) {
     setState(() {
       // when changing filter, reset the filter(it accepts any object)
-      widget.filterable.setFilter(widget.filterId, (obj, json) => true);
-      _currentValue = initialValue;
+      widget.filterable.setFilter(widget.filterId, Filterable.acceptingAll);
       _currentFilter = filterName;
     });
 

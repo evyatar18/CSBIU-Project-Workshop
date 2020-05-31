@@ -3,9 +3,9 @@ import 'package:workshop_digitalization/global/json/jsonable.dart';
 import 'package:workshop_digitalization/global/json/jsonable_details.dart';
 import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/person/person.dart';
-import 'package:workshop_digitalization/student/ui/new_student_view.dart';
 import 'package:workshop_digitalization/table/ui/table.dart';
 
+import '../../student/ui/new_student_view.dart';
 import '../project.dart';
 
 class ProjectTableScreen extends StatelessWidget {

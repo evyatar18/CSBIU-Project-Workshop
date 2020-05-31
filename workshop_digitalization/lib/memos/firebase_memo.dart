@@ -52,7 +52,7 @@ class FirebaseMemo extends Document<FirebaseMemo> implements Memo, Disposable {
     // default container is FirebaseFileContainer, load lazily
     // THIS IS VERY IMPORTANT
     // since we use the FirebaseMemo instance when we view memos of an object
-    // but there's no need to load all the files when we just view a memo
+    // but there's no need to load all the files data when we just view the preview of the memo
     return _container = FBFileContainer(
         super.reference.collection(Definitions.filesCollection));
   }

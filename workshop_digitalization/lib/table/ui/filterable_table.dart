@@ -95,50 +95,34 @@ class _FilterableTableState<Object> extends State<FilterableTable> {
     );
   }
 
+  Row _buildFilter(int index) {
+    final field = staticFilters[index];
+    final id = staticFiltersIds[index];
+
+    return Row(
+      children: <Widget>[
+        Text("${field.field.name}"),
+        SizedBox(width: 10),
+        DisplayedFieldFilter(
+          field: field,
+          filterId: id,
+          filterable: _controller,
+          showFieldName: false,
+          showFilterChoice: false,
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // initialize subscription if needed
     _subscription ??= _stream.connect();
-
-    final shownFields = List<Row>.generate(staticFilters.length, (index) {
-      final field = staticFilters[index];
-      final id = staticFiltersIds[index];
-
-      return Row(
-        children: <Widget>[
-          Text("${field.field.name}"),
-          SizedBox(width: 10),
-          DisplayedFieldFilter(
-            field: field,
-            filterId: id,
-            filterable: _controller,
-            showFieldName: false,
-            showFilterChoice: false,
-          )
-        ],
-      );
-    });
 
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
-          ...List<Row>.generate(staticFilters.length, (index) {
-            final field = staticFilters[index];
-            final id = staticFiltersIds[index];
-
-            return Row(
-              children: <Widget>[
-                Text("${field.field.name}"),
-                SizedBox(width: 10),
-                DisplayedFieldFilter(
-                  field: field,
-                  filterId: id,
-                  filterable: _controller,
-                  showFieldName: false,
-                  showFilterChoice: false,
-                )
-              ],
-            );
-          }),
+          ...List<Row>.generate(staticFilters.length, _buildFilter),
           IconButton(
             icon: Icon(Icons.filter_list),
             onPressed: () =>

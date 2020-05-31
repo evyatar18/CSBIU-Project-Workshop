@@ -22,7 +22,10 @@ class UpdatingTable<T> extends StatelessWidget {
   final TableDataController<T> controller;
   final void Function(T) onClick;
 
-  UpdatingTable({@required this.controller, this.onClick});
+  UpdatingTable({
+    @required this.controller,
+    this.onClick,
+  });
 
   Widget _buildTable(List<_JsonableType<T>> jsons,
       [String orderColumn, bool ascending = false]) {
@@ -59,7 +62,6 @@ class UpdatingTable<T> extends StatelessWidget {
       initialData: controller.data.value,
       stream: controller.data,
       builder: (context, snapshot) {
-        print("data: ${(snapshot.data == null)}");
         if (!snapshot.hasData || snapshot.data == null) {
           return Center(
             child: SpinKitChasingDots(

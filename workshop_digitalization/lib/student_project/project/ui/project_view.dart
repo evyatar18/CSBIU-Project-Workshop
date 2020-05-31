@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:workshop_digitalization/global/json/jsonable_details.dart';
 import 'package:workshop_digitalization/global/ui/tab_title.dart';
 import 'package:workshop_digitalization/memos/firebase_memo.dart';
-import 'package:workshop_digitalization/memos/ui/memos_list.dart';
-import 'package:workshop_digitalization/project/ui/project_form_warper.dart';
 
+import 'project_form_warper.dart';
 import '../project.dart';
 
 final dummy_memos =

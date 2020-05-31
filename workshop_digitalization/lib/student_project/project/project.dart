@@ -1,7 +1,9 @@
+import 'package:workshop_digitalization/files/container.dart';
+import 'package:workshop_digitalization/global/disposable.dart';
 import 'package:workshop_digitalization/global/identified_type.dart';
 import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/person/person.dart';
-import 'package:workshop_digitalization/student/student.dart';
+import 'package:workshop_digitalization/student_project/student/student.dart';
 
 enum ProjectStatus { NEW, CONTINUE }
 
@@ -36,5 +38,20 @@ abstract class Project implements StringIdentified {
   DateTime get loadDate;
 
   List<String> studentIds;
-  List<Student> get students;
+  Future<List<Student>> get students;
+
+  FileContainer get files;
+  MemoManager get memos;
+}
+
+abstract class ProjectManager<ProjectType extends Project> implements Disposable {
+
+  Stream<List<ProjectType>> get projects;
+  List<ProjectType> get latestProjects;
+
+  ProjectType getProject(String id);
+
+  Future<ProjectType> createEmpty();
+  Future<void> save(ProjectType project);
+  Future<void> delete(ProjectType project);
 }

@@ -3,7 +3,8 @@ import 'package:workshop_digitalization/global/disposable.dart';
 import 'package:workshop_digitalization/global/identified_type.dart';
 import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/progress/progress.dart';
-import 'package:workshop_digitalization/project/project.dart';
+
+import '../project/project.dart';
 
 enum StudentStatus { SEARCHING, WORKING, FINISHED, IRRELEVANT }
 
@@ -27,8 +28,7 @@ abstract class Student implements StringIdentified {
 
   MemoManager get memos;
 
-  Project get project;
-  void setProject(String projectId);
+  Future<Project> get project;
 }
 
 abstract class StudentManager<StudentType extends Student> implements Disposable {
