@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:workshop_digitalization/student_project/student/firebase_student.dart';
 import 'package:workshop_digitalization/student_project/student/ui/student_view.dart';
 
-import 'package:workshop_digitalization/student/dummy_student.dart';
-import 'package:workshop_digitalization/student/firebase_student.dart';
-import 'package:workshop_digitalization/student/student.dart';
-import 'package:workshop_digitalization/student/ui/student_view.dart';
+import 'student_project/student/dummy_student.dart';
+import 'package:workshop_digitalization/student_project/student/student.dart';
 import 'package:workshop_digitalization/table/ui/student_filterable_table.dart';
 
 import 'files/firebase.dart';

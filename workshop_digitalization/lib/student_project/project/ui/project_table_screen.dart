@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:workshop_digitalization/files/container.dart';
 import 'package:workshop_digitalization/global/json/jsonable.dart';
 import 'package:workshop_digitalization/global/json/jsonable_details.dart';
+import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/person/person.dart';
-import 'package:workshop_digitalization/table/ui/table.dart';
-import 'package:workshop_digitalization/student/student.dart';
-import 'package:workshop_digitalization/student/ui/new_student_view.dart';
 
+import '../../student/student.dart';
 import '../../student/ui/new_student_view.dart';
 import '../project.dart';
 
@@ -131,6 +131,14 @@ class Proj implements Project {
   String get id => null;
 
   @override
+  // TODO: implement files
+  FileContainer get files => throw UnimplementedError();
+
+  @override
+  // TODO: implement memos
+  MemoManager<Memo> get memos => throw UnimplementedError();
+
+  @override
   // TODO: implement students
-  List<Student> get students => null;
+  Future<List<Student>> get students => throw UnimplementedError();
 }

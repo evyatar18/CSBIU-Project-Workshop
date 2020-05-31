@@ -5,8 +5,7 @@ import 'package:workshop_digitalization/person/person.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
 
 import 'project.dart';
-import 'package:workshop_digitalization/project/project.dart';
-import 'package:workshop_digitalization/student/student.dart';
+import '../student/student.dart';
 
 class DummyProject implements Project {
   @override
@@ -86,12 +85,4 @@ class DummyProject implements Project {
   @override
   // TODO: implement students
   Future<List<Student>> get students => throw UnimplementedError();
-
-  // TODO: implement id
-  String get id => null;
-
-  @override
-  // TODO: implement students
-  List<Student> get students => null;
-
 }

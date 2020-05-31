@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:workshop_digitalization/global/json/jsonable.dart';
 import 'package:workshop_digitalization/global/json/jsonable_details.dart';
-import 'package:workshop_digitalization/student/student.dart';
-import 'package:workshop_digitalization/student/ui/new_student_view.dart';
-import 'package:workshop_digitalization/student/ui/student_view.dart';
 import 'package:workshop_digitalization/table/ui/table.dart';
+
+import 'new_student_view.dart';
+import 'student_view.dart';
+import '../student.dart';
 
 class TableScreen extends StatefulWidget {
   @override

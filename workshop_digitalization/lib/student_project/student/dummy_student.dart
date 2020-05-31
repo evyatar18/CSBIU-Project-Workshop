@@ -4,8 +4,8 @@ import 'dart:math';
 import 'package:workshop_digitalization/files/container.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/memos/memo.dart';
-import 'package:workshop_digitalization/project/project.dart';
-import 'package:workshop_digitalization/student/student.dart';
+import 'package:workshop_digitalization/student_project/project/project.dart';
+import 'package:workshop_digitalization/student_project/student/student.dart';
 
 class DummyStudent implements Student {
   @override
@@ -51,11 +51,11 @@ class DummyStudent implements Student {
 
   @override
   // TODO: implement project
-  Project get project => null;
+  Future<Project> get project => null;
 
   @override
   void setProject(String projectId) {
     // TODO: implement setProject
   }
-  
+
 }
