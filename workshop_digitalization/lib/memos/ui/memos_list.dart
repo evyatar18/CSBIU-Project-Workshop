@@ -43,8 +43,6 @@ class MemosListView extends StatefulWidget {
 }
 
 class _MemosListViewState extends State<MemosListView> {
-  final _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
