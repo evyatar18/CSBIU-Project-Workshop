@@ -1,4 +1,3 @@
-
 import 'dart:math';
 
 import 'package:workshop_digitalization/files/container.dart';
@@ -12,10 +11,10 @@ class DummyStudent implements Student {
   String email = randomString(10);
 
   @override
-  String firstName= randomString(10);
+  String firstName = randomString(10);
 
   @override
-  String lastName= randomString(10);
+  String lastName = randomString(10);
 
   @override
   String personalID = randomString(10);
@@ -24,7 +23,8 @@ class DummyStudent implements Student {
   String phoneNumber = randomString(10);
   static Random _random = new Random();
   @override
-  StudentStatus status = StudentStatus.values[_random.nextInt(StudentStatus.values.length)];
+  StudentStatus status =
+      StudentStatus.values[_random.nextInt(StudentStatus.values.length)];
 
   @override
   int studyYear = _random.nextInt(2021);
@@ -57,5 +57,4 @@ class DummyStudent implements Student {
   void setProject(String projectId) {
     // TODO: implement setProject
   }
-
 }

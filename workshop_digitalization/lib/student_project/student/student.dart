@@ -7,8 +7,7 @@ import 'package:workshop_digitalization/progress/progress.dart';
 import '../project/project.dart';
 
 enum StudentStatus { SEARCHING, WORKING, FINISHED, IRRELEVANT }
-
-StudentStatus DEFAULT_STATUS = StudentStatus.SEARCHING;
+const StudentStatus DEFAULT_STATUS = StudentStatus.SEARCHING;
 
 /// student interface
 abstract class Student implements StringIdentified {

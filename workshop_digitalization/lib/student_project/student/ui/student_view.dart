@@ -1,17 +1,20 @@
-import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
 import 'package:workshop_digitalization/global/json/jsonable_details.dart';
 import 'package:workshop_digitalization/global/ui/tab_title.dart';
 import 'package:workshop_digitalization/memos/ui/memos_list.dart';
 
-import '../firebase_student.dart';
 import '../student.dart';
 import 'student_form_wrapper.dart';
 
 class StudentDetails extends StatelessWidget implements JsonableDetails {
   final Student student;
-  StudentDetails({@required this.student});
+  final StudentManager studentManager;
+
+  StudentDetails({
+    @required this.student,
+    @required this.studentManager
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +42,6 @@ class StudentDetails extends StatelessWidget implements JsonableDetails {
                 Tab(child: TabName(title: 'Memos')),
                 Tab(child: TabName(title: 'Documents')),
                 Tab(child: TabName(title: 'Project')),
-
               ],
             ),
           ),
@@ -57,22 +59,4 @@ class StudentDetails extends StatelessWidget implements JsonableDetails {
       ),
     );
   }
-}
-
-FirebaseStudent sampleStudent() {
-  return FirebaseStudent()
-    ..email = 'abc@gmail.com'
-    ..firstName = 'abab'
-    ..lastName = 'cdcd'
-    ..personalID = '1111'
-    ..phoneNumber = '054123141'
-    ..studyYear = 2019;
-}
-
-Future<FirebaseStudent> getStudent() async {
-  final coll = Document.path<FirebaseStudent>();
-  final studentSnapshot =
-      await Firestore.instance.collection(coll).limit(1).getDocuments();
-
-  return FirebaseStudent(snapshot: studentSnapshot.documents[0]);
 }

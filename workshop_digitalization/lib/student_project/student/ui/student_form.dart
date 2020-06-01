@@ -5,12 +5,12 @@ import 'package:intl/intl.dart';
 import '../student.dart';
 
 class StudentForm extends StatefulWidget {
-  Student student;
-  bool canRead = false;
-  GlobalKey<FormBuilderState> fbKey;
+  final Student student;
+  final bool canRead;
+  final GlobalKey<FormBuilderState> fbKey;
   StudentForm({
     this.student,
-    this.canRead,
+    this.canRead = false,
     this.fbKey,
   });
   @override

@@ -1,71 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:workshop_digitalization/global/json/jsonable.dart';
-import 'package:workshop_digitalization/global/json/jsonable_details.dart';
-import 'package:workshop_digitalization/table/ui/table.dart';
+import 'package:provider/provider.dart';
+import 'package:workshop_digitalization/global/strings.dart';
+import 'package:workshop_digitalization/student_project/student/ui/student_filterable_table.dart';
 
 import 'new_student_view.dart';
 import 'student_view.dart';
+
 import '../student.dart';
 
-class TableScreen extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return TableScreenState();
-  }
-}
+class StudentTableScreen<T extends Student> extends StatelessWidget {
+  final StudentManager<T> studentManager;
+  final void Function(BuildContext, Student) onStudentClick;
+  final bool showAddButton;
 
-class TableScreenState extends State<TableScreen> {
-  final FirebaseTableBloc _bloc = FirebaseTableBloc();
-  List<Student> students =
-      List<Student>.generate(100, (i) => throw "no students");
+  StudentTableScreen({
+    @required this.studentManager,
+    this.onStudentClick = _onStudentClick,
+    this.showAddButton = true,
+  });
 
-  Widget _buildTable() {
-    // return StreamBuilder(
-    //   stream: _bloc.dataStream,
-    //   builder: (context, snapshot) {
-    //     final data = snapshot.data;
+  static void _onStudentClick(BuildContext context, Student student) {
+    StudentManager sm = Provider.of<StudentManager>(context, listen: false);
 
-    //     if (data == null) {
-    //       return Center(
-    //           child: SpinKitChasingDots(
-    //               color: Theme.of(context).accentColor, size: 80.0));
-    //     }
-
-    return new JsonDataTable(
-      jsonableObjects: students,
-      factory: StudentDetailsFactry(),
-    );
-    // },
-    // );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Table'),
-          actions: <Widget>[
-            Builder(
-                builder: (context) => FlatButton(
-                    child: Icon(Icons.add),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => NewStudentScreen()));
-                    }))
-          ],
-        ),
-        body: Center(
-          child: _buildTable(),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => StudentDetails(
+          student: student,
+          studentManager: sm,
         ),
       ),
     );
   }
-}
 
-class StudentDetailsFactry implements JsonableDetailsFactory {
+  Widget _buildAddButton() {
+    return Builder(
+      builder: (context) {
+        return FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    NewStudentScreen(studentManager: studentManager),
+              ),
+            );
+          },
+          heroTag: randomString(10),
+        );
+      },
+    );
+  }
+
   @override
-  JsonableDetails create(Jsonable s) => StudentDetails(student: s);
+  Widget build(BuildContext context) {
+    return Provider<StudentManager>.value(
+      value: studentManager,
+      child: Scaffold(
+        body: createFilterableStudentsTable(studentManager.students, onStudentClick),
+        floatingActionButton: showAddButton ? _buildAddButton() : null,
+      ),
+    );
+  }
 }

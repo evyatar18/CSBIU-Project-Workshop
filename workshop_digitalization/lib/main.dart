@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:workshop_digitalization/student_project/student/firebase_student.dart';
 import 'package:workshop_digitalization/student_project/student/ui/student_view.dart';
 
+import 'student_project/firebase_managers.dart';
 import 'student_project/student/dummy_student.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
-import 'package:workshop_digitalization/table/ui/student_filterable_table.dart';
 
 import 'files/firebase.dart';
 import 'files/ui/file_view.dart';
@@ -17,6 +17,7 @@ import 'progress/progress_repo.dart';
 import 'progress/ui/multiple_progress_bars.dart';
 import 'progress/ui/progress_bar.dart';
 import 'progress/ui/progress_displayer.dart';
+import 'student_project/student/ui/student_table.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,10 +43,10 @@ void saveMemo() async {
 }
 
 Stream<List<Student>> getStudents() async* {
-  final items =  new List<Student>.generate(20, (i){
+  final items = new List<Student>.generate(20, (i) {
     return new DummyStudent();
   });
-   while (true) {
+  while (true) {
     await Future.delayed(Duration(seconds: 5));
 
     // print(items.map((e) => "title: ${e.title}, year: ${e.year}").join(", "));
@@ -61,13 +62,22 @@ class MyApp extends StatelessWidget {
       title: 'Workshop Digitalization',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: Scaffold(
-        body: createFilterableTableScaffold3(getStudents()),
-
-      )
+      home: Scaffold(body: firebaseStudentsTable()),
     );
   }
 }
+
+Widget firebaseStudentsTable() {
+  return Disposer(
+    createInFuture: () async => FirebaseManagers.instance.students,
+    builder: (context, manager) {
+      return StudentTableScreen<FirebaseStudent>(
+        studentManager: manager,
+      );
+    },
+  );
+}
+
 Widget fileContainer() {
   return Disposer(
     create: () => FBFileContainer(Firestore.instance.collection("files")),
