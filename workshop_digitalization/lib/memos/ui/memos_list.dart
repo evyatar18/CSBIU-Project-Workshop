@@ -13,13 +13,11 @@ class MemoScaffold extends StatelessWidget {
     @required this.memoManager,
   }) : _opener = _MemoOpener(memoManager);
 
-  void _openCreateMemo(BuildContext context) async {}
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _openCreateMemo(context),
+        onPressed: () => _opener.openNew(context),
         child: Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -106,7 +104,7 @@ class _MemoOpener {
   bool _opening = false;
   MemoManager manager;
 
-  _MemoOpener(MemoManager manager);
+  _MemoOpener(this.manager);
 
   final _openMutex = Mutex();
   Future<bool> _tryOpening() async {
