@@ -159,7 +159,7 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
   }
 
   Future<void> save(FirebaseStudent student) async {
-    _docAccessor.save(student);
+    _docAccessor.update(student);
   }
 
   FirebaseStudent getStudent(String id) {

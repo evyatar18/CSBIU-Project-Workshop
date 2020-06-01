@@ -9,6 +9,21 @@ import '../project/project.dart';
 enum StudentStatus { SEARCHING, WORKING, FINISHED, IRRELEVANT }
 const StudentStatus DEFAULT_STATUS = StudentStatus.SEARCHING;
 
+String studentStatusText(StudentStatus status) {
+  switch(status) {
+    case StudentStatus.SEARCHING:
+      return "searching";
+    case StudentStatus.WORKING:
+      return "working";
+    case StudentStatus.FINISHED:
+      return "finished";
+    case StudentStatus.IRRELEVANT:
+      return "irrelevant";
+  }
+
+  return null;
+}
+
 /// student interface
 abstract class Student implements StringIdentified {
   FileContainer get files;

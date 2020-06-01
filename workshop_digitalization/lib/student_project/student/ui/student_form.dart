@@ -1,27 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
+import 'package:workshop_digitalization/global/israeli_id/israeli_id.dart';
 
 import '../student.dart';
 
-class StudentForm extends StatefulWidget {
+final _dateFormat = DateFormat.yMd().add_Hms();
+String _writeDate(DateTime dt) => _dateFormat.format(dt);
+String _capitalizeWord(String s) =>
+    s[0].toUpperCase() + s.substring(1).toLowerCase();
+
+String _israeliIdValidator(dynamic candidate) {
+  if (!(candidate is String)) {
+    return "Candidate for Israeli ID must be a string.";
+  }
+
+  try {
+    israeliIDChecker(candidate);
+  } catch (e) {
+    return e.toString();
+  }
+
+  return null;
+}
+
+final _israeliIdValidators = [
+  FormBuilderValidators.numeric(),
+  _israeliIdValidator
+];
+
+class StudentForm extends StatelessWidget {
   final Student student;
   final bool canRead;
-  final GlobalKey<FormBuilderState> fbKey;
+  final GlobalKey<FormBuilderState> formBuilderKey;
+
   StudentForm({
     this.student,
     this.canRead = false,
-    this.fbKey,
+    this.formBuilderKey,
   });
-  @override
-  State<StatefulWidget> createState() {
-    return _StudentFromState();
-  }
-}
 
-final _dateFormat = DateFormat.yMd().add_Hms();
-
-class _StudentFromState extends State<StudentForm> {
   Map<String, dynamic> _makeInitials(Student s) {
     return {
       "id": s.personalID,
@@ -31,8 +49,8 @@ class _StudentFromState extends State<StudentForm> {
       "email": s.email,
       "year": s.studyYear,
       "status": s.status,
-      "lastUpdate": s.lastUpdate.toString(),
-      "loadDate": s.loadDate.toString()
+      "lastUpdate": _writeDate(s.lastUpdate),
+      "loadDate": _writeDate(s.loadDate)
     };
   }
 
@@ -41,97 +59,93 @@ class _StudentFromState extends State<StudentForm> {
     return Container(
       padding: new EdgeInsets.all(10),
       child: Column(children: <Widget>[
+        FormBuilder(
+            key: formBuilderKey,
+            initialValue: _makeInitials(student),
+            readOnly: canRead,
+            autovalidate: true,
+            child: Column(
+              children: <Widget>[
+                FormBuilderTextField(
+                  attribute: 'id',
+                  decoration: InputDecoration(labelText: "Person ID"),
+                  validators: _israeliIdValidators,
+                  onSaved: (id) => student.personalID = id,
+                ),
+                FormBuilderTextField(
+                  attribute: "firstName",
+                  decoration: InputDecoration(labelText: "First Name"),
+                  onSaved: (firstName) => student.firstName = firstName,
+                ),
+                FormBuilderTextField(
+                  attribute: "lastName",
+                  decoration: InputDecoration(labelText: "Last Name"),
+                  onSaved: (lastName) => student.lastName = lastName,
+                ),
 
-      FormBuilder(
-          key: widget.fbKey,
-          initialValue: _makeInitials(widget.student),
-          readOnly: widget.canRead,
-          autovalidate: true,
-          child: Column(
-            children: <Widget>[
-              FormBuilderTextField(
-                attribute: 'id',
-                decoration: InputDecoration(labelText: "Person ID"),
-                //validators: validators.israeliId,
-              ),
-              FormBuilderTextField(
-                attribute: "firstName",
-                decoration: InputDecoration(labelText: "First Name"),
-              ),
-              FormBuilderTextField(
-                attribute: "lastName",
-                decoration: InputDecoration(labelText: "Last Name"),
-              ),
+                // TODO:: add option to choose phone providers
+                // multiple phone numbers(?)
+                FormBuilderTextField(
+                  attribute: "phone",
+                  decoration: InputDecoration(labelText: "Phone Number"),
+                  validators: [
+                    FormBuilderValidators.required(),
+                    FormBuilderValidators.pattern(
+                      "^\\d+-?\\d+\$",
+                      errorText:
+                          "a phone may only contain numbers and one dash",
+                    )
+                  ],
+                  onSaved: (phone) => student.phoneNumber = phone,
+                ),
+                FormBuilderTextField(
+                  attribute: "email",
+                  decoration: InputDecoration(labelText: "email"),
+                  validators: [
+                    FormBuilderValidators.required(),
+                    FormBuilderValidators.email()
+                  ],
+                  onSaved: (email) => student.email = email,
+                ),
+                FormBuilderTouchSpin(
+                  decoration: InputDecoration(labelText: "Student Year"),
+                  attribute: 'year',
+                  step: 1,
+                  addIcon: Icon(Icons.arrow_right),
+                  subtractIcon: Icon(Icons.arrow_left),
+                  onSaved: (year) => student.studyYear = year,
+                ),
 
-              // TODO:: add option to choose phone providers
-              // multiple phone numbers(?)
-              FormBuilderTextField(
-                attribute: "phone",
-                decoration: InputDecoration(labelText: "Phone Number"),
-                validators: [
-                  FormBuilderValidators.required(),
-                  FormBuilderValidators.pattern(
-                    "^\\d+-?\\d+\$",
-                    errorText: "a phone may only contain numbers and one dash",
-                  )
-                ],
-              ),
-              FormBuilderTextField(
-                attribute: "email",
-                decoration: InputDecoration(labelText: "email"),
-                validators: [
-                  FormBuilderValidators.required(),
-                  FormBuilderValidators.email()
-                ],
-              ),
-              FormBuilderTouchSpin(
-                decoration: InputDecoration(labelText: "Stepper"),
-                attribute: 'year',
-                step: 1,
-                addIcon: Icon(Icons.arrow_right),
-                subtractIcon: Icon(Icons.arrow_left),
-              ),
-
-              FormBuilderChoiceChip(
-                attribute: "status",
-                options: [
-                  FormBuilderFieldOption(
-                    value: StudentStatus.SEARCHING,
-                    child: Text("Searching"),
-                  ),
-                  FormBuilderFieldOption(
-                    value: StudentStatus.WORKING,
-                    child: Text("Working"),
-                  ),
-                  FormBuilderFieldOption(
-                    value: StudentStatus.FINISHED,
-                    child: Text("Finished"),
-                  ),
-                  FormBuilderFieldOption(
-                    value: StudentStatus.IRRELEVANT,
-                    child: Text("Irrelevant"),
-                  ),
-                ],
-                decoration: InputDecoration(border: InputBorder.none),
-                validators: [FormBuilderValidators.required()],
-              ),
-              FormBuilderTextField(
-                attribute: "lastUpdate",
-                enabled: false,
-                readOnly: true,
-                decoration: InputDecoration(labelText: "Last Update"),
-                valueTransformer: (value) => _dateFormat.parse(value),
-              ),
-              FormBuilderTextField(
-                attribute: "loadDate",
-                enabled: false,
-                readOnly: true,
-                decoration: InputDecoration(labelText: "Load Date"),
-                valueTransformer: (value) => _dateFormat.parse(value),
-              ),
-            ],
-          ))
-    ]),
+                FormBuilderChoiceChip(
+                  attribute: "status",
+                  options: StudentStatus.values
+                      .map(
+                        (status) => FormBuilderFieldOption(
+                          value: status,
+                          child:
+                              Text(_capitalizeWord(studentStatusText(status))),
+                        ),
+                      )
+                      .toList(),
+                  decoration: InputDecoration(border: InputBorder.none),
+                  validators: [FormBuilderValidators.required()],
+                  onSaved: (status) => student.status = status,
+                ),
+                FormBuilderTextField(
+                  attribute: "lastUpdate",
+                  enabled: false,
+                  readOnly: true,
+                  decoration: InputDecoration(labelText: "Last Update"),
+                ),
+                FormBuilderTextField(
+                  attribute: "loadDate",
+                  enabled: false,
+                  readOnly: true,
+                  decoration: InputDecoration(labelText: "Load Date"),
+                ),
+              ],
+            ))
+      ]),
     );
   }
 }

@@ -1,4 +1,3 @@
-import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
@@ -7,27 +6,21 @@ import '../student.dart';
 
 class StudentDetailsForm extends StatefulWidget {
   final Student student;
+  final StudentManager studentManager;
 
   StudentDetailsForm({
     @required this.student,
-  });
+    @required this.studentManager
+  }) : assert(student != null);
 
   @override
   _StudentDetailsFormState createState() => _StudentDetailsFormState();
 }
 
-final _dateFormat = DateFormat.yMd().add_Hms();
-
 class _StudentDetailsFormState extends State<StudentDetailsForm> {
   var _readOnly = true;
 
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
-
-  void openOrExitEdit() {
-    setState(() {
-      _readOnly = !_readOnly;
-    });
-  }
 
   Widget saveSection() {
     return _readOnly == false
@@ -36,29 +29,34 @@ class _StudentDetailsFormState extends State<StudentDetailsForm> {
               children: <Widget>[
                 RaisedButton(
                   child: Text("Submit"),
-                  onPressed: () {
-                    _onSubmit(_fbKey);
-                    openOrExitEdit();
-                  },
+                  onPressed: _onSubmit,
                 ),
                 MaterialButton(
-                  child: Text("Reset"),
-                  onPressed: () {
-                    _fbKey.currentState.reset();
-                    openOrExitEdit();
-                  },
-                ),
+                    child: Text("Reset"),
+                    onPressed: () =>
+                        setState(() => _fbKey.currentState.reset())),
               ],
             ),
           )
         : Container();
   }
 
-  void _onSubmit(GlobalKey<FormBuilderState> key) {
-    if (key.currentState.saveAndValidate()) {
-      // add or edit student code
-      print(key.currentState.value);
-    } else {}
+  void _onSubmit() {
+    if (_fbKey.currentState.validate()) {
+      setState(() => _fbKey.currentState.save());
+      widget.studentManager.save(widget.student);
+    }
+  }
+
+  void _toggleEdit() {
+    setState(() {
+      // remove values from form if toggled off
+      if (!_readOnly) {
+        _fbKey.currentState.reset();
+      }
+
+      _readOnly = !_readOnly;
+    });
   }
 
   @override
@@ -68,25 +66,23 @@ class _StudentDetailsFormState extends State<StudentDetailsForm> {
     return Padding(
       padding: EdgeInsets.all(18),
       child: SingleChildScrollView(
-        child: widget.student == null
-            ? StudentForm()
-            : Column(
-                children: <Widget>[
-                  ListTile(
-                    title: Text("Edit by clicking"),
-                    trailing: FlatButton(
-                        onPressed: () {
-                          openOrExitEdit();
-                        },
-                        child: Icon(Icons.edit, color: color)),
-                  ),
-                  StudentForm(
-                      student: widget.student,
-                      canRead: _readOnly,
-                      fbKey: _fbKey),
-                  saveSection(),
-                ],
+        child: Column(
+          children: <Widget>[
+            ListTile(
+              title: Text("Edit by clicking"),
+              trailing: FlatButton(
+                onPressed: _toggleEdit,
+                child: Icon(Icons.edit, color: color),
               ),
+            ),
+            StudentForm(
+              student: widget.student,
+              canRead: _readOnly,
+              formBuilderKey: _fbKey,
+            ),
+            saveSection(),
+          ],
+        ),
       ),
     );
   }

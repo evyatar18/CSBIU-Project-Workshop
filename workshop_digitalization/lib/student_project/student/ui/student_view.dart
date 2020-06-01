@@ -11,10 +11,7 @@ class StudentDetails extends StatelessWidget implements JsonableDetails {
   final Student student;
   final StudentManager studentManager;
 
-  StudentDetails({
-    @required this.student,
-    @required this.studentManager
-  });
+  StudentDetails({@required this.student, @required this.studentManager});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +44,10 @@ class StudentDetails extends StatelessWidget implements JsonableDetails {
           ),
           body: TabBarView(
             children: [
-              StudentDetailsForm(student: student),
+              StudentDetailsForm(
+                student: student,
+                studentManager: studentManager,
+              ),
               MemoScaffold(
                 memoManager: student.memos,
               ),
