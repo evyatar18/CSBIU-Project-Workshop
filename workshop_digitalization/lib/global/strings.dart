@@ -16,13 +16,17 @@ String byteSizeString(int bytes) {
 }
 
 String randomString(int length) {
-   var rand = new Random();
-   var codeUnits = new List.generate(
-      length,
-      (index){
-         return rand.nextInt(33)+89;
-      }
-   );
+  var rand = new Random();
+  var codeUnits = new List.generate(length, (index) {
+    return rand.nextInt(33) + 89;
+  });
 
-   return new String.fromCharCodes(codeUnits);
+  return new String.fromCharCodes(codeUnits);
+}
+
+String capitalizeWord(String word) =>
+    word.isEmpty ? "" : word[0].toUpperCase() + word.substring(1).toLowerCase();
+
+String capitalize(String s) {
+  return s.splitMapJoin(" ", onNonMatch: capitalizeWord);
 }

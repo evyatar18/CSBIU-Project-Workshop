@@ -24,13 +24,13 @@ class DummyProject implements Project {
   String initiatorLastName;
 
   @override
-  Person mentor = FirebasePerson(firstName: 'a',lastName: 'd');
+  Person mentor = FirebasePerson(firstName: 'a', lastName: 'd');
 
   @override
   String mentorTechAbility;
 
   @override
-  int numberOfStudents =5 ;
+  int get numberOfStudents => studentIds?.length ?? 0;
 
   @override
   List<String> projectChallenges;
@@ -48,7 +48,7 @@ class DummyProject implements Project {
   ProjectStatus projectStatus;
 
   @override
-  String projectSubject;
+  String projectSubject = "subjecto";
 
   @override
   String skills;
@@ -62,13 +62,7 @@ class DummyProject implements Project {
   DateTime get loadDate => null;
 
   @override
-  Map<String, dynamic> toJson() {
-    // TODO: implement toJson
-    return null;
-  }
-
-  @override
-  List<String> studentIds;
+  List<String> studentIds = ["s1, s2"];
 
   @override
   // TODO: implement files

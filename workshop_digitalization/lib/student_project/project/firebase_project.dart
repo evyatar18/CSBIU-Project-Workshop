@@ -68,7 +68,7 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
   String skills;
 
   @override
-  int numberOfStudents;
+  int get numberOfStudents => _studentIds?.length ?? 0;
 
   @override
   String mentorTechAbility;
@@ -98,7 +98,7 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
     writeNotNull(data, 'projectDomain', projectDomain);
     writeNotNull(data, 'projectGoal', projectGoal);
     writeNotNull(data, 'endDate', endDate);
-    writeNotNull(data, 'numberOfStudents', numberOfStudents);
+
     writeModelNotNull(data, 'mentor', _mentor);
     writeNotNull(data, 'projectChallenges', projectChallenges);
     writeNotNull(data, 'projectInnovativeDetails', projectInnovativeDetails);
@@ -134,9 +134,8 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
         ProjectStatus.values[valueFromKey<int>(data, 'projectStatus')];
     projectSubject = valueFromKey<String>(data, 'projectSubject');
     skills = valueFromKey<String>(data, 'skills');
-    numberOfStudents = valueFromKey<int>(data, 'numberOfStudents');
     mentorTechAbility = valueFromKey<String>(data, 'mentorTechAbility');
-    _studentIds = valueListFromKey(data, 'studentIds');
+    _studentIds = valueListFromKey(data, 'studentIds') ?? <String>[];
   }
 
   var _studentIds = <String>[];
@@ -150,7 +149,8 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
     () async {
       final projs = await FirebaseManagers.instance.projects;
 
-      toRemove.forEach((studentId) => projs.queueRemoveStudent(this.id, studentId));
+      toRemove
+          .forEach((studentId) => projs.queueRemoveStudent(this.id, studentId));
       toAdd.forEach((studentId) => projs.queueAddStudent(this.id, studentId));
 
       projs.save(this);

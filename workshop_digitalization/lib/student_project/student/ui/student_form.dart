@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
 import 'package:workshop_digitalization/global/israeli_id/israeli_id.dart';
+import 'package:workshop_digitalization/global/strings.dart';
 
 import '../student.dart';
 
 final _dateFormat = DateFormat.yMd().add_Hms();
 String _writeDate(DateTime dt) => _dateFormat.format(dt);
-String _capitalizeWord(String s) =>
-    s[0].toUpperCase() + s.substring(1).toLowerCase();
 
 String _israeliIdValidator(dynamic candidate) {
   if (!(candidate is String)) {
@@ -122,8 +121,7 @@ class StudentForm extends StatelessWidget {
                       .map(
                         (status) => FormBuilderFieldOption(
                           value: status,
-                          child:
-                              Text(_capitalizeWord(studentStatusText(status))),
+                          child: Text(capitalize(studentStatusText(status))),
                         ),
                       )
                       .toList(),
