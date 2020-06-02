@@ -1,7 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/global/ui/disposer.dart';
 import 'package:workshop_digitalization/progress/progress.dart';
 import 'package:workshop_digitalization/progress/progress_repo.dart';
@@ -28,7 +27,6 @@ class _LoadScreenState extends State<LoadScreen> {
   Map<String, String> _paths;
   String _extension = 'csv';
   bool _loadingPath = false;
-  FilesListState _state;
   Stream<ProgressSnapshot> progressSnapshot;
 
   //this widget open the file explorer for choose csv files
@@ -65,7 +63,6 @@ class _LoadScreenState extends State<LoadScreen> {
       feedStream(progressRepository, progressSnapshot);
       setState(() {
         _paths = null;
-        _state = FilesListState.AFTER;
       });
     }
   }
