@@ -1,43 +1,30 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:json_table/json_table.dart';
-import 'package:workshop_digitalization/global/json/jsonable.dart';
 
 import '../table_data_controller.dart';
 import 'table_headers.dart';
 
-class _JsonableType<T> implements Jsonable {
-  final T object;
-  final Map<String, dynamic> Function(T) jsoner;
-
-  _JsonableType(this.object, this.jsoner);
-
-  @override
-  Map<String, dynamic> toJson() => jsoner(object);
-}
-
 class UpdatingTable<T> extends StatelessWidget {
   final TableDataController<T> controller;
   final void Function(T) onClick;
+  final int paginationRowCount;
 
   UpdatingTable({
     @required this.controller,
     this.onClick,
+    this.paginationRowCount = 25,
   });
 
-  Widget _buildTable(List<_JsonableType<T>> jsons,
+  Widget _buildTable(
+      List<dynamic> objects, Map<String, dynamic> Function(dynamic) jsoner,
       [String orderColumn, bool ascending = false]) {
-    final String jsonSample = jsons
-        .map((s) => s.toJson())
-        .map((j) => json.encode(j))
-        .toList()
-        .toString();
-    var js = jsonDecode(jsonSample);
+
+    final List<Map<String, dynamic>> jsonObjects = objects.map(jsoner).toList();
+
     return JsonTable(
-      js,
-      paginationRowCount: 25,
+      jsonObjects,
+      paginationRowCount: paginationRowCount,
       tableHeaderBuilder: (String header) {
         bool isOrderedBy = orderColumn != null && header == orderColumn;
         return JsonTableHeader(
@@ -51,13 +38,12 @@ class UpdatingTable<T> extends StatelessWidget {
       },
       showColumnToggle: true,
       onRowSelect:
-          onClick == null ? null : (index, map) => onClick(jsons[index].object),
+          onClick == null ? null : (index, jsonMap) => onClick(objects[index]),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    print(controller.data.value);
     return StreamBuilder<TableData<dynamic>>(
       initialData: controller.data.value,
       stream: controller.data,
@@ -70,11 +56,9 @@ class UpdatingTable<T> extends StatelessWidget {
         }
 
         final tableData = snapshot.data;
-        final jsonables = tableData.objects
-            .map((e) => _JsonableType<T>(e, snapshot.data.jsoner))
-            .toList();
+        final objects = tableData.objects;
 
-        if (jsonables.isEmpty) {
+        if (objects.isEmpty) {
           return Container(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             child: Text(
@@ -84,8 +68,9 @@ class UpdatingTable<T> extends StatelessWidget {
         }
 
         return tableData.sorted
-            ? _buildTable(jsonables, tableData.sortColumn, tableData.ascending)
-            : _buildTable(jsonables);
+            ? _buildTable(objects, tableData.jsoner, tableData.sortColumn,
+                tableData.ascending)
+            : _buildTable(objects, tableData.jsoner);
       },
     );
   }

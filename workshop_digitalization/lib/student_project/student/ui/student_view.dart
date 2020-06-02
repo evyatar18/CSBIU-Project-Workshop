@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
-import 'package:workshop_digitalization/global/json/jsonable_details.dart';
 import 'package:workshop_digitalization/global/ui/tab_title.dart';
 import 'package:workshop_digitalization/memos/ui/memos_list.dart';
 
 import '../student.dart';
 import 'student_form_wrapper.dart';
 
-class StudentDetails extends StatelessWidget implements JsonableDetails {
+class StudentDetails extends StatelessWidget {
   final Student student;
   final StudentManager studentManager;
 

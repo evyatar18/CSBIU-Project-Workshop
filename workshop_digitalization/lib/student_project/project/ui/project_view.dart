@@ -1,6 +1,5 @@
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
-import 'package:workshop_digitalization/global/json/jsonable_details.dart';
 import 'package:workshop_digitalization/global/ui/tab_title.dart';
 import 'package:workshop_digitalization/memos/firebase_memo.dart';
 import 'package:workshop_digitalization/memos/ui/memos_list.dart';
@@ -12,7 +11,7 @@ import '../project.dart';
 final dummy_memos =
     FirebaseMemoManager(Flamingo.instance.rootReference.collection("memos"));
 
-class ProjectDetailsView extends StatelessWidget implements JsonableDetails {
+class ProjectDetailsView extends StatelessWidget {
   final Project project;
   ProjectDetailsView({@required this.project});
 

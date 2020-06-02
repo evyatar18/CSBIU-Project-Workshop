@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:workshop_digitalization/files/container.dart';
-import 'package:workshop_digitalization/global/json/jsonable.dart';
-import 'package:workshop_digitalization/global/json/jsonable_details.dart';
 import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/person/person.dart';
 
@@ -33,14 +31,6 @@ class ProjectTableScreen extends StatelessWidget {
       //   ),
       // ),
     );
-  }
-}
-
-class ProjectDetailsFactory implements JsonableDetailsFactory {
-  @override
-  JsonableDetails create(Jsonable s) {
-    // return new ProjectDetailsView(s);
-    throw "NEED TO IMPLEMENT FACTORY";
   }
 }
 
@@ -105,15 +95,6 @@ class Proj implements Project {
     this.projectSubject = 'ML',
     this.skills,
   });
-
-  @override
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> m = {};
-    m['subject'] = projectSubject;
-    m['numberOfStudents'] = numberOfStudents;
-    m['goal'] = projectGoal;
-    return m;
-  }
 
   @override
   // TODO: implement lastUpdate
