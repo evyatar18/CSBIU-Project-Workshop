@@ -35,13 +35,25 @@ class LocalStudent implements Student {
     this.studyYear,
   });
 
+  static getFields(){
+    return  [
+        'id',
+        'firstName',
+        'lastName',
+        'phoneNumber',
+        'email',
+        'year',
+        'status'
+      ];
+  }
+
   factory LocalStudent.fromJson(Map<String, dynamic> json) {
     return new LocalStudent(
         email: json["email"],
         firstName: json['firstName'],
         lastName: json['lastName'],
         personalID: json['personalID'],
-        phoneNumber: json['phoneNumber'],
+        phoneNumber: json['phoneNumber'].toString(),
         status: StudentStatus.values[json['status']],
         studyYear: json['studyYear']);
   }

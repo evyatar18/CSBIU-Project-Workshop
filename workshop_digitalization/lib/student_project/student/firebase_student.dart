@@ -185,14 +185,14 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
     final writeBatch = Batch();
     firebaseStudents.forEach(writeBatch.save);
 
-    yield ProgressSnapshot(taskName, "Uploading students.", 50);
+    yield ProgressSnapshot(taskName, "Uploading students.", 0.5);
 
     try {
       await writeBatch.commit();
       yield ProgressSnapshot(
-          taskName, "Uploaded ${batch.length} students.", 100);
+          taskName, "Uploaded ${batch.length} students.", 1);
     } catch (e) {
-      yield ProgressSnapshot(taskName, "Error occurred: $e", 50, failed: true);
+      yield ProgressSnapshot(taskName, "Error occurred: $e", 0.5, failed: true);
     }
   }
 

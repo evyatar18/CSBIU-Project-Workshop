@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
+import 'package:workshop_digitalization/files/ui/load_screen.dart';
 import 'package:workshop_digitalization/student_project/student/firebase_student.dart';
 import 'package:workshop_digitalization/student_project/student/ui/student_view.dart';
 
@@ -62,7 +63,7 @@ class MyApp extends StatelessWidget {
       title: 'Workshop Digitalization',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: Scaffold(body: firebaseStudentsTable()),
+      home: LoadScreen(studentManager: FirebaseStudentManager(),)//Scaffold(body: firebaseStudentsTable()),
     );
   }
 }
