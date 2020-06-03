@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:workshop_digitalization/filter/filterable.dart';
 import 'package:workshop_digitalization/table/table_data_controller.dart';
+
+typedef Comparator SorterMaker(String fieldName, Type fieldType);
 
 class BasicTableDataController<T> implements TableDataController<T> {
   ValueStream<List<T>> supplier;
@@ -21,9 +24,12 @@ class BasicTableDataController<T> implements TableDataController<T> {
   String sortColumn;
   bool ascending = true;
 
+  final SorterMaker sorter;
+
   BasicTableDataController({
     @required this.supplier,
     @required this.jsoner,
+    this.sorter = _defaultTypeSorter,
   }) {
     _subscription = supplier.listen(_dataListener);
   }
@@ -47,15 +53,18 @@ class BasicTableDataController<T> implements TableDataController<T> {
         )
         .toList();
 
-    objects.sort((e1, e2) {
-      return comparatorFactor *
-          e1[1][sortCol].toString().compareTo(e2[1][sortCol].toString());
-    });
+    if (objects.isNotEmpty && sortCol != null) {
+      final comparator = sorter(sortCol, objects.first[1][sortCol].runtimeType);
+      objects.sort((e1, e2) {
+        return comparatorFactor * comparator(e1[1][sortCol], e2[1][sortCol]);
+      });
+    }
 
     final emittedObjects = objects.map((e) => e[0]).toList();
     final cols = data.length > 0 ? jsoner(data[0]).keys : <String>[];
 
-    final emit = TableData<T>(cols.toList(), sortCol, asc, emittedObjects.cast<T>(), jsoner);
+    final emit = TableData<T>(
+        cols.toList(), sortCol, asc, emittedObjects.cast<T>(), jsoner);
     _controller.add(emit);
   }
 
@@ -114,4 +123,12 @@ class BasicTableDataController<T> implements TableDataController<T> {
       print("$BasicTableDataController: $e");
     }
   }
+}
+
+Comparator _defaultTypeSorter(String fieldName, Type fieldType) {
+  if (fieldType is Comparable) {
+    return (x, y) => x.compareTo(y);
+  }
+
+  return (x, y) => x.toString().compareTo(y.toString());
 }

@@ -26,29 +26,41 @@ final year = ObjectField<Student, int>(
 final status = ObjectField<Student, StudentStatus>(
     name: "status", getter: (obj) => obj.status, stringer: (s) => s.toString());
 
+final lastUpdate = ObjectField<Student, DateTime>(
+    name: "lastUpdate",
+    getter: (obj) => obj.lastUpdate,
+    stringer: (s) => s.toString());
+
+final loadDate = ObjectField<Student, DateTime>(
+    name: "loadDate",
+    getter: (obj) => obj.loadDate,
+    stringer: (s) => s.toString());
+
 final castedSelections = [
   createCastingFilterableField(createSelectionFilterable(year)),
   createCastingFilterableField(createSelectionFilterable(status)),
+  createCastingFilterableField(createSelectionFilterable(lastUpdate)),
+  createCastingFilterableField(createSelectionFilterable(loadDate)),
 ];
 
-final otherFields = [
-  ObjectField<Student, int>(
-      name: "year",
-      getter: (obj) => obj.studyYear,
-      stringer: (s) => s.toString()),
-  ObjectField<Student, StudentStatus>(
-      name: "status",
-      getter: (obj) => obj.status,
-      stringer: (s) => s.toString()),
-  // ObjectField<Student, DateTime>(
-  //     name: "lastUpdate",
-  //     getter: (obj) => obj.lastUpdate,
-  //     stringer: (s) => s.toString()),
-  // ObjectField<Student, DateTime>(
-  //     name: "loadDate",
-  //     getter: (obj) => obj.loadDate,
-  //     stringer: (s) => s.toString()),
-];
+// final otherFields = [
+//   ObjectField<Student, int>(
+//       name: "year",
+//       getter: (obj) => obj.studyYear,
+//       stringer: (s) => s.toString()),
+//   ObjectField<Student, StudentStatus>(
+//       name: "status",
+//       getter: (obj) => obj.status,
+//       stringer: (s) => s.toString()),
+//   ObjectField<Student, DateTime>(
+//       name: "lastUpdate",
+//       getter: (obj) => obj.lastUpdate,
+//       stringer: (s) => s.toString()),
+//   ObjectField<Student, DateTime>(
+//       name: "loadDate",
+//       getter: (obj) => obj.loadDate,
+//       stringer: (s) => s.toString()),
+// ];
 
 Widget createFilterableStudentsTable(Stream<List<Student>> students,
     void Function(BuildContext, Student) onClick) {

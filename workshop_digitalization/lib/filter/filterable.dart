@@ -3,10 +3,12 @@ import 'package:rxdart/rxdart.dart';
 
 typedef bool ObjectFilter<T>(T obj, Map<String, dynamic> json);
 
-class ObjectField<Object, Type> {
+class ObjectField<Object, FieldType> {
   final String name;
-  final Type Function(Object) getter;
-  final String Function(Type) stringer;
+  final FieldType Function(Object) getter;
+  final String Function(FieldType) stringer;
+
+  Type get type => FieldType;
 
   ObjectField({
     @required this.name,
