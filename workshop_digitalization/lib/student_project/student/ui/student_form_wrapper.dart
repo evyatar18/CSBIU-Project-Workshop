@@ -77,7 +77,7 @@ class _StudentDetailsFormState extends State<StudentDetailsForm> {
             ),
             StudentForm(
               student: widget.student,
-              canRead: _readOnly,
+              readOnly: _readOnly,
               formBuilderKey: _fbKey,
             ),
             saveSection(),
