@@ -90,21 +90,28 @@ class NewStudentScreen extends StatelessWidget {
                   formBuilderKey: _formBuilderKey,
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    RaisedButton(onPressed: () async {
-                      // set values on student object
-                      _formBuilderKey.currentState.save();
+                    RaisedButton(
+                      child: Text("Save"),
+                      onPressed: () async {
+                        // set values on student object
+                        _formBuilderKey.currentState.save();
 
-                      // save the student object
-                      if (await _save(context, student)) {
-                        Navigator.pop(context);
-                      }
-                    }),
-                    RaisedButton(onPressed: () async {
-                      if (await _delete(context, student)) {
-                        Navigator.pop(context);
-                      }
-                    }),
+                        // save the student object
+                        if (await _save(context, student)) {
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
+                    RaisedButton(
+                      child: Text("Delete"),
+                      onPressed: () async {
+                        if (await _delete(context, student)) {
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
                   ],
                 )
               ],

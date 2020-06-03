@@ -24,19 +24,23 @@ Future<void> showSuccessDialog(BuildContext context,
 }
 
 Future<bool> showAgreementDialog(BuildContext context, String title) {
-  final retval = Completer<bool>();
-
-  showDialog(
+  return showDialog<bool>(
     context: context,
     barrierDismissible: false,
-    child: AlertDialog(
-      title: Text(title),
-      actions: <Widget>[
-        FlatButton(onPressed: () => retval.complete(true), child: Text("YES")),
-        FlatButton(onPressed: () => retval.complete(false), child: Text("NO")),
-      ],
-    ),
+    builder: (context) {
+      return AlertDialog(
+        title: Text(title),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text("YES"),
+          ),
+          FlatButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text("NO"),
+          ),
+        ],
+      );
+    },
   );
-
-  return retval.future;
 }

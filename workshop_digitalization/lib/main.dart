@@ -63,10 +63,12 @@ class MyApp extends StatelessWidget {
       title: 'Workshop Digitalization',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: LoadScreen(studentManager: FirebaseStudentManager(),)//Scaffold(body: firebaseStudentsTable()),
+      home: Scaffold(body: firebaseStudentsTable()),
     );
   }
 }
+
+Widget loadScreen() => LoadScreen(studentManager: FirebaseStudentManager());
 
 Widget firebaseStudentsTable() {
   return Disposer(
