@@ -5,6 +5,8 @@ import 'package:workshop_digitalization/files/ui/load_screen.dart';
 import 'package:workshop_digitalization/person/firebase_person.dart';
 import 'package:workshop_digitalization/person/person.dart';
 import 'package:workshop_digitalization/student_project/project/firebase_project.dart';
+import 'package:workshop_digitalization/menu/ui/home_page.dart';
+import 'package:workshop_digitalization/menu/ui/main_menu.dart';
 import 'package:workshop_digitalization/student_project/student/firebase_student.dart';
 import 'package:workshop_digitalization/student_project/student/ui/student_view.dart';
 
@@ -66,7 +68,7 @@ class MyApp extends StatelessWidget {
       title: 'Workshop Digitalization',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: Scaffold(body: firebaseStudentsTable()),
+      home: MyHomePage()
     );
   }
 }
