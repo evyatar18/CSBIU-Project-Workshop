@@ -5,11 +5,7 @@ import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
 import 'package:workshop_digitalization/student_project/element_manager.dart';
 
-typedef Widget ElementForm<T>({
-  @required T element,
-  @required bool readOnly,
-  @required GlobalKey<FormBuilderState> formBuilderKey,
-});
+import 'element_form_creator.dart';
 
 class NewElementScreen<T extends StringIdentified> extends StatelessWidget {
   final ElementManager<T> elementManager;
