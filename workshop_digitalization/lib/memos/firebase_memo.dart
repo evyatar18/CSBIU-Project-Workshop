@@ -27,7 +27,7 @@ class FirebaseMemo extends Document<FirebaseMemo> implements Memo, Disposable {
           snapshot: snapshot,
           values: values,
           collectionRef: collectionRef,
-        ) {}
+        );
 
   @override
   String get id => super.id;
