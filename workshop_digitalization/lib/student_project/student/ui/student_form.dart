@@ -39,6 +39,17 @@ class StudentForm extends StatelessWidget {
     this.formBuilderKey,
   });
 
+  static StudentForm elementForm({
+    @required Student element,
+    @required bool readOnly,
+    @required GlobalKey<FormBuilderState> formBuilderKey,
+  }) =>
+      StudentForm(
+        student: element,
+        readOnly: readOnly,
+        formBuilderKey: formBuilderKey,
+      );
+
   Map<String, dynamic> _makeInitials(Student s) {
     return {
       "id": s.personalID,
