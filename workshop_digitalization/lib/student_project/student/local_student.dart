@@ -52,10 +52,10 @@ class LocalStudent implements Student {
         email: json["email"],
         firstName: json['firstName'],
         lastName: json['lastName'],
-        personalID: json['personalID'],
+        personalID: json['id'].toString(),
         phoneNumber: json['phoneNumber'].toString(),
         status: StudentStatus.values[json['status']],
-        studyYear: json['studyYear']);
+        studyYear: json['year']);
   }
 
   @override
