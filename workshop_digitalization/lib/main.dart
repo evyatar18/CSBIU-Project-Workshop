@@ -70,6 +70,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
+Widget loadScreen() => LoadScreen(studentManager: FirebaseStudentManager());
+
 Widget firebaseStudentsTable() {
   return Disposer(
     createInFuture: () async => FirebaseManagers.instance.students,

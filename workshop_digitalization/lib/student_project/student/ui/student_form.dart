@@ -30,12 +30,12 @@ final _israeliIdValidators = [
 
 class StudentForm extends StatelessWidget {
   final Student student;
-  final bool canRead;
+  final bool readOnly;
   final GlobalKey<FormBuilderState> formBuilderKey;
 
   StudentForm({
     this.student,
-    this.canRead = false,
+    this.readOnly = false,
     this.formBuilderKey,
   });
 
@@ -57,11 +57,12 @@ class StudentForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: new EdgeInsets.all(10),
-      child: Column(children: <Widget>[
-        FormBuilder(
+      child: Column(
+        children: <Widget>[
+          FormBuilder(
             key: formBuilderKey,
             initialValue: _makeInitials(student),
-            readOnly: canRead,
+            readOnly: readOnly,
             autovalidate: true,
             child: Column(
               children: <Widget>[
@@ -142,8 +143,10 @@ class StudentForm extends StatelessWidget {
                   decoration: InputDecoration(labelText: "Load Date"),
                 ),
               ],
-            ))
-      ]),
+            ),
+          )
+        ],
+      ),
     );
   }
 }
