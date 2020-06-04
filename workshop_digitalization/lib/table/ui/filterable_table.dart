@@ -14,17 +14,19 @@ class FilterableTable<Object> extends StatefulWidget {
   final Stream<List<Object>> objects;
   final List<String> shownFields;
 
-  final List<FilterableField> fields;
+  final List<FilterableField> filterableFields;
+  final List<ObjectField> nonFilterFields;
 
   final void Function(BuildContext context, Object object) onClick;
 
-  FilterableTable(
-      {@required this.objects,
-      @required List<ObjectField<Object, String>> textFields,
-      @required List<FilterableField> otherFilterables,
-      @required this.shownFields,
-      @required this.onClick})
-      : fields = []
+  FilterableTable({
+    @required this.objects,
+    @required List<ObjectField<Object, String>> textFields,
+    @required List<FilterableField> otherFilterables,
+    this.nonFilterFields = const <ObjectField>[],
+    @required this.shownFields,
+    @required this.onClick,
+  }) : filterableFields = []
           ..addAll(
             textFields.map((textField) =>
                 createCastingFilterableField(createTextFilterable(textField))),
@@ -63,10 +65,13 @@ class _FilterableTableState<Object> extends State<FilterableTable> {
     _stream = ValueConnectableStream(widget.objects);
     _controller = BasicTableDataController(
       supplier: _stream,
-      jsoner: makeJsoner<Object>(widget.fields.map((e) => e.field)),
+      jsoner: makeJsoner<Object>([
+        ...widget.filterableFields.map((e) => e.field),
+        ...widget.nonFilterFields
+      ]),
     );
 
-    staticFilters = widget.fields
+    staticFilters = widget.filterableFields
         .where((filterableField) =>
             widget.shownFields.contains(filterableField.field.name))
         .toList();
@@ -88,7 +93,7 @@ class _FilterableTableState<Object> extends State<FilterableTable> {
       MaterialPageRoute(
         builder: (context) => FiltersScaffold(
           filterable: controller,
-          fields: widget.fields,
+          fields: widget.filterableFields,
           filterWidgets: filterWidgets,
         ),
       ),

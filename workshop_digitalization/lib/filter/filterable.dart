@@ -13,13 +13,15 @@ class ObjectField<Object, FieldType> {
   ObjectField({
     @required this.name,
     @required this.getter,
-    @required this.stringer,
+    this.stringer = _defaultStringer,
   });
 
   String asString(Object o) {
     return stringer(getter(o));
   }
 }
+
+String _defaultStringer(dynamic input) => input.toString();
 
 abstract class Filterable<T> {
   static final ObjectFilter acceptingAll = (obj, json) => true;
