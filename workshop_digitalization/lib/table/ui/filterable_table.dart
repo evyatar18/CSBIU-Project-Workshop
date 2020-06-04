@@ -24,7 +24,7 @@ class FilterableTable<Object> extends StatefulWidget {
     @required List<ObjectField<Object, String>> textFields,
     @required List<FilterableField> otherFilterables,
     this.nonFilterFields = const <ObjectField>[],
-    @required this.shownFields,
+    this.shownFields = const <String>[],
     @required this.onClick,
   }) : filterableFields = []
           ..addAll(

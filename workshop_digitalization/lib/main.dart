@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
 import 'package:workshop_digitalization/files/ui/load_screen.dart';
+import 'package:workshop_digitalization/person/firebase_person.dart';
+import 'package:workshop_digitalization/person/person.dart';
+import 'package:workshop_digitalization/student_project/project/firebase_project.dart';
 import 'package:workshop_digitalization/student_project/student/firebase_student.dart';
 import 'package:workshop_digitalization/student_project/student/ui/student_view.dart';
 
@@ -74,8 +77,25 @@ Widget firebaseStudentsTable() {
   return Disposer(
     createInFuture: () async => FirebaseManagers.instance.students,
     builder: (context, manager) {
-      return StudentTableScreen<FirebaseStudent>(
-        studentManager: manager,
+      return Disposer(
+        createInFuture: () async {
+          final projects = await FirebaseManagers.instance.projects;
+          // final proj = await projects.createEmpty();
+          // proj.projectGoal = "example goal";
+          // proj.mentor =
+          //     FirebasePerson(firstName: "israel", lastName: "israeli");
+          // proj.projectSubject = "subject #2";
+
+          // await projects.save(proj);
+
+          return projects;
+        },
+        builder: (context, projectManager) {
+          return StudentTableScreen<FirebaseStudent, FirebaseProject>(
+            studentManager: manager,
+            projectManager: projectManager,
+          );
+        },
       );
     },
   );

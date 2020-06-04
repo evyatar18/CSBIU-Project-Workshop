@@ -11,6 +11,7 @@ import 'package:workshop_digitalization/person/firebase_person.dart';
 import 'package:workshop_digitalization/student_project/firebase_managers.dart';
 import 'package:workshop_digitalization/student_project/project/project.dart';
 import 'package:workshop_digitalization/student_project/student/firebase_student.dart';
+import 'package:workshop_digitalization/student_project/student/student.dart';
 
 class FirebaseProject extends Document<FirebaseProject> implements Project {
   @override
@@ -102,7 +103,11 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
     writeModelNotNull(data, 'mentor', _mentor);
     writeNotNull(data, 'projectChallenges', projectChallenges);
     writeNotNull(data, 'projectInnovativeDetails', projectInnovativeDetails);
-    writeNotNull(data, 'projectStatus', projectStatus);
+    writeNotNull(
+      data,
+      'projectStatus',
+      (projectStatus ?? DEFAULT_PROJECT_STATUS).index,
+    );
     writeNotNull(data, 'mentorTechAbility', mentorTechAbility);
 
     writeNotNull(data, 'studentIds', _studentIds);
@@ -120,7 +125,7 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
     comments = valueFromKey<String>(data, 'comments');
     contact = FirebasePerson(
         values: valueMapFromKey<String, dynamic>(data, 'contact'));
-    endDate = valueFromKey<Timestamp>(data, 'endDate').toDate();
+    endDate = valueFromKey<Timestamp>(data, 'endDate')?.toDate();
     initiatorFirstName = valueFromKey<String>(data, 'initiatorFirstName');
     initiatorLastName = valueFromKey<String>(data, 'initiatorLastName');
     mentor = FirebasePerson(
@@ -130,8 +135,9 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
     projectGoal = valueFromKey<String>(data, 'projectGoal');
     projectInnovativeDetails =
         valueListFromKey<String>(data, 'projectInnovativeDetails');
-    projectStatus =
-        ProjectStatus.values[valueFromKey<int>(data, 'projectStatus')];
+    projectStatus = ProjectStatus.values[
+        valueFromKey<int>(data, 'projectStatus') ??
+            DEFAULT_PROJECT_STATUS.index];
     projectSubject = valueFromKey<String>(data, 'projectSubject');
     skills = valueFromKey<String>(data, 'skills');
     mentorTechAbility = valueFromKey<String>(data, 'mentorTechAbility');
@@ -211,8 +217,10 @@ class FirebaseProjectManager extends ProjectManager<FirebaseProject> {
   Stream<List<FirebaseProject>> get projects => _projects.stream;
   List<FirebaseProject> get latestProjects => _projects.stream.value;
 
-  FirebaseProject getProject(String id) =>
-      latestProjects.firstWhere((element) => element.id == id);
+  FirebaseProject getProject(String id) => latestProjects?.firstWhere(
+        (element) => element.id == id,
+        orElse: () => null,
+      );
 
   Future<FirebaseProject> createEmpty() async {
     FirebaseProject fbProject = FirebaseProject(collectionRef: _collection);
@@ -267,12 +275,14 @@ class FirebaseProjectManager extends ProjectManager<FirebaseProject> {
     final oldProjects = _projects.value;
     oldProjects?.forEach((proj) => proj.dispose());
 
-    final projects = snapshot.documents.map(
-      (doc) => FirebaseProject(
-        collectionRef: _collection,
-        snapshot: doc,
-      ),
-    );
+    final projects = snapshot.documents
+        .map(
+          (doc) => FirebaseProject(
+            collectionRef: _collection,
+            snapshot: doc,
+          ),
+        )
+        .toList();
 
     _projects.add(projects);
   }

@@ -22,10 +22,10 @@ class ProjectTableScreen<T extends Project> extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ProjectDetails(
-          project: project,
-          projectManager: pm,
-        ),
+        // builder: (context) => ProjectDetails(
+        //   project: project,
+        //   projectManager: pm,
+        // ),
       ),
     );
   }
@@ -36,13 +36,13 @@ class ProjectTableScreen<T extends Project> extends StatelessWidget {
         return FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    NewProjectScreen(projectManager: projectManager),
-              ),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) =>
+            //         NewProjectScreen(projectManager: projectManager),
+            //   ),
+            // );
           },
           heroTag: randomString(10),
         );

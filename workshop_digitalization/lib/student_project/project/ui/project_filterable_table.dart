@@ -50,7 +50,6 @@ Widget createFilterableProjectsTable(Stream<List<Project>> projects,
     textFields: textFields,
     otherFilterables: castedSelections,
     nonFilterFields: [endDate],
-    shownFields: [castedSelections[0].field.name],
     onClick: (context, dynamic proj) => onClick(context, proj as Project),
   );
 }

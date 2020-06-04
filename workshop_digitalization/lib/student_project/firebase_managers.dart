@@ -25,14 +25,12 @@ class FirebaseManagers {
   Future<FirebaseProjectManager> get projects async {
     if (_projectManager == null) {
       await lock.acquire();
-      if (_studentManager == null) {
-        _studentManager = FirebaseStudentManager();
+      if (_projectManager == null) {
+        _projectManager = FirebaseProjectManager();
       }
       lock.release();
     }
 
     return _projectManager;
   }
-
-
 }
