@@ -1,125 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:workshop_digitalization/files/container.dart';
-import 'package:workshop_digitalization/memos/memo.dart';
-import 'package:workshop_digitalization/person/person.dart';
+import 'package:provider/provider.dart';
+import 'package:workshop_digitalization/global/strings.dart';
 
-import '../../student/student.dart';
-import '../../student/ui/new_student_view.dart';
 import '../project.dart';
+import 'project_filterable_table.dart';
 
-class ProjectTableScreen extends StatelessWidget {
-  final List<Project> projects = List<Proj>.generate(10, (i) => Proj());
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Table'),
-        actions: <Widget>[
-          FlatButton(
-            child: Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => NewStudentScreen()));
-            },
-          )
-        ],
-      ),
-      // body: Center(
-      //   child: new JsonDataTable(
-      //     jsonableObjects: projects,
-      //     factory: ProjectDetailsFactory(),
-      //   ),
-      // ),
-    );
-  }
-}
+class ProjectTableScreen<T extends Project> extends StatelessWidget {
+  final ProjectManager<T> projectManager;
+  final void Function(BuildContext, Project) onProjectClick;
+  final bool showAddButton;
 
-class Proj implements Project {
-  @override
-  String comments;
-
-  @override
-  Person contact;
-
-  @override
-  DateTime endDate;
-
-  @override
-  String initiatorFirstName;
-
-  @override
-  String initiatorLastName;
-
-  @override
-  Person mentor;
-
-  @override
-  String mentorTechAbility;
-
-  @override
-  int numberOfStudents;
-
-  @override
-  List<String> projectChallenges;
-
-  @override
-  String projectDomain;
-
-  @override
-  String projectGoal;
-
-  @override
-  List<String> projectInnovativeDetails;
-
-  @override
-  ProjectStatus projectStatus;
-
-  @override
-  String projectSubject;
-
-  @override
-  String skills;
-  Proj({
-    this.comments,
-    this.contact,
-    this.endDate,
-    this.initiatorFirstName,
-    this.initiatorLastName,
-    this.mentor,
-    this.mentorTechAbility,
-    this.numberOfStudents = 3,
-    this.projectChallenges,
-    this.projectDomain,
-    this.projectGoal = 'learninig',
-    this.projectInnovativeDetails,
-    this.projectSubject = 'ML',
-    this.skills,
+  ProjectTableScreen({
+    @required this.projectManager,
+    this.onProjectClick = _onProjectClick,
+    this.showAddButton = true,
   });
 
-  @override
-  // TODO: implement lastUpdate
-  DateTime get lastUpdate => null;
+  static void _onProjectClick(BuildContext context, Project project) {
+    ProjectManager pm = Provider.of<ProjectManager>(context, listen: false);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProjectDetails(
+          project: project,
+          projectManager: pm,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAddButton() {
+    return Builder(
+      builder: (context) {
+        return FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    NewProjectScreen(projectManager: projectManager),
+              ),
+            );
+          },
+          heroTag: randomString(10),
+        );
+      },
+    );
+  }
 
   @override
-  // TODO: implement loadDate
-  DateTime get loadDate => null;
-
-  @override
-  List<String> studentIds;
-
-  @override
-  // TODO: implement id
-  String get id => null;
-
-  @override
-  // TODO: implement files
-  FileContainer get files => throw UnimplementedError();
-
-  @override
-  // TODO: implement memos
-  MemoManager<Memo> get memos => throw UnimplementedError();
-
-  @override
-  // TODO: implement students
-  Future<List<Student>> get students => throw UnimplementedError();
+  Widget build(BuildContext context) {
+    return Provider<ProjectManager>.value(
+      value: projectManager,
+      child: Scaffold(
+        body: createFilterableProjectsTable(projectManager.projects, onProjectClick),
+        floatingActionButton: showAddButton ? _buildAddButton() : null,
+      ),
+    );
+  }
 }

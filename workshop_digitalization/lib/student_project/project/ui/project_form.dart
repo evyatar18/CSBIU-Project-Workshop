@@ -7,20 +7,31 @@ import 'package:workshop_digitalization/person/ui/preson_form.dart';
 
 import '../project.dart';
 
-class ProjectDetailsForm extends StatefulWidget {
+class ProjectForm extends StatefulWidget {
   final Project project;
-  final bool canRead ;
-  final GlobalKey<FormBuilderState> fbKey ;
+  final bool readOnly;
+  final GlobalKey<FormBuilderState> fbKey;
   final GlobalKey<FormBuilderState> mentorKey = GlobalKey<FormBuilderState>();
   final GlobalKey<FormBuilderState> contantKey = GlobalKey<FormBuilderState>();
 
-  ProjectDetailsForm({
+  ProjectForm({
     this.project,
-    this.canRead,
+    this.readOnly,
     this.fbKey,
   });
 
-  void reset(){
+  static ProjectForm elementForm({
+    @required Project element,
+    @required bool readOnly,
+    @required GlobalKey<FormBuilderState> formBuilderKey,
+  }) =>
+      ProjectForm(
+        project: element,
+        readOnly: readOnly,
+        fbKey: formBuilderKey,
+      );
+
+  void reset() {
     fbKey.currentState.reset();
     mentorKey.currentState.reset();
     contantKey.currentState.reset();
@@ -28,13 +39,13 @@ class ProjectDetailsForm extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return ProjectDetailsFormState();
+    return ProjectFormState();
   }
 }
 
 final _dateFormat = DateFormat.yMd().add_Hms();
 
-class ProjectDetailsFormState extends State<ProjectDetailsForm> {
+class ProjectFormState extends State<ProjectForm> {
   ExapndableItem mentorForm;
   ExapndableItem contantForm;
   void initState() {
@@ -44,7 +55,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
       inner: Card(
         child: PersonForm(
           fbKey: widget.mentorKey,
-          canRead: widget.canRead,
+          canRead: widget.readOnly,
           person: widget.project.mentor,
         ),
       ),
@@ -54,7 +65,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
       inner: Card(
         child: PersonForm(
           fbKey: widget.contantKey,
-          canRead: widget.canRead,
+          canRead: widget.readOnly,
           person: widget.project.contact,
         ),
       ),
@@ -82,7 +93,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
     return FormBuilder(
       key: widget.fbKey,
       initialValue: _makeInitials(widget.project),
-      readOnly: widget.canRead,
+      readOnly: widget.readOnly,
       autovalidate: true,
       child: SingleChildScrollView(
         child: Column(
@@ -110,7 +121,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
             ),
             FormBuilderTextField(
               attribute: 'endDate',
-              decoration: InputDecoration(labelText: "Excepted end Date"),
+              decoration: InputDecoration(labelText: "Expected end Date"),
             ),
             FormBuilderTouchSpin(
               decoration: InputDecoration(labelText: "Number of students"),
@@ -155,7 +166,8 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
             ),
             FormBuilderTextField(
               attribute: 'skills',
-              decoration: InputDecoration(labelText: "Skills needed for the project"),
+              decoration:
+                  InputDecoration(labelText: "Skills needed for the project"),
             ),
             FormBuilderTextField(
               attribute: 'comments',
@@ -187,5 +199,3 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
     );
   }
 }
-
-
