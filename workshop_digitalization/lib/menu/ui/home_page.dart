@@ -6,7 +6,7 @@ import 'package:workshop_digitalization/student_project/firebase_managers.dart';
 import 'package:workshop_digitalization/student_project/student/firebase_student.dart';
 import 'package:workshop_digitalization/student_project/student/ui/student_table.dart';
 
-
+import '../../main.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -15,14 +15,17 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex;
-  List<Widget> _children = [MainMenu(), Disposer(
-              createInFuture: () async => FirebaseManagers.instance.students,
-              builder: (context, manager) {
-                return StudentTableScreen<FirebaseStudent>(
-                  studentManager: manager,
-                );
-              },
-            ),Scaffold(),Scaffold()];
+  List<Widget> _children = [
+    MainMenu(),
+    Disposer(
+      createInFuture: () async => FirebaseManagers.instance.students,
+      builder: (context, manager) {
+        return firebaseStudentsTable();
+      },
+    ),
+    Scaffold(),
+    Scaffold()
+  ];
   @override
   void initState() {
     super.initState();

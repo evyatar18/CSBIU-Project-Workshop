@@ -26,11 +26,13 @@ final status = ObjectField<Student, StudentStatus>(
 final lastUpdate = ObjectField<Student, DateTime>(
   name: "lastUpdate",
   getter: (obj) => obj.lastUpdate,
+  stringer: writeDate
 );
 
 final loadDate = ObjectField<Student, DateTime>(
   name: "loadDate",
   getter: (obj) => obj.loadDate,
+  stringer: writeDate
 );
 
 final castedSelections = [

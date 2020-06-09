@@ -7,6 +7,8 @@ import 'package:workshop_digitalization/student_project/student/firebase_student
 import 'package:workshop_digitalization/student_project/student/ui/new_student_view.dart';
 import 'package:workshop_digitalization/student_project/student/ui/student_table.dart';
 
+import '../main.dart';
+
 void pushStudentTableScreen(BuildContext context) {
   Navigator.push(
     context,
@@ -14,9 +16,7 @@ void pushStudentTableScreen(BuildContext context) {
         builder: (context) => Disposer(
               createInFuture: () async => FirebaseManagers.instance.students,
               builder: (context, manager) {
-                return StudentTableScreen<FirebaseStudent>(
-                  studentManager: manager,
-                );
+                return firebaseStudentsTable();
               },
             )),
   );

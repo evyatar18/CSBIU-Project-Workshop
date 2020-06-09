@@ -24,7 +24,7 @@ class _DisposerState<T extends Disposable> extends State<Disposer<T>> {
 
   void _disposeObject(T object) {
     try {
-      widget.onDispose(object);
+      widget.onDispose?.call(object);
     } catch (e) {
       print(e);
     }

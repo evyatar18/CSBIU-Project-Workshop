@@ -11,6 +11,7 @@ import 'package:workshop_digitalization/table/ui/updating_table.dart';
 
 // we use stateful widget just because we need the dispose
 class FilterableTable<Object> extends StatefulWidget {
+  final String title;
   final Stream<List<Object>> objects;
   final List<String> shownFields;
 
@@ -20,6 +21,7 @@ class FilterableTable<Object> extends StatefulWidget {
   final void Function(BuildContext context, Object object) onClick;
 
   FilterableTable({
+    this.title = "",
     @required this.objects,
     @required List<ObjectField<Object, String>> textFields,
     @required List<FilterableField> otherFilterables,

@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:intl/intl.dart';
+
 String byteSizeString(int bytes) {
   int kb = 1000;
   int mb = kb * kb;
@@ -30,3 +32,6 @@ String capitalizeWord(String word) =>
 String capitalize(String s) {
   return s.splitMapJoin(" ", onNonMatch: capitalizeWord);
 }
+
+final dateFormat = DateFormat.yMd().add_Hms();
+String writeDate(DateTime dt) => dateFormat.format(dt);

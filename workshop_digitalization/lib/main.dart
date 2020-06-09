@@ -31,9 +31,10 @@ void main() {
   final firestore = Firestore.instance;
   final root = firestore.collection('version').document('1');
   Flamingo.configure(
-      firestore: firestore, storage: FirebaseStorage.instance, root: root);
-
-  // saveMemo();
+    firestore: firestore,
+    storage: FirebaseStorage.instance,
+    root: root,
+  );
 
   runApp(new MyApp());
 }
@@ -68,7 +69,7 @@ class MyApp extends StatelessWidget {
       title: 'Workshop Digitalization',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: MyHomePage()
+      home: MyHomePage(),
     );
   }
 }

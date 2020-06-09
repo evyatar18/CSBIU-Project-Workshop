@@ -12,8 +12,8 @@ class EditElementForm<T extends StringIdentified> extends StatefulWidget {
   EditElementForm({
     @required this.element,
     @required this.elementManager,
-    @required formCreator,
-  }) : formCreator = formCreator;
+    @required this.formCreator,
+  });
 
   @override
   _EditElementFormState<T> createState() => _EditElementFormState<T>();

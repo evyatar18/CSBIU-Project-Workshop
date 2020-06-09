@@ -108,7 +108,7 @@ class StudentDetails extends StatelessWidget {
                     await showAlertDialog(
                       context,
                       "Success!",
-                      "Set project sucessfully",
+                      "Set project successfully",
                     );
 
                     // close project table

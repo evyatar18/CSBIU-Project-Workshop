@@ -143,7 +143,7 @@ class MemoViewState extends State<MemoView> {
       actions: <Widget>[
         FlatButton(
           onPressed: _openFiles,
-          child: Icon(Icons.folder, color: Colors.white),
+          child: Icon(Icons.attach_file, color: Colors.white),
         ),
         FlatButton(
           onPressed: _save,
@@ -207,7 +207,7 @@ class MemoViewState extends State<MemoView> {
           ),
         ),
          ),
-        
+
         resizeToAvoidBottomPadding: false,
       ),
     );
