@@ -1,4 +1,5 @@
 import 'package:redux/redux.dart';
+import 'package:rxdart/rxdart.dart';
 
 enum RequestType { ADD, REMOVE, CLEAR_LIST, FOR_EACH }
 
@@ -106,13 +107,10 @@ class ListModifierHandler<T> {
 
   Iterable<T> where(bool Function(T) where) => latestItems.where(where);
 
-  Stream<List<T>> get items async* {
-    yield latestItems;
-
-    await for (var item in _store.onChange) {
-      yield item;
-    }
-  }
+  Stream<List<T>> get items => ConcatStream([
+    Stream.value(latestItems),
+    _store.onChange,
+  ]);
 
   List<T> get latestItems => _store.state;
 }

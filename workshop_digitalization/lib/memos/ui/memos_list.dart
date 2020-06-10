@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mutex/mutex.dart';
-import 'package:workshop_digitalization/global/const.dart';
+import 'package:workshop_digitalization/global/strings.dart';
+import 'package:workshop_digitalization/memos/ui/memo_send_popup.dart';
 
 import '../memo.dart';
 import 'memo_view.dart';
@@ -8,9 +9,11 @@ import 'memo_view.dart';
 class MemoScaffold extends StatelessWidget {
   final MemoManager memoManager;
   final _MemoOpener _opener;
+  final List<String> memoEmailRecipients;
 
   MemoScaffold({
     @required this.memoManager,
+    this.memoEmailRecipients = const [],
   }) : _opener = _MemoOpener(memoManager);
 
   @override
@@ -24,6 +27,7 @@ class MemoScaffold extends StatelessWidget {
       body: MemosListView(
         memoManager: memoManager,
         opener: _opener,
+        memoEmailRecipients: memoEmailRecipients,
       ),
     );
   }
@@ -35,8 +39,13 @@ class MemoScaffold extends StatelessWidget {
 class MemosListView extends StatefulWidget {
   final MemoManager memoManager;
   final _MemoOpener opener;
+  final List<String> memoEmailRecipients;
 
-  MemosListView({@required this.memoManager, @required this.opener});
+  MemosListView({
+    @required this.memoManager,
+    @required this.opener,
+    this.memoEmailRecipients,
+  });
 
   @override
   _MemosListViewState createState() => _MemosListViewState();
@@ -58,6 +67,7 @@ class _MemosListViewState extends State<MemosListView> {
               memo: memos[index],
               manager: widget.memoManager,
               memoOpener: widget.opener,
+              emailRecipients: widget.memoEmailRecipients,
             ),
           ),
         );
@@ -70,9 +80,14 @@ class MemoCard extends StatelessWidget {
   final Memo memo;
   final MemoManager<Memo> manager;
   final _MemoOpener memoOpener;
+  final List<String> emailRecipients;
 
-  MemoCard(
-      {@required this.memo, @required this.manager, @required this.memoOpener});
+  MemoCard({
+    @required this.memo,
+    @required this.manager,
+    @required this.memoOpener,
+    this.emailRecipients,
+  });
 
   void _openMemoPage(BuildContext context) =>
       memoOpener.openExisting(context, memo);
@@ -85,18 +100,26 @@ class MemoCard extends StatelessWidget {
         child: ListTile(
           title: Text(memo.topic),
           subtitle: Text(
-            "Created: ${dateDisplayFormat.format(memo.creationDate)} | Edited: ${dateDisplayFormat.format(memo.lastUpdate)}",
+            "Created: ${writeDate(memo.creationDate)} | Edited: ${writeDate(memo.lastUpdate)}",
           ),
-          trailing: IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () => manager.delete(memo),
-          ),
+          trailing: Wrap(children: [
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () => manager.delete(memo),
+            ),
+            if (emailRecipients != null)
+              IconButton(
+                icon: Icon(Icons.email),
+                onPressed: () {
+                  showMemoSendPopup(context, memo, emailRecipients);
+                },
+              )
+          ]),
         ),
       ),
     );
   }
 }
-
 
 class _MemoOpener {
   bool _opening = false;

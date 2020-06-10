@@ -61,13 +61,16 @@ dependencies:
 
   # https://pub.dev/packages/url_launcher#-installing-tab-
   url_launcher: ^5.4.10
-  
+
   # https://pub.dev/packages/bubble_bottom_bar#-installing-tab-
   bubble_bottom_bar: ^1.2.0
 
 
   # https://pub.dev/packages/mutex
   mutex:
+
+  # https://pub.dev/packages/flutter_email_sender for sending emails
+  flutter_email_sender: 3.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

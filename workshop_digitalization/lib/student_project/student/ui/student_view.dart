@@ -68,6 +68,7 @@ class StudentDetails extends StatelessWidget {
             ),
             MemoScaffold(
               memoManager: student.memos,
+              memoEmailRecipients: [student.email ?? ""],
             ),
             createFileContainerDisplayer(container: student.files),
             _buildProjectView(),
@@ -98,7 +99,8 @@ class StudentDetails extends StatelessWidget {
                     if (project != null)
                       project.studentIds = project.studentIds
                         ..remove(student.id);
-                    newProject.studentIds = newProject.studentIds..add(student.id);
+                    newProject.studentIds = newProject.studentIds
+                      ..add(student.id);
 
                     await Future.wait([
                       if (project != null) projectManager.save(project),
