@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
-import 'package:workshop_digitalization/global/ui/disposer.dart';
+import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/menu/ui/main_menu.dart';
 import 'package:workshop_digitalization/student_project/firebase_managers.dart';
-import 'package:workshop_digitalization/student_project/student/firebase_student.dart';
-import 'package:workshop_digitalization/student_project/student/ui/student_table.dart';
+import 'package:workshop_digitalization/student_project/project/project.dart';
+import 'package:workshop_digitalization/student_project/student/student.dart';
 
-import '../../main.dart';
+import 'routes_utils.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -15,17 +15,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex;
-  List<Widget> _children = [
-    MainMenu(),
-    Disposer(
-      createInFuture: () async => FirebaseManagers.instance.students,
-      builder: (context, manager) {
-        return firebaseStudentsTable();
-      },
-    ),
-    Scaffold(),
-    Scaffold()
+
+  List<WidgetBuilder> _children = [
+    (_) => MainMenu(),
+    createStudentTable,
+    (_) => Scaffold(),
+    (_) => Scaffold(),
   ];
+
   @override
   void initState() {
     super.initState();
@@ -38,10 +35,9 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _body(BuildContext context) {
     return Scaffold(
-      body: _children[_currentIndex],
+      body: _children[_currentIndex](context),
       //floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       bottomNavigationBar: BubbleBottomBar(
         hasNotch: true,
@@ -50,8 +46,8 @@ class _MyHomePageState extends State<MyHomePage> {
         currentIndex: _currentIndex,
         onTap: changePage,
         borderRadius: BorderRadius.vertical(
-            top: Radius.circular(
-                16)), //border radius doesn't work when the notch is enabled.
+          top: Radius.circular(16),
+        ), //border radius doesn't work when the notch is enabled.
         elevation: 8,
         items: <BubbleBottomBarItem>[
           BubbleBottomBarItem(
@@ -88,18 +84,36 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               title: Text("Projects")),
           BubbleBottomBarItem(
-              backgroundColor: Colors.indigo,
-              icon: Icon(
-                Icons.settings,
-                color: Colors.black,
-              ),
-              activeIcon: Icon(
-                Icons.settings,
-                color: Colors.indigo,
-              ),
-              title: Text("Settings")),
+            backgroundColor: Colors.indigo,
+            icon: Icon(
+              Icons.settings,
+              color: Colors.black,
+            ),
+            activeIcon: Icon(
+              Icons.settings,
+              color: Colors.indigo,
+            ),
+            title: Text("Settings"),
+          ),
         ],
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        FutureProvider<StudentManager>(
+          create: (_) => FirebaseManagers.instance.students,
+          lazy: true,
+        ),
+        FutureProvider<ProjectManager>(
+          create: (_) => FirebaseManagers.instance.projects,
+          lazy: true,
+        ),
+      ],
+      child: Builder(builder: (context) => _body(context)),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:workshop_digitalization/menu/routs_utils.dart';
+
+import 'routes_utils.dart';
 
 class BigIcon extends StatelessWidget {
   final String text;
@@ -35,9 +36,12 @@ class BigIcon extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(10),
               child: FittedBox(
-                  fit: BoxFit.fitWidth,
-                  child: Text(text,
-                      style: TextStyle(fontWeight: FontWeight.bold))),
+                fit: BoxFit.fitWidth,
+                child: Text(
+                  text,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
             )
           ],
         );
@@ -61,10 +65,11 @@ class MainMenu extends StatelessWidget {
         child: ListView(
           children: <Widget>[
             UserAccountsDrawerHeader(
-                accountName: Text('FULL NAME'),
-                accountEmail: Text('email@email.com'),
-                currentAccountPicture: Icon(Icons.person),
-                decoration: BoxDecoration(color: Colors.blueAccent),),
+              accountName: Text('FULL NAME'),
+              accountEmail: Text('email@email.com'),
+              currentAccountPicture: Icon(Icons.person),
+              decoration: BoxDecoration(color: Colors.blueAccent),
+            ),
             ListTile(
               trailing: Icon(
                 Icons.settings,
@@ -75,7 +80,6 @@ class MainMenu extends StatelessWidget {
           ],
         ),
       ),
-      
       body: Padding(
         padding: EdgeInsets.all(10),
         child: GridView.count(
