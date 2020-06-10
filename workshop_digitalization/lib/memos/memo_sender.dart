@@ -16,7 +16,6 @@ Future<Email> createMemoEmail(
         .toList();
 
     filePaths = await Future.wait(fileDownloads);
-    print(filePaths);
   }
 
   return Email(
