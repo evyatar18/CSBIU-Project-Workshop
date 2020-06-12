@@ -71,6 +71,9 @@ dependencies:
 
   # https://pub.dev/packages/flutter_email_sender for sending emails
   flutter_email_sender: 3.0.1
+  flutter_speed_dial: ^1.2.5
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -10,6 +10,7 @@ import 'package:workshop_digitalization/menu/ui/main_menu.dart';
 import 'package:workshop_digitalization/student_project/student/firebase_student.dart';
 import 'package:workshop_digitalization/student_project/student/ui/student_view.dart';
 
+
 import 'student_project/firebase_managers.dart';
 import 'student_project/student/dummy_student.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
