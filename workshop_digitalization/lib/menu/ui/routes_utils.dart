@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:workshop_digitalization/files/ui/load_screen.dart';
-import 'package:workshop_digitalization/student_project/firebase_managers.dart';
 import 'package:workshop_digitalization/student_project/project/project.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
 import 'package:workshop_digitalization/student_project/student/ui/new_student_view.dart';
@@ -41,33 +40,40 @@ Widget createStudentDependent(StudentProvided builder) {
   );
 }
 
-Widget createStudentTable(BuildContext context) {
-  return createStudentProjectDependent(
-    (context, sm, pm) => StudentTableScreen<Student, Project>(
+Widget createStudentTable() {
+  return createStudentProjectDependent((context, sm, pm) {
+    return StudentTableScreen<Student, Project>(
       studentManager: sm,
       projectManager: pm,
-    ),
+    );
+  });
+}
+
+void pushWithProviderValues(BuildContext context, WidgetBuilder widget) {
+  final sm = Provider.of<StudentManager>(context, listen: false);
+  final pm = Provider.of<ProjectManager>(context, listen: false);
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) {
+      return MultiProvider(
+        providers: [Provider.value(value: sm), Provider.value(value: pm)],
+        child: Builder(builder: (context) => widget(context)),
+      );
+    }),
   );
 }
 
 void pushStudentTableScreen(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: createStudentTable),
-  );
+  pushWithProviderValues(context, (context) => createStudentTable());
 }
 
 void pushNewStudentScreen(BuildContext context) {
-  {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => createStudentDependent(
-          (context, manager) => NewStudentScreen(studentManager: manager),
-        ),
-      ),
-    );
-  }
+  pushWithProviderValues(
+    context,
+    (_) => createStudentDependent(
+        (context, manager) => NewStudentScreen(studentManager: manager)),
+  );
 }
 
 void pushNewProjectScreen(BuildContext context) {
@@ -88,18 +94,13 @@ void pushNewProjectScreen(BuildContext context) {
   }
 }
 
-void pushProjectTableScreen(BuildContext context) {
-  {}
-}
+void pushProjectTableScreen(BuildContext context) {}
 
 void pushLoadScreen(BuildContext context) {
-  Navigator.push(
+  pushWithProviderValues(
     context,
-    MaterialPageRoute(
-      builder: (context) => createStudentDependent(
-        (context, manager) => LoadScreen(studentManager: manager),
-      ),
-    ),
+    (_) => createStudentDependent(
+        (context, manager) => LoadScreen(studentManager: manager)),
   );
 }
 

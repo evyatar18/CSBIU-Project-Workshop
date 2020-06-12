@@ -13,14 +13,16 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+typedef Widget EmptyWidgetBuilder();
+
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex;
 
-  List<WidgetBuilder> _children = [
-    (_) => MainMenu(),
-    createStudentTable,
-    (_) => Scaffold(),
-    (_) => Scaffold(),
+  List<EmptyWidgetBuilder> _children = [
+    () => MainMenu(),
+    () => createStudentTable(),
+    () => Scaffold(),
+    () => Scaffold(),
   ];
 
   @override
@@ -35,9 +37,9 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Widget _body(BuildContext context) {
+  Widget _body() {
     return Scaffold(
-      body: _children[_currentIndex](context),
+      body: _children[_currentIndex](),
       //floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       bottomNavigationBar: BubbleBottomBar(
         hasNotch: true,
@@ -106,14 +108,14 @@ class _MyHomePageState extends State<MyHomePage> {
       providers: [
         FutureProvider<StudentManager>(
           create: (_) => FirebaseManagers.instance.students,
-          lazy: true,
+          lazy: false,
         ),
         FutureProvider<ProjectManager>(
           create: (_) => FirebaseManagers.instance.projects,
-          lazy: true,
+          lazy: false,
         ),
       ],
-      child: Builder(builder: (context) => _body(context)),
+      child: _body(),
     );
   }
 }

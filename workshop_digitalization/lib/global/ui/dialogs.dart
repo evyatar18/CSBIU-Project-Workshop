@@ -23,7 +23,7 @@ Future<void> showSuccessDialog(BuildContext context,
   return showAlertDialog(context, title, message);
 }
 
-Future<bool> showAgreementDialog(BuildContext context, String title, {bool barrierDismissible}) {
+Future<bool> showAgreementDialog(BuildContext context, String title, {bool barrierDismissible = false}) {
   return showDialog<bool>(
     context: context,
     barrierDismissible: barrierDismissible,
