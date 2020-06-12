@@ -69,7 +69,7 @@ class StudentTableScreen<T extends Student, S extends Project>
       child: Scaffold(
         body: createFilterableStudentsTable(
             studentManager.students, onStudentClick),
-        floatingActionButton: showAddButton ? _buildAddButton() : null,
+        //floatingActionButton: showAddButton ? _buildAddButton() : null,
       ),
     );
   }

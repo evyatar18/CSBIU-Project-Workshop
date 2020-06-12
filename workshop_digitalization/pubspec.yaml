@@ -73,6 +73,8 @@ dependencies:
   flutter_email_sender: 3.0.1
   flutter_speed_dial: ^1.2.5
 
+  path_provider: ^1.6.10
+
 
 dev_dependencies:
   flutter_test:

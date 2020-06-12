@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
+import 'package:workshop_digitalization/menu/ui/bottom_fab.dart';
 import 'package:workshop_digitalization/menu/ui/main_menu.dart';
 import 'package:workshop_digitalization/student_project/firebase_managers.dart';
 import 'package:workshop_digitalization/student_project/project/project.dart';
@@ -18,7 +18,7 @@ typedef Widget EmptyWidgetBuilder();
 
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex;
-  bool _dialVisible = true;
+
 
   List<EmptyWidgetBuilder> _children = [
     () => MainMenu(),
@@ -39,57 +39,11 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Widget _body() {
+  Widget _body(BuildContext context) {
     return Scaffold(
-      floatingActionButton: SpeedDial(
-          
-          // both default to 16
-          marginRight: 18,
-          
-          marginBottom: 20,
-          animatedIcon: AnimatedIcons.menu_close,
-          animatedIconTheme: IconThemeData(size: 22.0),
-          // this is ignored if animatedIcon is non null
-          //\ child: Icon(Icons.add),
-          visible: _dialVisible,
-          // If true user is forced to close dial manually 
-          // by tapping main button and overlay is not rendered.
-          closeManually: false,
-          curve: Curves.bounceIn,
-          overlayColor: Colors.black,
-          overlayOpacity: 0.5,
-          onOpen: () => print('OPENING DIAL'),
-          onClose: () => print('DIAL CLOSED'),
-          backgroundColor: Colors.red,
-          foregroundColor: Colors.white,
-          elevation: 8.0,
-          shape: CircleBorder(),
-          children: [
-            SpeedDialChild(
-              child: Icon(Icons.accessibility),
-              backgroundColor: Colors.red,
-              label: 'First',
-              labelStyle: TextStyle(fontSize: 18.0),
-              onTap: () => print('FIRST CHILD')
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.brush),
-              backgroundColor: Colors.blue,
-              label: 'Second',
-              labelStyle: TextStyle(fontSize: 18.0),
-              onTap: () => print('SECOND CHILD'),
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.keyboard_voice),
-              backgroundColor: Colors.green,
-              label: 'Third',
-              labelStyle: TextStyle(fontSize: 18.0),
-              onTap: () => print('THIRD CHILD'),
-            ),
-          ],
-        ),
+      floatingActionButton: BottomFab(_currentIndex,),
       
-      body: _children[_currentIndex](context),
+      body: _children[_currentIndex](),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       bottomNavigationBar: BubbleBottomBar(
         hasNotch: false,
@@ -165,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
           lazy: false,
         ),
       ],
-      child: _body(),
+      child: _body(context),
     );
   }
 }
