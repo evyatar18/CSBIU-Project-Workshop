@@ -11,7 +11,6 @@ import 'package:workshop_digitalization/person/firebase_person.dart';
 import 'package:workshop_digitalization/student_project/firebase_managers.dart';
 import 'package:workshop_digitalization/student_project/project/project.dart';
 import 'package:workshop_digitalization/student_project/student/firebase_student.dart';
-import 'package:workshop_digitalization/student_project/student/student.dart';
 
 class FirebaseProject extends Document<FirebaseProject> implements Project {
   @override
@@ -19,9 +18,7 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
 
   FirebasePerson _contact;
   @override
-  Person get contact {
-    return _contact;
-  }
+  Person get contact => _contact ?? FirebasePerson();
 
   @override
   set contact(Person p) {
@@ -31,14 +28,16 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
   @override
   DateTime endDate;
 
+  FirebasePerson _initiator;
   @override
-  String initiatorFirstName;
+  Person get initiator => _initiator ?? FirebasePerson();
+
+  set initiator(Person p) {
+    _initiator = FirebasePerson.fromPerson(p);
+  }
 
   @override
-  String initiatorLastName;
-
-  @override
-  Person get mentor => _mentor;
+  Person get mentor => _mentor ?? FirebasePerson();
 
   @override
   set mentor(Person p) {
@@ -92,8 +91,8 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
   /// Data for save
   Map<String, dynamic> toData() {
     final data = Map<String, dynamic>();
-    writeNotNull(data, 'initiatorFirstName', initiatorFirstName);
-    writeNotNull(data, 'initiatorLastName', initiatorLastName);
+
+    writeModelNotNull(data, 'initiator', _initiator);
     writeModelNotNull(data, 'contact', _contact);
     writeNotNull(data, 'projectSubject', projectSubject);
     writeNotNull(data, 'projectDomain', projectDomain);
@@ -126,8 +125,8 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
     contact = FirebasePerson(
         values: valueMapFromKey<String, dynamic>(data, 'contact'));
     endDate = valueFromKey<Timestamp>(data, 'endDate')?.toDate();
-    initiatorFirstName = valueFromKey<String>(data, 'initiatorFirstName');
-    initiatorLastName = valueFromKey<String>(data, 'initiatorLastName');
+    initiator = FirebasePerson(
+        values: valueMapFromKey<String, dynamic>(data, 'initiator'));
     mentor = FirebasePerson(
         values: valueMapFromKey<String, dynamic>(data, 'mentor'));
     projectChallenges = valueListFromKey<String>(data, 'projectChallenges');

@@ -6,17 +6,17 @@ import '../project_element_manager.dart';
 import 'project_form.dart';
 
 class NewProjectScreen extends StatelessWidget {
-  final ProjectManager studentManager;
+  final ProjectManager projectManager;
 
   NewProjectScreen({
     Key key,
-    @required this.studentManager,
+    @required this.projectManager,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return NewElementScreen<Project>(
-      elementManager: ProjectElementManager(studentManager),
+      elementManager: ProjectElementManager(projectManager),
       elementName: "project",
       elementFormCreator: ProjectForm.elementForm,
     );

@@ -19,11 +19,10 @@ typedef Widget EmptyWidgetBuilder();
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex;
 
-
   List<EmptyWidgetBuilder> _children = [
     () => MainMenu(),
     () => createStudentTable(),
-    () => Scaffold(),
+    () => createProjectTable(),
     () => Scaffold(),
   ];
 
@@ -41,8 +40,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _body(BuildContext context) {
     return Scaffold(
-      floatingActionButton: BottomFab(_currentIndex,),
-      
+      floatingActionButton: BottomFab(
+        _currentIndex,
+      ),
       body: _children[_currentIndex](),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       bottomNavigationBar: BubbleBottomBar(
