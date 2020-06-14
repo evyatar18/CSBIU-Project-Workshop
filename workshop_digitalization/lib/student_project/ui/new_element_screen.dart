@@ -63,6 +63,43 @@ class NewElementScreen<T extends StringIdentified> extends StatelessWidget {
     return true;
   }
 
+  Widget _buildElement(BuildContext context, T element) {
+    return Column(
+      children: <Widget>[
+        elementFormCreator(
+          element: element,
+          readOnly: false,
+          formBuilderKey: _formBuilderKey,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            RaisedButton(
+              child: Text("Save"),
+              onPressed: () async {
+                // set values on the element object
+                _formBuilderKey.currentState.save();
+
+                // save the element
+                if (await _save(context, element)) {
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            RaisedButton(
+              child: Text("Delete"),
+              onPressed: () async {
+                if (await _delete(context, element)) {
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          ],
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final elementFuture = elementManager.createEmpty();
@@ -96,39 +133,9 @@ class NewElementScreen<T extends StringIdentified> extends StatelessWidget {
             }
 
             final element = snapshot.data;
-            return Column(
-              children: <Widget>[
-                elementFormCreator(
-                  element: element,
-                  readOnly: false,
-                  formBuilderKey: _formBuilderKey,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    RaisedButton(
-                      child: Text("Save"),
-                      onPressed: () async {
-                        // set values on the element object
-                        _formBuilderKey.currentState.save();
-
-                        // save the element
-                        if (await _save(context, element)) {
-                          Navigator.pop(context);
-                        }
-                      },
-                    ),
-                    RaisedButton(
-                      child: Text("Delete"),
-                      onPressed: () async {
-                        if (await _delete(context, element)) {
-                          Navigator.pop(context);
-                        }
-                      },
-                    ),
-                  ],
-                )
-              ],
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: _buildElement(context, element),
             );
           },
         )),

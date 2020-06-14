@@ -84,9 +84,9 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
             values: values,
             collectionRef: collectionRef);
 
-  DateTime get lastUpdate => super.updatedAt.toDate();
+  DateTime get lastUpdate => super.updatedAt != null ? super.updatedAt.toDate() : DateTime.now();
 
-  DateTime get loadDate => super.createdAt.toDate();
+  DateTime get loadDate => super.createdAt != null ? super.createdAt.toDate() : DateTime.now();
 
   /// Data for save
   Map<String, dynamic> toData() {

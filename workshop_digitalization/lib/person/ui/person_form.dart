@@ -84,7 +84,7 @@ class PersonForm2 extends StatelessWidget {
           initialValue: person.phoneNumber ?? "",
           attribute: "$personId-phone",
           decoration: InputDecoration(labelText: "Phone Number"),
-          validators: phoneValidators,
+          validators: [phoneValidator],
           onSaved: (number) => person.phoneNumber = number,
         ),
         FormBuilderTextField(
@@ -92,7 +92,7 @@ class PersonForm2 extends StatelessWidget {
           attribute: "$personId-email",
           decoration: InputDecoration(labelText: "email"),
           validators: [
-            FormBuilderValidators.required(),
+            // FormBuilderValidators.required(),
             FormBuilderValidators.email()
           ],
           onSaved: (email) => person.email = email,

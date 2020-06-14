@@ -36,10 +36,21 @@ class _EditElementFormState<T extends StringIdentified>
         child: Column(
           children: <Widget>[
             ListTile(
-              title: Text("Edit by clicking"),
-              trailing: FlatButton(
-                onPressed: _toggleEdit,
-                child: Icon(Icons.edit, color: color),
+              // title: Text("Edit by clicking"),
+              trailing: Wrap(
+                children: <Widget>[
+                  FlatButton(
+                    onPressed: _toggleEdit,
+                    child: Icon(Icons.edit, color: color),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () async {
+                      await _delete(context);
+                      Navigator.pop(this.context);
+                    },
+                  ),
+                ],
               ),
             ),
             widget.formCreator(
@@ -77,7 +88,8 @@ class _EditElementFormState<T extends StringIdentified>
       widget.elementManager.save(widget.element).then(
         (value) => showSuccessDialog(context, title: "Save successful"),
         onError: (err) {
-          showErrorDialog(context, title: "Error on save", error: err.toString());
+          showErrorDialog(context,
+              title: "Error on save", error: err.toString());
         },
       );
     }
@@ -92,5 +104,26 @@ class _EditElementFormState<T extends StringIdentified>
 
       _readOnly = !_readOnly;
     });
+  }
+
+  Future<void> _delete(BuildContext context) async {
+    bool result = await showAgreementDialog(
+        context, "Are you sure you want to delete this?");
+
+    if (result == null || !result) {
+      return;
+    }
+
+    try {
+      await widget.elementManager.delete(widget.element);
+
+      await showSuccessDialog(context, title: "Deletion successful.");
+    } catch (e) {
+      await showErrorDialog(
+        context,
+        title: "Deletion unsuccessful.",
+        error: e.toString(),
+      );
+    }
   }
 }

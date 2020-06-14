@@ -97,7 +97,7 @@ class StudentForm extends StatelessWidget {
                   keyboardType: TextInputType.phone,
                   attribute: "phone",
                   decoration: InputDecoration(labelText: "Phone Number"),
-                  validators: phoneValidators,
+                  validators: [phoneValidator],
                   onSaved: (phone) => student.phoneNumber = phone,
                 ),
                 FormBuilderTextField(
