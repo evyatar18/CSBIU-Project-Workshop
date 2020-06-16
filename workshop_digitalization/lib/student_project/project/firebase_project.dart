@@ -309,7 +309,9 @@ class FirebaseProjectManager extends ProjectManager<FirebaseProject> {
 
       try {
         await studs.save(student);
-      } catch (e) {}
+      } catch (e) {
+        print("firebase_project.dart::313 - error: $e");
+      }
     });
 
     await Future.wait(tasks);

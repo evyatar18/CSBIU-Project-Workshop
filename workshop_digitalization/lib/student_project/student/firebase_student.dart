@@ -8,6 +8,8 @@ import 'package:workshop_digitalization/global/smart_doc_accessor.dart';
 import 'package:workshop_digitalization/memos/firebase_memo.dart';
 import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/progress/progress.dart';
+import 'package:workshop_digitalization/student_project/grade/firebase_grade.dart';
+import 'package:workshop_digitalization/student_project/grade/grade.dart';
 
 import '../firebase_managers.dart';
 import '../project/project.dart';
@@ -60,7 +62,7 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
 
   StudentStatus _status;
   @override
-  StudentStatus get status => _status ?? DEFAULT_STATUS;
+  StudentStatus get status => _status ?? DEFAULT_STUDENT_STATUS;
 
   String firebaseProjectId;
 
@@ -89,7 +91,9 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
     writeNotNull(data, "email", email);
     writeNotNull(data, "year", studyYear);
     if (status != null) writeNotNull(data, "status", status.index);
-    writeNotNull(data, "projectId", firebaseProjectId);
+    write(data, "projectId", firebaseProjectId);
+
+    writeModelNotNull(data, "grade", _grade);
 
     return data;
   }
@@ -105,6 +109,8 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
     status = StudentStatus.values[valueFromKey<int>(data, "status")];
 
     firebaseProjectId = valueFromKey<String>(data, "projectId");
+
+    _grade = FirebaseGrade(values: valueMapFromKey(data, "grade"));
   }
 
   @override
@@ -112,6 +118,11 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
       (await FirebaseManagers.instance.projects).getProject(firebaseProjectId);
 
   Future<void> dispose() async {}
+
+  FirebaseGrade _grade;
+  @override
+  Grade get grade => _grade ?? (_grade = FirebaseGrade());
+  set grade(Grade g) => _grade = g;
 }
 
 class FirebaseStudentManager implements StudentManager<FirebaseStudent> {

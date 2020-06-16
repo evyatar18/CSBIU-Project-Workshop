@@ -9,11 +9,13 @@ class EditElementForm<T extends StringIdentified> extends StatefulWidget {
   final T element;
   final ElementManager<T> elementManager;
   final ElementForm<T> formCreator;
+  final bool enableDeleting;
 
   EditElementForm({
     @required this.element,
     @required this.elementManager,
     @required this.formCreator,
+    this.enableDeleting = true,
   });
 
   @override
@@ -43,13 +45,14 @@ class _EditElementFormState<T extends StringIdentified>
                     onPressed: _toggleEdit,
                     child: Icon(Icons.edit, color: color),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () async {
-                      await _delete(context);
-                      Navigator.pop(this.context);
-                    },
-                  ),
+                  if (widget.enableDeleting)
+                    IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () async {
+                        await _delete(context);
+                        Navigator.pop(this.context);
+                      },
+                    ),
                 ],
               ),
             ),

@@ -58,6 +58,8 @@ dependencies:
 
   # html editor https://pub.dev/packages/html_editor#-readme-tab-
   html_editor: ^0.0.2+1
+  #webview_flutter:
+  flutter_html:
 
   # https://pub.dev/packages/url_launcher#-installing-tab-
   url_launcher: ^5.4.10

@@ -153,7 +153,8 @@ class MemoViewState extends State<MemoView> {
           child: Icon(Icons.attach_file, color: Colors.white),
         ),
         FlatButton(
-          onPressed: () => showMemoSendPopup(context, widget.memo, widget.recipients),
+          onPressed: () =>
+              showMemoSendPopup(context, widget.memo, widget.recipients),
           child: Icon(Icons.mail, color: Colors.white),
         ),
       ],
@@ -180,13 +181,15 @@ class MemoViewState extends State<MemoView> {
     return Row(
       children: <Widget>[
         Expanded(
+          child: Text(
+              'created at ${_dateFormat.format(widget.memo.creationDate)}'),
+        ),
+        if (widget.memo.lastUpdate != null)
+          Expanded(
             child: Text(
-                'creatad at ${_dateFormat.format(widget.memo.creationDate)}')),
-        widget.memo.lastUpdate != null
-            ? Expanded(
-                child: Text(
-                    'updated at ${_dateFormat.format(widget.memo.lastUpdate)}'))
-            : Container()
+              'updated at ${_dateFormat.format(widget.memo.lastUpdate)}',
+            ),
+          ),
       ],
     );
   }
