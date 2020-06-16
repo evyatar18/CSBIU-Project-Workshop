@@ -51,7 +51,7 @@ class _LoadScreenState extends State<LoadScreen> {
     FileParser parser = CsvFileParser();
     List<Map<String, dynamic>> jsons = [];
     if (_paths != null) {
-      var fields =LocalStudent.getFields();
+      var fields = LocalStudent.getFields();
       for (var path in _paths.values) {
         jsons = jsons..addAll(await parser.parse(path, fields));
       }
@@ -69,17 +69,19 @@ class _LoadScreenState extends State<LoadScreen> {
 
   Widget uploadButton() {
     return _paths != null
-        ? Builder(builder: (BuildContext context){
-          return RaisedButton(
-            onPressed: () => loadFiles(this.repo),
-            child: Text("Load Files To DB"),
-          );
-        }) 
+        ? Builder(builder: (BuildContext context) {
+            return RaisedButton(
+              onPressed: () => loadFiles(this.repo),
+              child: Text("Load Files To DB"),
+            );
+          })
         : Container(
-          alignment: AlignmentDirectional.center,
-          child: Text('Thank you , the students uploadad to the server in this moments' , 
-          textAlign: TextAlign.center,),
-        );
+            alignment: AlignmentDirectional.center,
+            child: Text(
+              'Thank you, the students are being uploaded to the server in this moment',
+              textAlign: TextAlign.center,
+            ),
+          );
   }
 
   Widget filesList() {
@@ -116,8 +118,6 @@ class _LoadScreenState extends State<LoadScreen> {
                 : Container());
   }
 
- 
-
   Widget loadCsvButton() {
     return Padding(
       padding: const EdgeInsets.only(top: 50.0, bottom: 20.0),
@@ -134,11 +134,24 @@ class _LoadScreenState extends State<LoadScreen> {
       create: () => ProgressRepository(),
       builder: (context, repo) {
         this.repo = repo;
-        return  ProgressScaffold(
-            repo: repo,
-            body: buildBody(context),
+        return ProgressScaffold(
+          repo: repo,
+          body: buildBody(context),
         );
       },
+    );
+  }
+
+  Widget _buildExpectedFormat() {
+    return Text(
+      [
+        "Expecting a CSV format",
+        "Each line contains the following fields:",
+        "(leave a field empty if you don't",
+        " want to specify a value at this time)",
+        "",
+        ...LocalStudent.getFields(),
+      ].join("\n"),
     );
   }
 
@@ -160,6 +173,7 @@ class _LoadScreenState extends State<LoadScreen> {
                   textAlign: TextAlign.center,
                 ),
               ),
+              _buildExpectedFormat(),
               loadCsvButton(),
               filesList(),
               uploadButton(),

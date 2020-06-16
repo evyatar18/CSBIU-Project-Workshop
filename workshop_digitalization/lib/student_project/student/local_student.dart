@@ -36,27 +36,33 @@ class LocalStudent implements Student {
     this.studyYear,
   });
 
-  static getFields(){
-    return  [
-        'id',
-        'firstName',
-        'lastName',
-        'phoneNumber',
-        'email',
-        'year',
-        'status'
-      ];
+  static getFields() {
+    return [
+      'id',
+      'firstName',
+      'lastName',
+      'phoneNumber',
+      'email',
+      'year',
+      // 'status'
+    ];
+  }
+
+  static String nullIfEmpty(String s) {
+    return s == null || s.isEmpty ? null : s;
   }
 
   factory LocalStudent.fromJson(Map<String, dynamic> json) {
     return new LocalStudent(
-        email: json["email"],
-        firstName: json['firstName'],
-        lastName: json['lastName'],
-        personalID: json['id'].toString(),
-        phoneNumber: json['phoneNumber'].toString(),
-        status: StudentStatus.values[json['status']],
-        studyYear: json['year']);
+      email: nullIfEmpty(json["email"]),
+      firstName: nullIfEmpty(json['firstName']),
+      lastName: nullIfEmpty(json['lastName']),
+      personalID: nullIfEmpty(json['id'].toString()),
+      phoneNumber: nullIfEmpty(json['phoneNumber'].toString()),
+      // status: StudentStatus.values[json['status']],
+      status: DEFAULT_STUDENT_STATUS,
+      studyYear: nullIfEmpty(json['year']?.toString()) ?? DateTime.now().year,
+    );
   }
   
 
