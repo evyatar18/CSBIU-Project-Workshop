@@ -4,13 +4,20 @@ import 'package:intl/intl.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
 
 import '../memo.dart';
+import 'memo_send_popup.dart';
 
 class MemoView extends StatefulWidget {
   final Memo memo;
   final MemoManager<Memo> manager;
   final Function() onCancel;
+  final List<String> recipients;
 
-  MemoView({@required this.memo, @required this.manager, this.onCancel});
+  MemoView({
+    @required this.memo,
+    @required this.manager,
+    this.onCancel,
+    this.recipients = const <String>[],
+  });
 
   @override
   State<StatefulWidget> createState() => MemoViewState();
@@ -146,8 +153,8 @@ class MemoViewState extends State<MemoView> {
           child: Icon(Icons.attach_file, color: Colors.white),
         ),
         FlatButton(
-          onPressed: _save,
-          child: Icon(Icons.save, color: Colors.white),
+          onPressed: () => showMemoSendPopup(context, widget.memo, widget.recipients),
+          child: Icon(Icons.mail, color: Colors.white),
         ),
       ],
     );
@@ -190,24 +197,24 @@ class MemoViewState extends State<MemoView> {
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: appBarSection(),
-        body: SingleChildScrollView(child:Card(
-          child: Column(
-            children: <Widget>[
-              dates(),
-              subject(),
-              HtmlEditor(
-                hint: "Your text here...",
-                value: widget.memo.content,
-                key: keyEditor,
-                height: 400,
-                decoration: BoxDecoration(),
-              ),
-              bottomButtonSection(),
-            ],
+        body: SingleChildScrollView(
+          child: Card(
+            child: Column(
+              children: <Widget>[
+                dates(),
+                subject(),
+                HtmlEditor(
+                  hint: "Your text here...",
+                  value: widget.memo.content,
+                  key: keyEditor,
+                  height: 400,
+                  decoration: BoxDecoration(),
+                ),
+                bottomButtonSection(),
+              ],
+            ),
           ),
         ),
-         ),
-
         resizeToAvoidBottomPadding: false,
       ),
     );

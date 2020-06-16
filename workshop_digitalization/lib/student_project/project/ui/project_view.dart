@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workshop_digitalization/files/ui/file_view.dart';
 import 'package:workshop_digitalization/global/ui/tab_title.dart';
 import 'package:workshop_digitalization/memos/ui/memos_list.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
@@ -24,9 +25,10 @@ class ProjectDetailsView extends StatelessWidget {
         length: 4,
         child: Scaffold(
           appBar: AppBar(
+            title: Text("Project"),
             bottom: TabBar(
               tabs: [
-                Tab(child: TabName(title: 'Project Details')),
+                Tab(child: TabName(title: 'Details')),
                 Tab(child: TabName(title: 'Memos')),
                 Tab(child: TabName(title: 'Documents')),
                 Tab(child: TabName(title: 'Students'))
@@ -39,10 +41,21 @@ class ProjectDetailsView extends StatelessWidget {
                 project: project,
                 projectManager: projectManager,
               ),
-              MemoScaffold(
-                memoManager: project.memos,
+              FutureBuilder<List<String>>(
+                future: project.students
+                    .then((value) => value.map((e) => e.email).toList()),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return CircularProgressIndicator();
+                  }
+
+                  return MemoScaffold(
+                    memoEmailRecipients: snapshot.data,
+                    memoManager: project.memos,
+                  );
+                },
               ),
-              Icon(Icons.directions_bike),
+              createFileContainerDisplayer(container: project.files),
               Icon(Icons.ac_unit),
             ],
           ),

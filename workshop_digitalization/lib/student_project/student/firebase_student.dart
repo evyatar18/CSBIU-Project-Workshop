@@ -4,6 +4,7 @@ import 'package:flamingo/flamingo.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:workshop_digitalization/files/container.dart';
 import 'package:workshop_digitalization/files/firebase.dart';
+import 'package:workshop_digitalization/global/smart_doc_accessor.dart';
 import 'package:workshop_digitalization/memos/firebase_memo.dart';
 import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/progress/progress.dart';
@@ -115,7 +116,7 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
 
 class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
   final _collection = Flamingo.instance.rootReference.collection("students");
-  final _docAccessor = DocumentAccessor();
+  final _docAccessor = SmartDocumentAccessor();
 
   StreamSubscription _subscription;
   BehaviorSubject<List<FirebaseStudent>> _students =
@@ -139,6 +140,7 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
 
     _students.add(
       snapshot.documents
+          .where((doc) => !_docAccessor.isDeleted(doc.data))
           .map((e) => FirebaseStudent(collectionRef: _collection, snapshot: e))
           .toList(),
     );
@@ -154,6 +156,14 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
   }
 
   Future<void> delete(FirebaseStudent student) async {
+    final project = await student.project;
+
+    if (project != null) {
+      final projs = await FirebaseManagers.instance.projects;
+      project.studentIds = project.studentIds..remove(student.id);
+      await projs.save(project);
+    }
+
     student.dispose();
     await _docAccessor.delete(student);
   }
@@ -163,7 +173,10 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
   }
 
   FirebaseStudent getStudent(String id) {
-    return latestStudents.firstWhere((element) => element.id == id);
+    return latestStudents.firstWhere(
+      (element) => element.id == id,
+      orElse: () => null,
+    );
   }
 
   FirebaseStudent _fromStudent(Student s) {
@@ -189,8 +202,7 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
 
     try {
       await writeBatch.commit();
-      yield ProgressSnapshot(
-          taskName, "Uploaded ${batch.length} students.", 1);
+      yield ProgressSnapshot(taskName, "Uploaded ${batch.length} students.", 1);
     } catch (e) {
       yield ProgressSnapshot(taskName, "Error occurred: $e", 0.5, failed: true);
     }

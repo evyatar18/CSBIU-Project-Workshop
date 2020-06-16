@@ -6,6 +6,7 @@ import 'package:workshop_digitalization/files/file_utils.dart';
 import 'package:workshop_digitalization/files/firebase.dart';
 import 'package:workshop_digitalization/global/disposable.dart';
 import 'package:workshop_digitalization/global/list_modifier.dart';
+import 'package:workshop_digitalization/global/smart_doc_accessor.dart';
 
 import 'memo.dart';
 
@@ -83,7 +84,7 @@ class FirebaseMemo extends Document<FirebaseMemo> implements Memo, Disposable {
 class FirebaseMemoManager implements MemoManager<FirebaseMemo> {
   CollectionReference _memoCollection;
   final _memoList = ListModifierHandler<FirebaseMemo>();
-  final _docAccessor = DocumentAccessor();
+  final _docAccessor = SmartDocumentAccessor();
   StreamSubscription _subscription;
 
   FirebaseMemoManager(this._memoCollection) {
@@ -101,7 +102,7 @@ class FirebaseMemoManager implements MemoManager<FirebaseMemo> {
   void _onFirebaseUpdate(QuerySnapshot snapshot) {
     final newMemos = (snapshot)
           .documents
-          .where((doc) => doc.exists)
+          .where((doc) => doc.exists && !_docAccessor.isDeleted(doc.data))
           .map((doc) =>
               FirebaseMemo(snapshot: doc, collectionRef: _memoCollection))
           .toList();
@@ -124,11 +125,12 @@ class FirebaseMemoManager implements MemoManager<FirebaseMemo> {
 
   @override
   Future<void> delete(FirebaseMemo memo) async {
-    // clear file container
-    await clearFileContainer(memo.attachedFiles);
+    await _docAccessor.delete(memo);
+    // // clear file container
+    // await clearFileContainer(memo.attachedFiles);
 
-    // delete document
-    await memo.reference.delete();
+    // // delete document
+    // await memo.reference.delete();
   }
 
   @override

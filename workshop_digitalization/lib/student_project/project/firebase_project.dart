@@ -4,6 +4,7 @@ import 'package:flamingo/flamingo.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:workshop_digitalization/files/container.dart';
 import 'package:workshop_digitalization/files/firebase.dart';
+import 'package:workshop_digitalization/global/smart_doc_accessor.dart';
 import 'package:workshop_digitalization/memos/firebase_memo.dart';
 import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/person/person.dart';
@@ -84,9 +85,11 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
             values: values,
             collectionRef: collectionRef);
 
-  DateTime get lastUpdate => super.updatedAt != null ? super.updatedAt.toDate() : DateTime.now();
+  DateTime get lastUpdate =>
+      super.updatedAt != null ? super.updatedAt.toDate() : DateTime.now();
 
-  DateTime get loadDate => super.createdAt != null ? super.createdAt.toDate() : DateTime.now();
+  DateTime get loadDate =>
+      super.createdAt != null ? super.createdAt.toDate() : DateTime.now();
 
   /// Data for save
   Map<String, dynamic> toData() {
@@ -164,17 +167,20 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
 
   @override
   Future<List<FirebaseStudent>> get students async {
-    final studs = await FirebaseManagers.instance.students;
-    return _studentIds.map((id) => studs.getStudent(id));
+    final studsInstance = await FirebaseManagers.instance.students;
+    final studs =
+        _studentIds.map((id) => studsInstance.getStudent(id)).toList();
+
+    return studs.where((element) => element != null).toList();
   }
 
-  Future<void> dispose() async {
+  Future<void> dispose() {
     var tasks = <Future>[
       if (_files != null) _files.dispose(),
       if (_memos != null) _memos.dispose()
     ];
 
-    await Future.wait(tasks);
+    return Future.wait(tasks);
   }
 
   FileContainer _files;
@@ -208,7 +214,7 @@ class FirebaseProjectManager extends ProjectManager<FirebaseProject> {
         .listen(_projectSnapshotListener, cancelOnError: false);
   }
 
-  final _docAccessor = DocumentAccessor();
+  final _docAccessor = SmartDocumentAccessor();
 
   final _addQueue = <String, List<String>>{};
   final _deleteQueue = <String, List<String>>{};
@@ -252,6 +258,8 @@ class FirebaseProjectManager extends ProjectManager<FirebaseProject> {
   }
 
   Future<void> delete(FirebaseProject project) async {
+    await project.dispose();
+
     await Future.wait([
       _docAccessor.delete(project),
       _setProjectIds(project.studentIds, (stud) => null)
@@ -275,6 +283,7 @@ class FirebaseProjectManager extends ProjectManager<FirebaseProject> {
     oldProjects?.forEach((proj) => proj.dispose());
 
     final projects = snapshot.documents
+        .where((doc) => !_docAccessor.isDeleted(doc.data))
         .map(
           (doc) => FirebaseProject(
             collectionRef: _collection,

@@ -20,7 +20,7 @@ class MemoScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _opener.openNew(context),
+        onPressed: () => _opener.openNew(context, recipients: memoEmailRecipients),
         child: Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -90,7 +90,7 @@ class MemoCard extends StatelessWidget {
   });
 
   void _openMemoPage(BuildContext context) =>
-      memoOpener.openExisting(context, memo);
+      memoOpener.openExisting(context, memo, recipients: emailRecipients);
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +144,8 @@ class _MemoOpener {
     }
   }
 
-  Future<void> openNew(BuildContext context) async {
+  Future<void> openNew(BuildContext context,
+      {List<String> recipients = const <String>[]}) async {
     if (!(await _tryOpening())) return;
 
     try {
@@ -157,6 +158,7 @@ class _MemoOpener {
             memo: m,
             manager: manager,
             onCancel: () => manager.delete(m),
+            recipients: recipients,
           ),
         ),
       );
@@ -167,7 +169,8 @@ class _MemoOpener {
     }
   }
 
-  Future<void> openExisting(BuildContext context, Memo memo) async {
+  Future<void> openExisting(BuildContext context, Memo memo,
+      {List<String> recipients = const <String>[]}) async {
     if (!(await _tryOpening())) return;
 
     try {
@@ -177,6 +180,7 @@ class _MemoOpener {
           builder: (context) => MemoView(
             memo: memo,
             manager: manager,
+            recipients: recipients,
           ),
         ),
       );
