@@ -61,7 +61,7 @@ class LocalStudent implements Student {
       phoneNumber: nullIfEmpty(json['phoneNumber'].toString()),
       // status: StudentStatus.values[json['status']],
       status: DEFAULT_STUDENT_STATUS,
-      studyYear: nullIfEmpty(json['year']?.toString()) ?? DateTime.now().year,
+      studyYear: int.parse(nullIfEmpty(json['year']?.toString())) ?? DateTime.now().year,
     );
   }
   

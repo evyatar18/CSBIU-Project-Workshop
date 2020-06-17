@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:workshop_digitalization/files/ui/load_screen.dart';
+import 'package:workshop_digitalization/csv/ui/load_screen.dart';
 import 'package:workshop_digitalization/student_project/project/project.dart';
 import 'package:workshop_digitalization/student_project/project/ui/project_table_screen.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
