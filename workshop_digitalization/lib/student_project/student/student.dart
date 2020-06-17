@@ -3,11 +3,12 @@ import 'package:workshop_digitalization/global/disposable.dart';
 import 'package:workshop_digitalization/global/identified_type.dart';
 import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/progress/progress.dart';
+import 'package:workshop_digitalization/student_project/grade/grade.dart';
 
 import '../project/project.dart';
 
 enum StudentStatus { SEARCHING, WORKING, FINISHED, IRRELEVANT }
-const StudentStatus DEFAULT_STATUS = StudentStatus.SEARCHING;
+const StudentStatus DEFAULT_STUDENT_STATUS = StudentStatus.SEARCHING;
 
 String studentStatusText(StudentStatus status) {
   switch(status) {
@@ -41,6 +42,8 @@ abstract class Student implements StringIdentified {
   DateTime get loadDate;
 
   MemoManager get memos;
+
+  Grade grade;
 
   Future<Project> get project;
 }

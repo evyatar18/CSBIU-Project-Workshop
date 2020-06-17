@@ -20,8 +20,7 @@ String projectStatusText(ProjectStatus status) {
 }
 
 abstract class Project implements StringIdentified {
-  String initiatorFirstName;
-  String initiatorLastName;
+  Person initiator;
 
   Person contact;
 

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:workshop_digitalization/global/list_modifier.dart';
+import 'package:workshop_digitalization/global/smart_doc_accessor.dart';
 
 import 'container.dart';
 import 'firebase_utils.dart';
@@ -78,6 +79,8 @@ class _FBFileInfo implements FileInfo {
 }
 
 class FBFileContainer implements FileContainer {
+  final _docAccessor = SmartDocumentAccessor();
+
   final _listHolder = ListModifierHandler<_FBFileInfo>();
   final CollectionReference metadataCollection;
   StreamSubscription _metadataSubscription;
@@ -103,7 +106,7 @@ class FBFileContainer implements FileContainer {
 
     final newList = event.documents
         // get only existent documents
-        .where((doc) => doc.exists && doc.data != null)
+        .where((doc) => doc.exists && !_docAccessor.isDeleted(doc.data))
 
         // create List<FBFileInfo> from those documents
         .map((doc) => doc.data)
@@ -156,7 +159,8 @@ class FBFileContainer implements FileContainer {
         .getDocuments();
     for (var doc in docs.documents) {
       try {
-        await doc.reference.delete();
+        // await doc.reference.delete();
+        await _docAccessor.deleteWithReference(doc.reference);
       } catch (e) {
         print("exception while deleting document" +
             "${doc.reference.documentID}: $e");
@@ -164,11 +168,11 @@ class FBFileContainer implements FileContainer {
     }
 
     // delete document on storage
-    try {
-      await FirebaseStorage.instance.ref().child(file.path).delete();
-    } catch (e) {
-      print(e);
-    }
+    // try {
+    //   await FirebaseStorage.instance.ref().child(file.path).delete();
+    // } catch (e) {
+    //   print(e);
+    // }
   }
 
   @override

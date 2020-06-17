@@ -13,19 +13,19 @@ class FirebasePerson extends Model implements Person {
   }) : super(values: values);
 
   @override
-  String email;
+  String email = "";
 
   @override
-  String job;
+  String job = "";
 
   @override
-  String firstName;
+  String firstName = "";
 
   @override
-  String lastName;
+  String lastName = "";
 
   @override
-  String phoneNumber;
+  String phoneNumber = "";
 
   factory FirebasePerson.fromPerson(Person person) {
     return new FirebasePerson(

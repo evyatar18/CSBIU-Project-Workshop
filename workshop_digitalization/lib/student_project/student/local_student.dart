@@ -1,5 +1,6 @@
 import 'package:workshop_digitalization/files/container.dart';
 import 'package:workshop_digitalization/memos/memo.dart';
+import 'package:workshop_digitalization/student_project/grade/grade.dart';
 
 import '../project/project.dart';
 import 'student.dart';
@@ -87,6 +88,9 @@ class LocalStudent implements Student {
   void setProject(String projectId) {
     // TODO: implement setProject
   }
+
+  @override
+  Grade grade;
 }
 
 Map<String, dynamic> toData(Student student) {

@@ -2,22 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
-import 'package:workshop_digitalization/global/ui/expandable_item.dart';
-import 'package:workshop_digitalization/person/ui/preson_form.dart';
+import 'package:workshop_digitalization/global/strings.dart';
+import 'package:workshop_digitalization/person/ui/person_form.dart';
 
 import '../project.dart';
 
-class ProjectForm extends StatefulWidget {
+class ProjectForm extends StatelessWidget {
   final Project project;
   final bool readOnly;
   final GlobalKey<FormBuilderState> fbKey;
-  final GlobalKey<FormBuilderState> mentorKey = GlobalKey<FormBuilderState>();
-  final GlobalKey<FormBuilderState> contantKey = GlobalKey<FormBuilderState>();
 
   ProjectForm({
-    this.project,
-    this.readOnly,
-    this.fbKey,
+    @required this.project,
+    @required this.fbKey,
+    this.readOnly = true,
   });
 
   static ProjectForm elementForm({
@@ -30,116 +28,74 @@ class ProjectForm extends StatefulWidget {
         readOnly: readOnly,
         fbKey: formBuilderKey,
       );
-
-  void reset() {
-    fbKey.currentState.reset();
-    mentorKey.currentState.reset();
-    contantKey.currentState.reset();
-  }
-
-  @override
-  State<StatefulWidget> createState() {
-    return ProjectFormState();
-  }
-}
-
-final _dateFormat = DateFormat.yMd().add_Hms();
-
-class ProjectFormState extends State<ProjectForm> {
-  ExapndableItem mentorForm;
-  ExapndableItem contantForm;
-  void initState() {
-    super.initState();
-    mentorForm = ExapndableItem(
-      headerValue: 'Mentor',
-      inner: Card(
-        child: PersonForm(
-          fbKey: widget.mentorKey,
-          canRead: widget.readOnly,
-          person: widget.project.mentor,
-        ),
-      ),
-    );
-    contantForm = ExapndableItem(
-      headerValue: 'Contant',
-      inner: Card(
-        child: PersonForm(
-          fbKey: widget.contantKey,
-          canRead: widget.readOnly,
-          person: widget.project.contact,
-        ),
-      ),
-    );
-  }
-
-  Map<String, dynamic> _makeInitials(Project project) {
-    return {
-      "subject": project.projectSubject,
-      "initiatorFirstName": project.initiatorFirstName,
-      "initiatorLastName": project.initiatorLastName,
-      "domain": project.projectDomain,
-      "goal": project.projectGoal,
-      "endDate": project.endDate,
-      "status": project.projectStatus,
-      'numberOfStudents': project.numberOfStudents,
-      'mentorTechAbility': project.mentorTechAbility,
-      "lastUpdate": project.lastUpdate.toString(),
-      "loadDate": project.loadDate.toString()
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
     return FormBuilder(
-      key: widget.fbKey,
-      initialValue: _makeInitials(widget.project),
-      readOnly: widget.readOnly,
+      key: fbKey,
+      readOnly: readOnly,
       autovalidate: true,
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             FormBuilderTextField(
-              attribute: 'initiatorFirstName',
-              decoration: InputDecoration(labelText: "Initiator First Name"),
-            ),
-            FormBuilderTextField(
-              attribute: 'initiatorLastName',
-              decoration: InputDecoration(labelText: "Initiator Last Name"),
-            ),
-            expandedPanel(contantForm),
-            FormBuilderTextField(
+              initialValue: project.projectSubject,
               attribute: 'subject',
               decoration: InputDecoration(labelText: "Subject"),
+              onSaved: (subject) => project.projectSubject = subject,
             ),
             FormBuilderTextField(
+              initialValue: project.projectDomain,
               attribute: 'domain',
               decoration: InputDecoration(labelText: "Project Domain"),
+              onSaved: (domain) => project.projectDomain = domain,
             ),
             FormBuilderTextField(
+              initialValue: project.projectGoal,
               attribute: 'goal',
               decoration: InputDecoration(labelText: "Project Goal"),
+              onSaved: (goal) => project.projectGoal = goal,
             ),
-            FormBuilderTextField(
+            FormBuilderDateTimePicker(
+              initialDate: project.endDate ?? DateTime.now(),
               attribute: 'endDate',
-              decoration: InputDecoration(labelText: "Expected end Date"),
+              inputType: InputType.date,
+              format: DateFormat("dd-MM-yyyy"),
+              decoration: InputDecoration(labelText: "Expected End Date"),
+              onSaved: (dateTime) => project.endDate = dateTime,
             ),
-            FormBuilderTouchSpin(
-              decoration: InputDecoration(labelText: "Number of students"),
-              attribute: 'numberOfStudents',
-              step: 1,
-              addIcon: Icon(Icons.arrow_right),
-              subtractIcon: Icon(Icons.arrow_left),
+            ExpandablePersonForm(
+              person: project.initiator,
+              personId: "initiator",
+              personTitle: "Initiator",
             ),
-            expandedPanel(mentorForm),
+            ExpandablePersonForm(
+              person: project.contact,
+              personId: "contact",
+              personTitle: "Contact",
+            ),
+            ExpandablePersonForm(
+              person: project.mentor,
+              personId: "mentor",
+              personTitle: "Mentor",
+            ),
             FormBuilderTextField(
+              initialValue: project.mentorTechAbility,
               attribute: 'mentorTechAbility',
               decoration: InputDecoration(labelText: "Mentor Tech Ability"),
+              onSaved: (techAbility) => project.mentorTechAbility = techAbility,
+            ),
+            FormBuilderTextField(
+              initialValue: project.numberOfStudents.toString(),
+              decoration: InputDecoration(labelText: "Number of students"),
+              attribute: 'numberOfStudents',
+              readOnly: true,
             ),
             FormBuilderChoiceChip(
+              initialValue: project.projectStatus,
               attribute: 'status',
               options: [
                 FormBuilderFieldOption(
-                  value: ProjectStatus.CONTINUE,
+                  value: ProjectStatus.NEW,
                   child: Text('New'),
                 ),
                 FormBuilderFieldOption(
@@ -149,53 +105,44 @@ class ProjectFormState extends State<ProjectForm> {
               ],
               decoration: InputDecoration(
                   border: InputBorder.none, labelText: "Project Status"),
+              onSaved: (status) => project.projectStatus = status,
             ),
             FormBuilderTextField(
+              initialValue: writeDate(project.lastUpdate),
               attribute: "lastUpdate",
               enabled: false,
               readOnly: true,
               decoration: InputDecoration(labelText: "Last Update"),
-              valueTransformer: (value) => _dateFormat.parse(value),
             ),
             FormBuilderTextField(
+              initialValue: writeDate(project.loadDate),
               attribute: "loadDate",
               enabled: false,
               readOnly: true,
               decoration: InputDecoration(labelText: "Load Date"),
-              valueTransformer: (value) => _dateFormat.parse(value),
             ),
             FormBuilderTextField(
+              initialValue: project.skills,
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
               attribute: 'skills',
               decoration:
                   InputDecoration(labelText: "Skills needed for the project"),
+              onSaved: (skills) {
+                project.skills = skills;
+              },
             ),
             FormBuilderTextField(
+              initialValue: project.comments,
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
               attribute: 'comments',
               decoration: InputDecoration(labelText: "Comments"),
+              onSaved: (comments) => project.comments = comments,
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget expandedPanel(ExapndableItem item) {
-    return ExpansionPanelList(
-      expansionCallback: (int index, bool isExpanded) {
-        setState(() {
-          item.isExpanded = !isExpanded;
-        });
-      },
-      children: [
-        ExpansionPanel(
-            headerBuilder: (BuildContext context, bool isExpanded) {
-              return ListTile(
-                title: Text(item.headerValue),
-              );
-            },
-            body: item.inner,
-            isExpanded: item.isExpanded)
-      ],
     );
   }
 }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:workshop_digitalization/global/israeli_id/israeli_id.dart';
+import 'package:workshop_digitalization/global/validators/israeli_id.dart';
 import 'package:workshop_digitalization/global/strings.dart';
+import 'package:workshop_digitalization/global/validators/validators.dart';
 
 import '../student.dart';
 
@@ -93,16 +94,10 @@ class StudentForm extends StatelessWidget {
                 // TODO:: add option to choose phone providers
                 // multiple phone numbers(?)
                 FormBuilderTextField(
+                  keyboardType: TextInputType.phone,
                   attribute: "phone",
                   decoration: InputDecoration(labelText: "Phone Number"),
-                  validators: [
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.pattern(
-                      "^\\d+-?\\d+\$",
-                      errorText:
-                          "a phone may only contain numbers and one dash",
-                    )
-                  ],
+                  validators: [phoneValidator],
                   onSaved: (phone) => student.phoneNumber = phone,
                 ),
                 FormBuilderTextField(
