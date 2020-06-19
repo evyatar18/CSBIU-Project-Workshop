@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
-import 'package:workshop_digitalization/files/students_file.dart';
+import 'package:workshop_digitalization/csv/students_file_download.dart';
 import 'package:workshop_digitalization/menu/ui/routes_utils.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
 
@@ -55,7 +55,7 @@ class BottomFabState extends State<BottomFab> {
           backgroundColor: Colors.yellow,
           label: 'Download Students CSV',
           labelStyle: TextStyle(fontSize: 18.0),
-          onTap: () => studentsFileDownloader.writeCounter(),
+          onTap: () => studentsFileDownloader.writeStudentsToFile(context),
         ),
       ],
       [

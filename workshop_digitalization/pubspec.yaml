@@ -76,7 +76,8 @@ dependencies:
   flutter_speed_dial: ^1.2.5
 
   path_provider: ^1.6.10
-
+  
+  directory_picker: ^1.0.0
 
 
 

@@ -58,7 +58,7 @@ class StudentDetails extends StatelessWidget {
                 capitalize("${student.firstName} ${student.lastName}"),
                 style: Theme.of(context)
                     .textTheme
-                    .headline6
+                    .headline
                     .apply(color: Colors.white),
               ),
             ],

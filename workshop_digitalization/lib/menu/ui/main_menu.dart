@@ -88,7 +88,7 @@ class MainMenu extends StatelessWidget {
             FlatButton(
               child: BigIcon(
                 icon: Icons.table_chart,
-                text: 'Student Table',
+                text: 'Students',
                 color: Colors.blue,
               ),
               onPressed: () => pushStudentTableScreen(context),
@@ -107,7 +107,7 @@ class MainMenu extends StatelessWidget {
             FlatButton(
               child: BigIcon(
                 icon: Icons.dashboard,
-                text: 'Projects Table',
+                text: 'Projects',
                 color: Colors.red,
               ),
               onPressed: () => pushProjectTableScreen(context),

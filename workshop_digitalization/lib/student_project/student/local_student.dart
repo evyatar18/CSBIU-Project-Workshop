@@ -99,20 +99,4 @@ class LocalStudent implements Student {
   Grade grade;
 }
 
-Map<String, dynamic> toData(Student student) {
-    final data = Map<String, dynamic>();
 
-    data['id'] = student.personalID;
-    data["firstName" ] = student.firstName;
-    data["lastName"] = student.lastName;
-    data["phone"] = student.phoneNumber;
-    data["email"] = student.email;
-    data["year"] = student.studyYear;
-    if (student.status != null) data["status"]= student.status.index;
-    //data["projectId"] = firebaseProjectId;
-
-    data['lastUpdate'] = student.lastUpdate;
-    data['loadDate'] = student.loadDate;
-
-    return data;
-  }
