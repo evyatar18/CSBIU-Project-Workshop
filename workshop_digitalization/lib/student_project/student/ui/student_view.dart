@@ -114,21 +114,6 @@ class StudentDetails extends StatelessWidget {
   }
 
   Widget _buildGradeView() {
-    return Provider(
-      // this is some workaround to allow using a BehaviourSubject(which is a stream)
-      // inside a provider (which doesn't allow the use of streams by default)
-      create: (_) => <String, dynamic>{"stream": BehaviorSubject<void>()},
-      child: Container(),
-      builder: (context, child) {
-        final subject =
-            Provider.of<Map<String, dynamic>>(context, listen: false)["stream"];
-        return _buildGradeViw(subject);
-      },
-      dispose: (context, value) => value["stream"].close(),
-    );
-  }
-
-  Widget _buildGradeViw(BehaviorSubject<void> subject) {
     return EditElementForm(
       enableDeleting: false,
       element: student,
