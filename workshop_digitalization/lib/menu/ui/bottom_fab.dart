@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
+import 'package:workshop_digitalization/csv/projects_file_download.dart';
 import 'package:workshop_digitalization/csv/students_file_download.dart';
 import 'package:workshop_digitalization/menu/ui/routes_utils.dart';
+import 'package:workshop_digitalization/student_project/project/project.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
 
 class BottomFab extends StatefulWidget {
@@ -21,6 +23,7 @@ class BottomFab extends StatefulWidget {
 class BottomFabState extends State<BottomFab> {
   List<List<SpeedDialChild>> _children(BuildContext context) {
   StudentsFileDownloader studentsFileDownloader = new StudentsFileDownloader(studentManager: Provider.of<StudentManager>(context, listen: false));
+  ProjectsFileDownloader projectsFileDownloader = new ProjectsFileDownloader(projectManager: Provider.of<ProjectManager>(context, listen: false));
     return [
       [
         SpeedDialChild(
@@ -71,7 +74,7 @@ class BottomFabState extends State<BottomFab> {
           backgroundColor: Colors.blue,
           label: 'Download Projects CSV',
           labelStyle: TextStyle(fontSize: 18.0),
-          onTap: () => print('THIRD CHILD'),
+          onTap: () => projectsFileDownloader.writeProjectsToFile(context),
         ),
       ],
       [

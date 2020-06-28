@@ -17,7 +17,7 @@ class ProjectsFileDownloader {
     @required this.projectManager,
   });
 
-  void writeStudentsToFile(BuildContext context) async {
+  void writeProjectsToFile(BuildContext context) async {
     Directory directory = await DirectoryPicker.pick(
         context: context, rootDirectory: await getExternalStorageDirectory());
     if (directory != null) {
