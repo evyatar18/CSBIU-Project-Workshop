@@ -216,7 +216,16 @@ class _StudentsDisplayerState extends State<_StudentsDisplayer> {
         ],
       ),
 
-      subtitle: Text("Grade: ${student.grade.grade}"),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          SizedBox(height: 4,),
+          Text("ID: ${student.personalID}"),
+          SizedBox(height: 2,),
+          Text("Grade: ${student.grade.grade}"),
+        ],
+      ),
     );
   }
 }
