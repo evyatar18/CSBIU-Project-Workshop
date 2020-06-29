@@ -44,8 +44,9 @@ final castedSelections = [
 ];
 
 Widget createFilterableProjectsTable(Stream<List<Project>> projects,
-    void Function(BuildContext, Project) onClick) {
+    void Function(BuildContext, Project) onClick, String title) {
   return FilterableTable<Project>(
+    title: title,
     objects: projects,
     textFields: textFields,
     otherFilterables: castedSelections,

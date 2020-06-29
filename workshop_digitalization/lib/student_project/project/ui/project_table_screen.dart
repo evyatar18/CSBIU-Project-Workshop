@@ -14,8 +14,10 @@ class ProjectTableScreen<T extends Student, S extends Project>
   final ProjectManager<S> projectManager;
   final void Function(BuildContext, Project) onProjectClick;
   final bool showAddButton;
+  final String title;
 
   ProjectTableScreen({
+    this.title = "Projects",
     @required this.studentManager,
     @required this.projectManager,
     this.onProjectClick = _onProjectClick,
@@ -69,6 +71,7 @@ class ProjectTableScreen<T extends Student, S extends Project>
         body: createFilterableProjectsTable(
           projectManager.projects,
           onProjectClick,
+          title,
         ),
         floatingActionButton: showAddButton ? _buildAddButton() : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

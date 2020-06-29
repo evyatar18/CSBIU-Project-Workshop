@@ -122,6 +122,7 @@ class StudentDetails extends StatelessWidget {
         // final grade = element.grade;
         return FormBuilder(
           key: formBuilderKey,
+          initialValue: <String, dynamic> {},
           readOnly: readOnly,
           child: Column(
             children: <Widget>[
@@ -207,6 +208,7 @@ class StudentDetails extends StatelessWidget {
       child: Text("Set Project"),
       onPressed: () {
         final projects = ProjectTableScreen(
+          title: "Choose a Project",
           studentManager: studentManager,
           projectManager: projectManager,
           showAddButton: false,

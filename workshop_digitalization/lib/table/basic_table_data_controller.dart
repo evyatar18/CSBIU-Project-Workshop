@@ -125,10 +125,32 @@ class BasicTableDataController<T> implements TableDataController<T> {
   }
 }
 
-Comparator _defaultTypeSorter(String fieldName, Type fieldType) {
-  if (fieldType is Comparable) {
-    return (x, y) => x.compareTo(y);
-  }
+final _defaultStringComparator = (x, y) => x.toString().compareTo(y.toString());
 
-  return (x, y) => x.toString().compareTo(y.toString());
+// the type is not used anymore
+Comparator _defaultTypeSorter(String fieldName, Type _) {
+  Comparator comp;
+
+  // we cannot identify whether the type has the `compareTo` until runtime,
+  // so we'll check it in the first comparison
+  comp = (x, y) {
+    int carefulComparator(x, y) {
+      try {
+        return x.compareTo(y);
+      } on NoSuchMethodError {
+        // this may happen if the first x, y were comparables
+        // but the ones after were not (x and y could be subtypes of the real type)
+        comp = _defaultStringComparator;
+        return comp(x, y);
+      }
+    }
+
+    comp = x is Comparable && y is Comparable
+        ? carefulComparator
+        : _defaultStringComparator;
+
+    return comp(x, y);
+  };
+
+  return (x, y) => comp(x, y);
 }
