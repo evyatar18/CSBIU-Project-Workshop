@@ -8,6 +8,18 @@ class FirebaseManagers {
 
   final Mutex lock = Mutex();
 
+  Future<void> reset() {
+    final tasks = <Future<void>>[
+      if (_studentManager != null) _studentManager.dispose(),
+      if (_projectManager != null) _projectManager.dispose(),
+    ];
+
+    _studentManager = null;
+    _projectManager = null;
+
+    return Future.wait(tasks, eagerError: false);
+  }
+
   FirebaseStudentManager _studentManager;
   Future<FirebaseStudentManager> get students async {
     if (_studentManager == null) {
