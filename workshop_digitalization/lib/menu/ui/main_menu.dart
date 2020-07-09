@@ -126,7 +126,7 @@ class MainMenu extends StatelessWidget {
                 text: 'Settings',
                 color: Colors.purpleAccent,
               ),
-              onPressed: () {},
+              onPressed: () => pushSettingsScreen(context),
             ),
             FlatButton(
               child: BigIcon(

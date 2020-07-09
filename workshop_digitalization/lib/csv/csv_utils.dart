@@ -11,6 +11,9 @@ Map<String, dynamic> studentToData(Student student) {
   data["email"] = student.email;
   data["year"] = student.studyYear;
   if (student.status != null) data["status"] = student.status.toString();
+  data["garde"] = student.grade.grade;
+  data["comments"] = student.grade.comments;
+
   //data["projectId"] = firebaseProjectId;
 
   data['lastUpdate'] = student.lastUpdate;
@@ -19,7 +22,6 @@ Map<String, dynamic> studentToData(Student student) {
   return data;
 }
 
-//TODO: implement the function
 Map<String, dynamic> projectToData(Project project) {
   final data = Map<String, dynamic>();
 

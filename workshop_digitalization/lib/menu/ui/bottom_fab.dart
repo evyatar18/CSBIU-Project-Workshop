@@ -22,8 +22,10 @@ class BottomFab extends StatefulWidget {
 
 class BottomFabState extends State<BottomFab> {
   List<List<SpeedDialChild>> _children(BuildContext context) {
-  StudentsFileDownloader studentsFileDownloader = new StudentsFileDownloader(studentManager: Provider.of<StudentManager>(context, listen: false));
-  ProjectsFileDownloader projectsFileDownloader = new ProjectsFileDownloader(projectManager: Provider.of<ProjectManager>(context, listen: false));
+    StudentsFileDownloader studentsFileDownloader = new StudentsFileDownloader(
+        studentManager: Provider.of<StudentManager>(context, listen: false));
+    ProjectsFileDownloader projectsFileDownloader = new ProjectsFileDownloader(
+        projectManager: Provider.of<ProjectManager>(context, listen: false));
     return [
       [
         SpeedDialChild(
@@ -31,7 +33,7 @@ class BottomFabState extends State<BottomFab> {
             backgroundColor: Colors.green,
             label: 'Settings',
             labelStyle: TextStyle(fontSize: 18.0),
-            onTap: () => print('settings')),
+            onTap: () => pushSettingsScreen(context)),
         SpeedDialChild(
             child: Icon(Icons.person),
             backgroundColor: Colors.blue,
@@ -67,7 +69,7 @@ class BottomFabState extends State<BottomFab> {
           backgroundColor: Colors.green,
           label: 'Add Project',
           labelStyle: TextStyle(fontSize: 18.0),
-          onTap: () => print('THIRD CHILD'),
+          onTap: () => pushNewProjectScreen(context),
         ),
         SpeedDialChild(
           child: Icon(Icons.file_download),
@@ -88,8 +90,6 @@ class BottomFabState extends State<BottomFab> {
     ];
   }
 
- 
-
   @override
   Widget build(BuildContext context) {
     return SpeedDial(
@@ -107,7 +107,6 @@ class BottomFabState extends State<BottomFab> {
         curve: Curves.bounceIn,
         overlayColor: Colors.black,
         overlayOpacity: 0.5,
-        
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
         elevation: 8.0,

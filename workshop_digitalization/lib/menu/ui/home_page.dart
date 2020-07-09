@@ -23,7 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
     () => MainMenu(),
     () => createStudentTable(),
     () => createProjectTable(),
-    () => Scaffold(),
+    () => createSettingsScreen(),
   ];
 
   @override
