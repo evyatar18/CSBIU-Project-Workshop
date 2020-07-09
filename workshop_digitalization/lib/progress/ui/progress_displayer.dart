@@ -65,7 +65,7 @@ class _ProgressScaffoldState extends State<ProgressScaffold>
     final button = Builder(
       builder: (context) {
         return FloatingActionButton(
-          heroTag: randomString(20),
+          heroTag: makeHerotag(),
           onPressed: () => Scaffold.of(context).openDrawer(),
           child: Icon(Icons.arrow_forward),
           backgroundColor: Colors.orangeAccent,

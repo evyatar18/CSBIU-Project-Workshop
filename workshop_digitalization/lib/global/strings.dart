@@ -26,6 +26,11 @@ String randomString(int length) {
   return new String.fromCharCodes(codeUnits);
 }
 
+final makeHerotag = () {
+  var counter = 0;
+  return () => (counter++).toString();
+}();
+
 String capitalizeWord(String word) =>
     word.isEmpty ? "" : word[0].toUpperCase() + word.substring(1).toLowerCase();
 

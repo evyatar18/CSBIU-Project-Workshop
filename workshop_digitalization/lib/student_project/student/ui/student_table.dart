@@ -55,7 +55,7 @@ class StudentTableScreen<T extends Student, S extends Project>
               ),
             );
           },
-          heroTag: randomString(10),
+          heroTag: makeHerotag(),
         );
       },
     );
