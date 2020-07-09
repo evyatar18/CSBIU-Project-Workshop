@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:workshop_digitalization/csv/ui/load_screen.dart';
+import 'package:workshop_digitalization/settings/ui/settings_screen.dart';
 import 'package:workshop_digitalization/student_project/project/project.dart';
 import 'package:workshop_digitalization/student_project/project/ui/project_table_screen.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
@@ -48,6 +49,20 @@ Widget createStudentTable() {
       projectManager: pm,
     );
   });
+}
+
+void pushSettingsScreen(BuildContext context) {
+  pushWithProviderValues(
+    context,
+    (_) => createSettingsScreen(),
+  );
+}
+
+Widget createSettingsScreen(){
+  // await Settings.init(
+  //   cacheProvider: _isUsingHive ? HiveCache() : SharePreferenceCache(),
+  // );
+  return SettingsScreen();
 }
 
 void pushWithProviderValues(BuildContext context, WidgetBuilder widget) {
@@ -104,7 +119,9 @@ void pushNewProjectScreen(BuildContext context) {
   }
 }
 
-void pushProjectTableScreen(BuildContext context) {}
+void pushProjectTableScreen(BuildContext context) {
+  pushWithProviderValues(context, (context) => createProjectTable());
+}
 
 void pushLoadScreen(BuildContext context) {
   pushWithProviderValues(
