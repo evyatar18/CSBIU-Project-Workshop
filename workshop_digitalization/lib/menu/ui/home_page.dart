@@ -3,6 +3,7 @@ import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/menu/ui/bottom_fab.dart';
 import 'package:workshop_digitalization/menu/ui/main_menu.dart';
+import 'package:workshop_digitalization/settings/ui/settings_screen.dart';
 import 'package:workshop_digitalization/student_project/firebase_managers.dart';
 import 'package:workshop_digitalization/student_project/project/project.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
@@ -10,6 +11,8 @@ import 'package:workshop_digitalization/student_project/student/student.dart';
 import 'routes_utils.dart';
 
 class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key}) : super(key: key);
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -19,7 +22,7 @@ typedef Widget EmptyWidgetBuilder();
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex;
 
-  List<EmptyWidgetBuilder> _children = [
+  final _children = <EmptyWidgetBuilder>[
     () => MainMenu(),
     () => createStudentTable(),
     () => createProjectTable(),
@@ -107,19 +110,5 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        FutureProvider<StudentManager>(
-          create: (_) => FirebaseManagers.instance.students,
-          lazy: false,
-        ),
-        FutureProvider<ProjectManager>(
-          create: (_) => FirebaseManagers.instance.projects,
-          lazy: false,
-        ),
-      ],
-      child: _body(context),
-    );
-  }
+  Widget build(BuildContext context) => _body(context);
 }

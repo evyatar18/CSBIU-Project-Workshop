@@ -1,16 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_settings_screens/flutter_settings_screens.dart';
+import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/csv/ui/load_screen.dart';
+import 'package:workshop_digitalization/firebase.dart';
 import 'package:workshop_digitalization/student_project/project/firebase_project.dart';
 import 'package:workshop_digitalization/menu/ui/home_page.dart';
 import 'package:workshop_digitalization/student_project/student/firebase_student.dart';
 import 'package:workshop_digitalization/student_project/student/ui/student_view.dart';
 
-
+import 'settings/settings.dart';
 import 'student_project/firebase_managers.dart';
+import 'student_project/project/project.dart';
 import 'student_project/student/dummy_student.dart';
-import 'package:workshop_digitalization/student_project/student/student.dart';
+import 'student_project/student/student.dart';
 
 import 'files/firebase.dart';
 import 'files/ui/file_view.dart';
@@ -23,18 +27,95 @@ import 'progress/ui/progress_bar.dart';
 import 'progress/ui/progress_displayer.dart';
 import 'student_project/student/ui/student_table.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final firestore = Firestore.instance;
-  final root = firestore.collection('version').document('1');
-  Flamingo.configure(
-    firestore: firestore,
-    storage: FirebaseStorage.instance,
-    root: root,
-  );
+  // use default shared preferences provider
+  await Settings.init();
+  initFirebase();
 
   runApp(new MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  Widget _rootRefresher(WidgetBuilder childBuilder) {
+    return FutureBuilder<DocumentSnapshot>(
+      future: getVersion(currentVersion),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator();
+        }
+
+        // reconfigure flamingo on root change
+        final root = snapshot.data.reference;
+
+        Flamingo.configure(
+          firestore: Firestore.instance,
+          storage: FirebaseStorage.instance,
+          root: root,
+        );
+
+        // rebuild app
+        return Builder(builder: childBuilder);
+      },
+    );
+  }
+
+  Widget _buildRootUpdater(WidgetBuilder childBuilder) {
+    // we use FutureBuilder to get a **default** root collection
+    return FutureBuilder<String>(
+      future: MyAppSettings.defaultRoot,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator();
+        }
+
+        // we use a ValueChangeObserver to change the root when it is changed in the settings
+        return ValueChangeObserver(
+          cacheKey: MyAppSettings.firebaseRootName,
+          defaultValue: snapshot.data,
+          builder: (context, versionName, _) {
+            currentVersion = versionName;
+            return _rootRefresher(childBuilder);
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Workshop Digitalization',
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      home: _buildRootUpdater((_) {
+        FirebaseManagers.instance.reset();
+        final students = FirebaseManagers.instance.students;
+        final projects = FirebaseManagers.instance.projects;
+
+        return FutureBuilder<List>(
+          future: Future.wait([students, projects]),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return CircularProgressIndicator();
+            }
+
+            final StudentManager studs = snapshot.data[0];
+            final ProjectManager projs = snapshot.data[1];
+
+            return MultiProvider(
+              providers: [
+                Provider.value(value: studs),
+                Provider.value(value: projs),
+              ],
+              child: MyHomePage(),
+            );
+          },
+        );
+      }),
+    );
+  }
 }
 
 void saveMemo() async {
@@ -57,18 +138,6 @@ Stream<List<Student>> getStudents() async* {
     // print(items.map((e) => "title: ${e.title}, year: ${e.year}").join(", "));
 
     yield items;
-  }
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Workshop Digitalization',
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      home: MyHomePage(),
-    );
   }
 }
 

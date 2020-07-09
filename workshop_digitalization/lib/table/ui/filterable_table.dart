@@ -128,6 +128,7 @@ class _FilterableTableState<Object> extends State<FilterableTable> {
 
     return Scaffold(
       appBar: AppBar(
+        title: Text(widget.title),
         actions: <Widget>[
           ...List<Row>.generate(staticFilters.length, _buildFilter),
           IconButton(

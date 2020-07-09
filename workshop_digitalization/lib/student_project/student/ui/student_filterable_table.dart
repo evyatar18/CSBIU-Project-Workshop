@@ -20,6 +20,11 @@ final year = ObjectField<Student, int>(
   getter: (obj) => obj.studyYear,
 );
 
+final grade = ObjectField<Student, num>(
+  name: "grade",
+  getter: (student) => student.grade.grade,
+);
+
 final status = ObjectField<Student, StudentStatus>(
     name: "status", getter: (obj) => obj.status, stringer: (stat) => capitalize(studentStatusText(stat)));
 
@@ -38,11 +43,13 @@ final loadDate = ObjectField<Student, DateTime>(
 final castedSelections = [
   createCastingFilterableField(createSelectionFilterable(year)),
   createCastingFilterableField(createSelectionFilterable(status)),
+  createCastingFilterableField(createSelectionFilterable(grade))
 ];
 
 Widget createFilterableStudentsTable(Stream<List<Student>> students,
-    void Function(BuildContext, Student) onClick) {
+    void Function(BuildContext, Student) onClick, String title) {
   return FilterableTable<Student>(
+    title: title,
     objects: students,
     textFields: textFields,
     otherFilterables: castedSelections,

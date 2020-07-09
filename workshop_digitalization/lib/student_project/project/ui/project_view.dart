@@ -109,7 +109,7 @@ class _StudentsDisplayerState extends State<_StudentsDisplayer> {
         onPressed: () async {
           final ret = await _openAddStudent(context);
 
-          if (ret) {
+          if (ret != null && ret) {
             // update state because we added a student
             setState(() { });
           }
@@ -125,6 +125,7 @@ class _StudentsDisplayerState extends State<_StudentsDisplayer> {
       MaterialPageRoute(
         builder: (context) {
           return StudentTableScreen(
+            title: "Choose a Student",
             studentManager: widget.studentManager,
             projectManager: widget.projectManager,
             showAddButton: false,
@@ -215,7 +216,16 @@ class _StudentsDisplayerState extends State<_StudentsDisplayer> {
         ],
       ),
 
-      subtitle: Text("Grade: ${student.grade.grade}"),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          SizedBox(height: 4,),
+          Text("ID: ${student.personalID}"),
+          SizedBox(height: 2,),
+          Text("Grade: ${student.grade.grade}"),
+        ],
+      ),
     );
   }
 }

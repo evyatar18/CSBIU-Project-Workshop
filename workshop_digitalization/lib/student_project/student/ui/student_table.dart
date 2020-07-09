@@ -15,8 +15,10 @@ class StudentTableScreen<T extends Student, S extends Project>
   final ProjectManager<S> projectManager;
   final void Function(BuildContext, Student) onStudentClick;
   final bool showAddButton;
+  final String title;
 
   StudentTableScreen({
+    this.title = "Students",
     @required this.studentManager,
     @required this.projectManager,
     this.onStudentClick = _onStudentClick,
@@ -53,7 +55,7 @@ class StudentTableScreen<T extends Student, S extends Project>
               ),
             );
           },
-          heroTag: randomString(10),
+          heroTag: makeHerotag(),
         );
       },
     );
@@ -68,9 +70,12 @@ class StudentTableScreen<T extends Student, S extends Project>
       ],
       child: Scaffold(
         body: createFilterableStudentsTable(
-            studentManager.students, onStudentClick),
-        //floatingActionButton: showAddButton ? _buildAddButton() : null,
-        //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          studentManager.students,
+          onStudentClick,
+          title,
+        ),
+        floatingActionButton: showAddButton ? _buildAddButton() : null,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );
   }
