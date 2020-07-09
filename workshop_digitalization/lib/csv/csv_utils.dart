@@ -10,7 +10,7 @@ Map<String, dynamic> studentToData(Student student) {
   data["phone"] = student.phoneNumber;
   data["email"] = student.email;
   data["year"] = student.studyYear;
-  if (student.status != null) data["status"] = student.status.index;
+  if (student.status != null) data["status"] = student.status.toString();
   //data["projectId"] = firebaseProjectId;
 
   data['lastUpdate'] = student.lastUpdate;
@@ -23,8 +23,13 @@ Map<String, dynamic> studentToData(Student student) {
 Map<String, dynamic> projectToData(Project project) {
   final data = Map<String, dynamic>();
 
-  data['initiator'] = project.initiator;
-  data['contact'] = project.contact;
+  data['initiator'] = project.initiator.firstName+project.initiator.lastName;
+  data['initiatorPhone'] = project.contact.phoneNumber;
+  data['initiatorEmail'] = project.contact.email;
+  data['contact'] = project.contact.firstName + project.contact.lastName;
+  data['contactPhone'] = project.contact.phoneNumber;
+  data['contactEmail'] = project.contact.email;
+  
   data['projectSubject'] = project.projectSubject;
   data['projectDomain'] = project.projectDomain;
   data['projectGoal'] = project.projectGoal;
@@ -39,7 +44,7 @@ Map<String, dynamic> projectToData(Project project) {
 
   data['mentorTechAbility'] = project.mentorTechAbility;
 
-  data['studentIds'] = project.studentIds;
+  //data['studentIds'] = project.studentIds;
 
   // // PROBLEMATIC
   // data['comments'] = project.comments;

@@ -70,8 +70,8 @@ class ProjectTableScreen<T extends Student, S extends Project>
           projectManager.projects,
           onProjectClick,
         ),
-        floatingActionButton: showAddButton ? _buildAddButton() : null,
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        //floatingActionButton: showAddButton ? _buildAddButton() : null,
+        //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );
   }
