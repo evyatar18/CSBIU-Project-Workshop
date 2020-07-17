@@ -5,20 +5,6 @@ import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/person/person.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
 
-enum ProjectStatus { NEW, CONTINUE }
-const DEFAULT_PROJECT_STATUS = ProjectStatus.NEW;
-
-String projectStatusText(ProjectStatus status) {
-  switch(status) {
-    case ProjectStatus.NEW:
-      return "new";
-    case ProjectStatus.CONTINUE:
-      return "continue";
-  }
-
-  return null;
-}
-
 abstract class Project implements StringIdentified {
   Person initiator;
 

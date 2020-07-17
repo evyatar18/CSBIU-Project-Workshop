@@ -23,7 +23,7 @@ class ProjectPreview extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Text(
-              "Status: ${capitalize(projectStatusText(project.projectStatus ?? DEFAULT_PROJECT_STATUS))}",
+              "Status: ${capitalize(project.projectStatus)}",
             ),
             Text(
               "Number of members: ${project.numberOfStudents}",
