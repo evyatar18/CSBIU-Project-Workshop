@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:workshop_digitalization/csv/ui/load_screen.dart';
 import 'package:workshop_digitalization/settings/ui/settings_screen.dart';
 import 'package:workshop_digitalization/student_project/project/project.dart';
+import 'package:workshop_digitalization/student_project/project/ui/new_project_screen.dart';
 import 'package:workshop_digitalization/student_project/project/ui/project_table_screen.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
 import 'package:workshop_digitalization/student_project/student/ui/new_student_view.dart';
@@ -31,8 +32,21 @@ Widget createStudentProjectDependent(StudentProjectProvided builder) {
 
 typedef Widget StudentProvided(BuildContext context, StudentManager manager);
 
+typedef Widget ProjectProvided(BuildContext context, ProjectManager manager);
+
 Widget createStudentDependent(StudentProvided builder) {
   return Consumer<StudentManager>(
+    builder: (context, value, _) {
+      if (value == null) {
+        return _loader();
+      }
+      return builder(context, value);
+    },
+  );
+}
+
+Widget createProjectDependent(ProjectProvided builder) {
+  return Consumer<ProjectManager>(
     builder: (context, value, _) {
       if (value == null) {
         return _loader();
@@ -59,7 +73,7 @@ void pushSettingsScreen(BuildContext context) {
   );
 }
 
-Widget createSettingsScreen(){
+Widget createSettingsScreen() {
   // await Settings.init(
   //   cacheProvider: _isUsingHive ? HiveCache() : SharePreferenceCache(),
   // );
@@ -105,19 +119,11 @@ Widget createProjectTable({bool showAddButton = true}) {
 
 void pushNewProjectScreen(BuildContext context) {
   {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => Disposer(
-    //       createInFuture: () async => FirebaseManagers.instance.students,
-    //       builder: (context, manager) {
-    //         return NewStudentScreen(
-    //           studentManager: manager,
-    //         );
-    //       },
-    //     ),
-    //   ),
-    // );
+    pushWithProviderValues(
+      context,
+      (_) => createProjectDependent(
+          (context, manager) => NewProjectScreen(projectManager: manager)),
+    );
   }
 }
 

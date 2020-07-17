@@ -1,5 +1,8 @@
+import 'package:directory_picker/directory_picker.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
@@ -18,9 +21,43 @@ class AppSettings extends StatelessWidget {
             title: "Database Roots",
             children: _buildRoots(context),
           ),
+          SettingsGroup(
+            title: "Default Paths",
+            children: _buildDefaultPaths(context),
+          ),
         ],
       ),
     );
+  }
+
+  List<Widget> _buildDefaultPaths(BuildContext context) {
+    return <Widget>[
+      SwitchSettingsTile(
+        settingKey: MyAppSettings.defaultDownloadPathEnabeld,
+        title: 'Default Path',
+        childrenIfEnabled: <Widget>[
+          ListTile(
+            title: Text('Default Download Path'),
+            subtitle: FutureBuilder(
+                future: MyAppSettings.defaultDownloadPath,
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  if (snapshot.hasData) {
+                    return Text(snapshot.data);
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                }),
+            onTap: () async {
+              MyAppSettings.setdefaultDownloadPath((await DirectoryPicker.pick(
+                      context: context,
+                      rootDirectory: await getExternalStorageDirectory()))
+                  .path);
+            },
+          )
+        ],
+      )
+    ];
   }
 
   List<Widget> _buildRoots(BuildContext context) {
