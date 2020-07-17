@@ -59,8 +59,13 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
   @override
   List<String> projectInnovativeDetails;
 
+  String _projectStatus;
+
   @override
-  ProjectStatus projectStatus;
+  String get projectStatus => _projectStatus ?? "No Status";
+  set projectStatus(stat) {
+    _projectStatus = stat;
+  }
 
   @override
   String projectSubject;
@@ -108,7 +113,7 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
     writeNotNull(
       data,
       'projectStatus',
-      (projectStatus ?? DEFAULT_PROJECT_STATUS).index,
+      projectStatus,
     );
     writeNotNull(data, 'mentorTechAbility', mentorTechAbility);
 
@@ -137,9 +142,7 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
     projectGoal = valueFromKey<String>(data, 'projectGoal');
     projectInnovativeDetails =
         valueListFromKey<String>(data, 'projectInnovativeDetails');
-    projectStatus = ProjectStatus.values[
-        valueFromKey<int>(data, 'projectStatus') ??
-            DEFAULT_PROJECT_STATUS.index];
+    projectStatus = valueFromKey<String>(data, 'projectStatus') ?? "No Status";
     projectSubject = valueFromKey<String>(data, 'projectSubject');
     skills = valueFromKey<String>(data, 'skills');
     mentorTechAbility = valueFromKey<String>(data, 'mentorTechAbility');

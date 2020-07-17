@@ -23,7 +23,8 @@ Future<void> showSuccessDialog(BuildContext context,
   return showAlertDialog(context, title, message);
 }
 
-Future<bool> showAgreementDialog(BuildContext context, String title, {bool barrierDismissible = false}) {
+Future<bool> showAgreementDialog(BuildContext context, String title,
+    {bool barrierDismissible = false}) {
   return showDialog<bool>(
     context: context,
     barrierDismissible: barrierDismissible,
@@ -38,6 +39,34 @@ Future<bool> showAgreementDialog(BuildContext context, String title, {bool barri
           FlatButton(
             onPressed: () => Navigator.pop(context, false),
             child: Text("NO"),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Future<String> showTextInputDialog(BuildContext context, String title,
+    {bool barrierDismissible = true}) {
+  return showDialog<String>(
+    context: context,
+    barrierDismissible: barrierDismissible,
+    builder: (context) {
+      final textController = TextEditingController();
+
+      return AlertDialog(
+        content: TextField(
+          decoration: InputDecoration(labelText: title),
+          controller: textController,
+        ),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () => Navigator.pop(context, textController.text),
+            child: Text("SUBMIT"),
+          ),
+          FlatButton(
+            onPressed: () => Navigator.pop(context, null),
+            child: Text("CANCEL"),
           ),
         ],
       );

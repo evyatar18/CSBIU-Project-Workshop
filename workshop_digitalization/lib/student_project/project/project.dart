@@ -39,7 +39,7 @@ abstract class Project implements StringIdentified {
   List<String> projectChallenges;
   List<String> projectInnovativeDetails;
 
-  ProjectStatus projectStatus;
+  String projectStatus;
 
   String mentorTechAbility;
 

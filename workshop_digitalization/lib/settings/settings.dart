@@ -1,6 +1,6 @@
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 
-import '../firebase.dart';
+import '../firebase_consts/lib.dart' as globs;
 
 class MyAppSettings {
   static const String firebaseRootName = "firebase-root";
@@ -10,10 +10,14 @@ class MyAppSettings {
   }
 
   static Future<String> get defaultRoot async {
-    final docs = await firestoreRootCollection.limit(1).getDocuments();
-    final versions = docs.documents.map((doc) => doc.documentID).toList();
-
-    return getDefaultRoot(versions);
+    try {
+      final roots = globs.roots.roots ?? await globs.roots.rootStream.first;
+      final versions = roots.map((root) => root.reference.documentID).toList();
+      return getDefaultRoot(versions);
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
   static void setRoot(String root) {

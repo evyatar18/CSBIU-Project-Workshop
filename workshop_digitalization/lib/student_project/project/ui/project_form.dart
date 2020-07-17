@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
+import 'package:workshop_digitalization/firebase_consts/lib.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/person/ui/person_form.dart';
 
@@ -30,6 +31,11 @@ class ProjectForm extends StatelessWidget {
       );
   @override
   Widget build(BuildContext context) {
+    Set<String> statuses = Set.from(currentRoot.statuses);
+
+    // in case the project status is not in the written statuses, add it
+    statuses.add(project.projectStatus);
+
     return FormBuilder(
       key: fbKey,
       readOnly: readOnly,
@@ -93,16 +99,10 @@ class ProjectForm extends StatelessWidget {
             FormBuilderChoiceChip(
               initialValue: project.projectStatus,
               attribute: 'status',
-              options: [
-                FormBuilderFieldOption(
-                  value: ProjectStatus.NEW,
-                  child: Text('New'),
-                ),
-                FormBuilderFieldOption(
-                  value: ProjectStatus.CONTINUE,
-                  child: Text('Continue'),
-                )
-              ],
+              options: statuses
+                  .map((status) => FormBuilderFieldOption(
+                      value: status, child: Text(capitalize(status))))
+                  .toList(),
               decoration: InputDecoration(
                   border: InputBorder.none, labelText: "Project Status"),
               onSaved: (status) => project.projectStatus = status,

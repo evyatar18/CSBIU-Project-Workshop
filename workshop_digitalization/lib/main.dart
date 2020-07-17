@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/csv/ui/load_screen.dart';
-import 'package:workshop_digitalization/firebase.dart';
+import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
+import 'package:workshop_digitalization/firebase_consts/lib.dart' as globs;
 import 'package:workshop_digitalization/student_project/project/firebase_project.dart';
 import 'package:workshop_digitalization/menu/ui/home_page.dart';
 import 'package:workshop_digitalization/student_project/student/firebase_student.dart';
@@ -32,15 +33,15 @@ void main() async {
 
   // use default shared preferences provider
   await Settings.init();
-  initFirebase();
+  globs.initRoots();
 
   runApp(new MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  Widget _rootRefresher(WidgetBuilder childBuilder) {
-    return FutureBuilder<DocumentSnapshot>(
-      future: getVersion(currentVersion),
+  Widget _rootRefresher(String rootName, WidgetBuilder childBuilder) {
+    return FutureBuilder<FirebaseRoot>(
+      future: globs.useRootByName(rootName),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return CircularProgressIndicator();
@@ -75,9 +76,35 @@ class MyApp extends StatelessWidget {
           cacheKey: MyAppSettings.firebaseRootName,
           defaultValue: snapshot.data,
           builder: (context, versionName, _) {
-            currentVersion = versionName;
-            return _rootRefresher(childBuilder);
+            return _rootRefresher(versionName, childBuilder);
           },
+        );
+      },
+    );
+  }
+
+  /// Builds the providers
+  Widget _mainBodyBuilder(BuildContext _) {
+    FirebaseManagers.instance.reset();
+    final students = FirebaseManagers.instance.students;
+    final projects = FirebaseManagers.instance.projects;
+
+    return FutureBuilder<List>(
+      future: Future.wait([students, projects]),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator();
+        }
+
+        final StudentManager studs = snapshot.data[0];
+        final ProjectManager projs = snapshot.data[1];
+
+        return MultiProvider(
+          providers: [
+            Provider.value(value: studs),
+            Provider.value(value: projs),
+          ],
+          child: MyHomePage(),
         );
       },
     );
@@ -89,31 +116,7 @@ class MyApp extends StatelessWidget {
       title: 'Workshop Digitalization',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: _buildRootUpdater((_) {
-        FirebaseManagers.instance.reset();
-        final students = FirebaseManagers.instance.students;
-        final projects = FirebaseManagers.instance.projects;
-
-        return FutureBuilder<List>(
-          future: Future.wait([students, projects]),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return CircularProgressIndicator();
-            }
-
-            final StudentManager studs = snapshot.data[0];
-            final ProjectManager projs = snapshot.data[1];
-
-            return MultiProvider(
-              providers: [
-                Provider.value(value: studs),
-                Provider.value(value: projs),
-              ],
-              child: MyHomePage(),
-            );
-          },
-        );
-      }),
+      home: _buildRootUpdater(_mainBodyBuilder),
     );
   }
 }
