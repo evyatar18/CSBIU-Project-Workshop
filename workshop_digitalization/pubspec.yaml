@@ -82,8 +82,6 @@ dependencies:
 
   directory_picker: ^1.0.0
 
-  # https://pub.dev/packages/flutter_settings_screens#-readme-tab- for settings
-  flutter_settings_screens: ^0.2.0+1
 
 
 

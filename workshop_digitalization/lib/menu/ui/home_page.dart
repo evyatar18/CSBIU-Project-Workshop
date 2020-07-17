@@ -24,8 +24,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final _children = <EmptyWidgetBuilder>[
     () => MainMenu(),
-    () => createStudentTable(),
-    () => createProjectTable(),
+    () => createStudentTable(showAddButton: false),
+    () => createProjectTable(showAddButton: false),
     () => createSettingsScreen(),
   ];
 

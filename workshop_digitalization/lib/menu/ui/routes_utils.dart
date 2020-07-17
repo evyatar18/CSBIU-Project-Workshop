@@ -42,11 +42,12 @@ Widget createStudentDependent(StudentProvided builder) {
   );
 }
 
-Widget createStudentTable() {
+Widget createStudentTable({bool showAddButton = true}) {
   return createStudentProjectDependent((context, sm, pm) {
     return StudentTableScreen<Student, Project>(
       studentManager: sm,
       projectManager: pm,
+      showAddButton: showAddButton,
     );
   });
 }
@@ -62,7 +63,7 @@ Widget createSettingsScreen(){
   // await Settings.init(
   //   cacheProvider: _isUsingHive ? HiveCache() : SharePreferenceCache(),
   // );
-  return SettingsScreen();
+  return AppSettings();
 }
 
 void pushWithProviderValues(BuildContext context, WidgetBuilder widget) {
@@ -92,11 +93,12 @@ void pushNewStudentScreen(BuildContext context) {
   );
 }
 
-Widget createProjectTable() {
+Widget createProjectTable({bool showAddButton = true}) {
   return createStudentProjectDependent((context, sm, pm) {
     return ProjectTableScreen<Student, Project>(
       studentManager: sm,
       projectManager: pm,
+      showAddButton: showAddButton,
     );
   });
 }
