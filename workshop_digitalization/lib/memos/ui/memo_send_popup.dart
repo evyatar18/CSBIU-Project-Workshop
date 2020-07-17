@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:workshop_digitalization/global/ui/dialogs.dart';
 import 'package:workshop_digitalization/memos/memo_sender.dart';
 
 import '../memo.dart';

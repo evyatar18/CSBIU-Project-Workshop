@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:html_editor/html_editor.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:rxdart/subjects.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
 import 'package:workshop_digitalization/global/ui/tab_title.dart';
 import 'package:workshop_digitalization/memos/ui/memos_list.dart';
-import 'package:workshop_digitalization/student_project/element_manager.dart';
 import 'package:workshop_digitalization/student_project/project/project.dart';
 import 'package:workshop_digitalization/student_project/project/ui/project_preview.dart';
 import 'package:workshop_digitalization/student_project/project/ui/project_table_screen.dart';

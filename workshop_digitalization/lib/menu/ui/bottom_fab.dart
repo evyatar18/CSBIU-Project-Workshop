@@ -9,10 +9,8 @@ import 'package:workshop_digitalization/student_project/project/project.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
 
 class BottomFab extends StatefulWidget {
-  int index;
-  BottomFab(int index) {
-    this.index = index;
-  }
+  final int index;
+  BottomFab(int index) : index = index;
 
   @override
   State<StatefulWidget> createState() {
@@ -22,8 +20,12 @@ class BottomFab extends StatefulWidget {
 
 class BottomFabState extends State<BottomFab> {
   List<List<SpeedDialChild>> _children(BuildContext context) {
-  StudentsFileDownloader studentsFileDownloader = new StudentsFileDownloader(studentManager: Provider.of<StudentManager>(context, listen: false));
-  ProjectsFileDownloader projectsFileDownloader = new ProjectsFileDownloader(projectManager: Provider.of<ProjectManager>(context, listen: false));
+    StudentsFileDownloader studentsFileDownloader = new StudentsFileDownloader(
+      studentManager: Provider.of<StudentManager>(context, listen: false),
+    );
+    ProjectsFileDownloader projectsFileDownloader = new ProjectsFileDownloader(
+      projectManager: Provider.of<ProjectManager>(context, listen: false),
+    );
     return [
       [
         SpeedDialChild(
@@ -88,8 +90,6 @@ class BottomFabState extends State<BottomFab> {
     ];
   }
 
- 
-
   @override
   Widget build(BuildContext context) {
     return SpeedDial(
@@ -107,7 +107,6 @@ class BottomFabState extends State<BottomFab> {
         curve: Curves.bounceIn,
         overlayColor: Colors.black,
         overlayOpacity: 0.5,
-        
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
         elevation: 8.0,

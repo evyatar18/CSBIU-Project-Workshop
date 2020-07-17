@@ -184,7 +184,7 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
   }
 
   FirebaseStudent getStudent(String id) {
-    return latestStudents.firstWhere(
+    return latestStudents?.firstWhere(
       (element) => element.id == id,
       orElse: () => null,
     );

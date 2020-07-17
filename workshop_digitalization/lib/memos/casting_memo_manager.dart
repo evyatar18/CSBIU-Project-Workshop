@@ -22,7 +22,7 @@ class CastingMemoManager<MemoType extends Memo> implements MemoManager<Memo> {
 
     // look up the memo, throws an error if no memo found
     return _originalManager.latestMemos
-        .firstWhere((element) => element.id == m.id);
+        ?.firstWhere((element) => element.id == m.id);
   }
 
   @override
