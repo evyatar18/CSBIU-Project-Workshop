@@ -25,13 +25,13 @@ Map<String, dynamic> studentToData(Student student) {
 Map<String, dynamic> projectToData(Project project) {
   final data = Map<String, dynamic>();
 
-  data['initiator'] = project.initiator.firstName+project.initiator.lastName;
+  data['initiator'] = project.initiator.firstName + project.initiator.lastName;
   data['initiatorPhone'] = project.contact.phoneNumber;
   data['initiatorEmail'] = project.contact.email;
   data['contact'] = project.contact.firstName + project.contact.lastName;
   data['contactPhone'] = project.contact.phoneNumber;
   data['contactEmail'] = project.contact.email;
-  
+
   data['projectSubject'] = project.projectSubject;
   data['projectDomain'] = project.projectDomain;
   data['projectGoal'] = project.projectGoal;
@@ -41,8 +41,7 @@ Map<String, dynamic> projectToData(Project project) {
   data['projectChallenges'] = project.projectChallenges;
   data['projectInnovativeDetails'] = project.projectInnovativeDetails;
 
-  data['projectStatus'] =
-      (project.projectStatus ?? DEFAULT_PROJECT_STATUS).index;
+  data['projectStatus'] = project.projectStatus;
 
   data['mentorTechAbility'] = project.mentorTechAbility;
 

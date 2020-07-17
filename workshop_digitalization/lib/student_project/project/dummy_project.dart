@@ -18,12 +18,6 @@ class DummyProject implements Project {
   DateTime endDate;
 
   @override
-  String initiatorFirstName = 'dan';
-
-  @override
-  String initiatorLastName;
-
-  @override
   Person mentor = FirebasePerson(firstName: 'a', lastName: 'd');
 
   @override
@@ -45,7 +39,7 @@ class DummyProject implements Project {
   List<String> projectInnovativeDetails;
 
   @override
-  ProjectStatus projectStatus;
+  String projectStatus;
 
   @override
   String projectSubject = "subjecto";

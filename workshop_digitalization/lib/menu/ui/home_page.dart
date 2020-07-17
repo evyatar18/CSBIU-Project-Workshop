@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
-import 'package:provider/provider.dart';
-import 'package:workshop_digitalization/menu/ui/bottom_fab.dart';
-import 'package:workshop_digitalization/menu/ui/main_menu.dart';
 import 'package:workshop_digitalization/settings/ui/settings_screen.dart';
-import 'package:workshop_digitalization/student_project/firebase_managers.dart';
-import 'package:workshop_digitalization/student_project/project/project.dart';
-import 'package:workshop_digitalization/student_project/student/student.dart';
 
 import 'routes_utils.dart';
+import 'bottom_fab.dart';
+import 'main_menu.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key}) : super(key: key);

@@ -57,9 +57,9 @@ class MainMenu extends StatelessWidget {
       appBar: AppBar(
         leading: Icon(Icons.person, color: Theme.of(context).primaryColorDark),
         backgroundColor: Theme.of(context).canvasColor,
-        flexibleSpace: Image(
-          image: AssetImage('assets/logo.png'),
-        ),
+        // flexibleSpace: Image(
+        //   image: AssetImage('assets/logo.png'),
+        // ),
       ),
       drawer: Drawer(
         child: ListView(

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flamingo/flamingo.dart';
 import 'package:workshop_digitalization/files/container.dart';
-import 'package:workshop_digitalization/files/file_utils.dart';
 import 'package:workshop_digitalization/files/firebase.dart';
 import 'package:workshop_digitalization/global/disposable.dart';
 import 'package:workshop_digitalization/global/list_modifier.dart';

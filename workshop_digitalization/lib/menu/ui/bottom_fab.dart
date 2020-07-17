@@ -9,10 +9,8 @@ import 'package:workshop_digitalization/student_project/project/project.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
 
 class BottomFab extends StatefulWidget {
-  int index;
-  BottomFab(int index) {
-    this.index = index;
-  }
+  final int index;
+  BottomFab(int index) : index = index;
 
   @override
   State<StatefulWidget> createState() {
@@ -23,9 +21,11 @@ class BottomFab extends StatefulWidget {
 class BottomFabState extends State<BottomFab> {
   List<List<SpeedDialChild>> _children(BuildContext context) {
     StudentsFileDownloader studentsFileDownloader = new StudentsFileDownloader(
-        studentManager: Provider.of<StudentManager>(context, listen: false));
+      studentManager: Provider.of<StudentManager>(context, listen: false),
+    );
     ProjectsFileDownloader projectsFileDownloader = new ProjectsFileDownloader(
-        projectManager: Provider.of<ProjectManager>(context, listen: false));
+      projectManager: Provider.of<ProjectManager>(context, listen: false),
+    );
     return [
       [
         SpeedDialChild(

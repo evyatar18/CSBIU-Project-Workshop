@@ -2,7 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
+import 'package:workshop_digitalization/firebase_consts/lib.dart';
 import 'package:workshop_digitalization/global/strings.dart';
+import 'package:workshop_digitalization/global/ui/dialogs.dart';
 import 'package:workshop_digitalization/person/ui/person_form.dart';
 
 import '../project.dart';
@@ -90,23 +94,7 @@ class ProjectForm extends StatelessWidget {
               attribute: 'numberOfStudents',
               readOnly: true,
             ),
-            FormBuilderChoiceChip(
-              initialValue: project.projectStatus,
-              attribute: 'status',
-              options: [
-                FormBuilderFieldOption(
-                  value: ProjectStatus.NEW,
-                  child: Text('New'),
-                ),
-                FormBuilderFieldOption(
-                  value: ProjectStatus.CONTINUE,
-                  child: Text('Continue'),
-                )
-              ],
-              decoration: InputDecoration(
-                  border: InputBorder.none, labelText: "Project Status"),
-              onSaved: (status) => project.projectStatus = status,
-            ),
+            _buildStatusChips(),
             FormBuilderTextField(
               initialValue: writeDate(project.lastUpdate),
               attribute: "lastUpdate",
@@ -142,6 +130,58 @@ class ProjectForm extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildStatusChips() {
+    return ChangeNotifierProvider.value(
+      value: currentRoot,
+      child: Consumer<FirebaseRoot>(
+        builder: (context, root, child) {
+          Set<String> statuses = Set.from(root.statuses);
+
+          // in case the project status is not in the written statuses, add it
+          statuses.add(project.projectStatus);
+
+          return Wrap(
+            direction: Axis.horizontal,
+            children: <Widget>[
+              FormBuilderChoiceChip(
+                initialValue: project.projectStatus,
+                attribute: 'status',
+                options: statuses
+                    .map((status) => FormBuilderFieldOption(
+                        value: status, child: Text(capitalize(status))))
+                    .toList(),
+                decoration: InputDecoration(
+                    border: InputBorder.none, labelText: "Project Status"),
+                onSaved: (status) => project.projectStatus = status,
+              ),
+              FlatButton(
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.add),
+                    Text("Add Status"),
+                  ],
+                ),
+                onPressed: () async {
+                  final name = await showTextInputDialog(
+                      context, "Type a new status name");
+
+                  if (name != null) {
+                    if (name.isEmpty) {
+                      showAlertDialog(context, "Status name was empty",
+                          "Status name must not be empty");
+                    } else {
+                      root.statuses = List.of(root.statuses)..add(name);
+                    }
+                  }
+                },
+              ),
+            ],
+          );
+        },
       ),
     );
   }
