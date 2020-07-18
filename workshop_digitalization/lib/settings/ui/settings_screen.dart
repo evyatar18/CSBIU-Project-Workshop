@@ -49,10 +49,19 @@ class AppSettings extends StatelessWidget {
                   }
                 }),
             onTap: () async {
-              MyAppSettings.setdefaultDownloadPath((await DirectoryPicker.pick(
-                      context: context,
-                      rootDirectory: await getExternalStorageDirectory()))
-                  .path);
+              final dir = await DirectoryPicker.pick(
+                message: "Default download directory",
+                context: context,
+                rootDirectory: await getExternalStorageDirectory(),
+              );
+
+              // user tapped outside of the dialog window
+              if (dir == null) {
+                showAlertDialog(context, "No directory was chosen");
+                return;
+              }
+
+              MyAppSettings.setdefaultDownloadPath(dir.path);
             },
           )
         ],

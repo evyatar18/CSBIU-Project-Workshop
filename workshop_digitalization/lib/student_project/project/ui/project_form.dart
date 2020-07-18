@@ -144,27 +144,12 @@ class ProjectForm extends StatelessWidget {
           // in case the project status is not in the written statuses, add it
           statuses.add(project.projectStatus);
 
-          return Wrap(
-            direction: Axis.horizontal,
+          return Row(
             children: <Widget>[
-              FormBuilderChoiceChip(
-                initialValue: project.projectStatus,
-                attribute: 'status',
-                options: statuses
-                    .map((status) => FormBuilderFieldOption(
-                        value: status, child: Text(capitalize(status))))
-                    .toList(),
-                decoration: InputDecoration(
-                    border: InputBorder.none, labelText: "Project Status"),
-                onSaved: (status) => project.projectStatus = status,
-              ),
-              FlatButton(
-                child: Row(
-                  children: <Widget>[
-                    Icon(Icons.add),
-                    Text("Add Status"),
-                  ],
-                ),
+              IconButton(
+                tooltip: "Add a new status",
+                visualDensity: VisualDensity.compact,
+                icon: Icon(Icons.add),
                 onPressed: () async {
                   final name = await showTextInputDialog(
                       context, "Type a new status name");
@@ -179,6 +164,19 @@ class ProjectForm extends StatelessWidget {
                   }
                 },
               ),
+              Expanded(
+                child: FormBuilderChoiceChip(
+                  initialValue: project.projectStatus,
+                  attribute: 'status',
+                  options: statuses
+                      .map((status) => FormBuilderFieldOption(
+                          value: status, child: Text(capitalize(status))))
+                      .toList(),
+                  decoration: InputDecoration(
+                      border: InputBorder.none, labelText: "Project Status"),
+                  onSaved: (status) => project.projectStatus = status,
+                ),
+              )
             ],
           );
         },

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-Future<void> showAlertDialog(BuildContext context, String title, String body) {
+Future<void> showAlertDialog(BuildContext context, String title, [String body = ""]) {
   return showDialog(
     context: context,
     barrierDismissible: true,
@@ -33,12 +33,12 @@ Future<bool> showAgreementDialog(BuildContext context, String title,
         title: Text(title),
         actions: <Widget>[
           FlatButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text("YES"),
-          ),
-          FlatButton(
             onPressed: () => Navigator.pop(context, false),
             child: Text("NO"),
+          ),
+          FlatButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text("YES"),
           ),
         ],
       );
@@ -61,12 +61,12 @@ Future<String> showTextInputDialog(BuildContext context, String title,
         ),
         actions: <Widget>[
           FlatButton(
-            onPressed: () => Navigator.pop(context, textController.text),
-            child: Text("SUBMIT"),
-          ),
-          FlatButton(
             onPressed: () => Navigator.pop(context, null),
             child: Text("CANCEL"),
+          ),
+          FlatButton(
+            onPressed: () => Navigator.pop(context, textController.text),
+            child: Text("SUBMIT"),
           ),
         ],
       );
