@@ -75,14 +75,16 @@ class MyApp extends StatelessWidget {
             // make sure the document exists and has the admin flag on
             final userDoc = snapshot.data;
             if (!userDoc.exists || !userDoc.data["admin"]) {
+
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text("You are not allowed to access data in this app."),
                     Text(
-                        "Please sign in with an authorized account to continue."),
-                    SignOutButton(authenticator: auth, resetAccount: true),
+                      "Please sign in with an authorized account to continue.",
+                    ),
+                    SignOutButton(authenticator: auth),
                   ],
                 ),
               );

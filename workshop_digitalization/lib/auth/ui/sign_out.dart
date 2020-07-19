@@ -8,7 +8,6 @@ class SignOutButton extends StatelessWidget {
 
   SignOutButton({
     @required this.authenticator,
-    bool resetAccount = false,
   });
 
   @override

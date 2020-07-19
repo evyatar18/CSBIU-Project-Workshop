@@ -114,10 +114,9 @@ class StudentDetails extends StatelessWidget {
       element: student,
       elementManager: StudentElementManager(studentManager),
       formCreator: ({Student element, formBuilderKey, readOnly}) {
-        // final grade = element.grade;
         return FormBuilder(
           key: formBuilderKey,
-          initialValue: <String, dynamic> {},
+          initialValue: <String, dynamic>{},
           readOnly: readOnly,
           child: Column(
             children: <Widget>[

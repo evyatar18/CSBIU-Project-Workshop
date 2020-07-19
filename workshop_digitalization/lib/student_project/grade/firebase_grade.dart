@@ -7,8 +7,13 @@ class FirebaseGrade extends Model implements Grade {
     Map<String, dynamic> values,
   }) : super(values: values);
 
+  num _grade;
+
   @override
-  num grade = double.nan;
+  set grade(num grade) => _grade = grade;
+
+  @override
+  num get grade => _grade == null || _grade.isNaN ? 0.0 : _grade;
 
   @override
   String comments = "";
