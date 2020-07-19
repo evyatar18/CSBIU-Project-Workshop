@@ -1,9 +1,6 @@
-import 'dart:io';
 
 import 'package:csv/csv.dart';
-import 'package:directory_picker/directory_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:workshop_digitalization/global/path_suplier.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
-import 'package:workshop_digitalization/settings/ui/settings_screen.dart';
 
 import 'routes_utils.dart';
 import 'bottom_fab.dart';

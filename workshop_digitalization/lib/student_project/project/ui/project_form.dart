@@ -148,7 +148,7 @@ class ProjectForm extends StatelessWidget {
             children: <Widget>[
               IconButton(
                 tooltip: "Add a new status",
-                visualDensity: VisualDensity.compact,
+               // visualDensity: VisualDensity.compact,
                 icon: Icon(Icons.add),
                 onPressed: () async {
                   final name = await showTextInputDialog(
