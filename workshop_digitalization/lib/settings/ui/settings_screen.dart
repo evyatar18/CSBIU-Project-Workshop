@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:workshop_digitalization/auth/auth.dart';
 import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
@@ -13,21 +15,51 @@ import 'package:workshop_digitalization/firebase_consts/lib.dart' as globs;
 class AppSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: SettingsScreen(
-        title: "Application Settings",
-        children: [
-          SettingsGroup(
-            title: "Database Roots",
-            children: _buildRoots(context),
-          ),
-          SettingsGroup(
-            title: "Default Paths",
-            children: _buildDefaultPaths(context),
+    final children = _buildSettingsGroups(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Application Settings"),
+        actions: <Widget>[
+          RaisedButton(
+            color: Colors.red,
+            onPressed: () async {
+              final auth = Provider.of<Authenticator>(context, listen: false);
+
+              try {
+                await auth.signOut();
+                print("logged out successfully");
+              } catch (e) {
+                showErrorDialog(
+                  context,
+                  title: "Error signing out",
+                  error: e.toString(),
+                );
+              }
+            },
+            child: Text("Logout", style: TextStyle(color: Colors.white),),
           ),
         ],
       ),
+      body: ListView.builder(
+        shrinkWrap: true,
+        itemCount: children.length,
+        itemBuilder: (context, index) => children[index],
+      ),
     );
+  }
+
+  List<Widget> _buildSettingsGroups(BuildContext context) {
+    return [
+      SettingsGroup(
+        title: "Database Roots",
+        children: _buildRoots(context),
+      ),
+      SettingsGroup(
+        title: "Default Paths",
+        children: _buildDefaultPaths(context),
+      ),
+    ];
   }
 
   List<Widget> _buildDefaultPaths(BuildContext context) {

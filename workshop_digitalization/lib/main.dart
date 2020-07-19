@@ -3,6 +3,8 @@ import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:provider/provider.dart';
+import 'package:workshop_digitalization/auth/auth.dart';
+import 'package:workshop_digitalization/auth/ui/auth_wrapper.dart';
 import 'package:workshop_digitalization/csv/ui/load_screen.dart';
 import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
 import 'package:workshop_digitalization/firebase_consts/lib.dart' as globs;
@@ -39,12 +41,47 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Workshop Digitalization',
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      home: Scaffold(
+        body: _authenticator(),
+      ),
+    );
+  }
+
+  Widget _authenticator() {
+    final auth = Authenticator();
+
+    return AuthWrapper(
+      authenticator: auth,
+      authBuilder: (context, user) {
+        return Provider.value(
+          value: auth,
+          child: _buildRootUpdater(_mainBodyBuilder),
+        );
+      },
+    );
+  }
+
   Widget _rootRefresher(String rootName, WidgetBuilder childBuilder) {
     return FutureBuilder<FirebaseRoot>(
       future: globs.useRootByName(rootName),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return CircularProgressIndicator();
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                CircularProgressIndicator(),
+                SizedBox(height: 10),
+                Text("Loading data from firebase..."),
+              ],
+            ),
+          );
         }
 
         // reconfigure flamingo on root change
@@ -107,16 +144,6 @@ class MyApp extends StatelessWidget {
           child: MyHomePage(),
         );
       },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Workshop Digitalization',
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      home: _buildRootUpdater(_mainBodyBuilder),
     );
   }
 }

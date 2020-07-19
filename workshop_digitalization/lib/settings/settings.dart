@@ -1,4 +1,3 @@
-import 'package:directory_picker/directory_picker.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -37,7 +36,7 @@ class MyAppSettings {
       return null;
     }
   }
-  
+
  static Future<bool> get getDefaultDownloadPathEnabled async {
     try {
       return await Settings.getValue(
@@ -47,7 +46,7 @@ class MyAppSettings {
       return null;
     }
   }
-  
+
   static Future<void> setdefaultDownloadPath(String path) async {
     Settings.setValue(defaultDownloadPathName, path);
   }

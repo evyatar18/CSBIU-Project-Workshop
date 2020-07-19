@@ -34,6 +34,10 @@ dependencies:
   firebase_core: ^0.4.0+9
   cloud_firestore: 0.13.4+2
   firebase_storage: 3.1.5
+  firebase_auth: 0.16.1
+
+  # sign in with google https://pub.dev/packages/google_sign_in
+  google_sign_in:
 
   # using for firebase models https://pub.dev/packages/flamingo
   flamingo:
