@@ -62,10 +62,10 @@ class _FBFileInfo implements FileInfo {
 
       // download
       final download = downloadFirebaseFile(
-              fileRef: FirebaseStorage.instance.ref().child(path),
-              localFile: file,
-              fileName: fileName)
-          .asBroadcastStream();
+        fileRef: FirebaseStorage.instance.ref().child(path),
+        localFile: file,
+        fileName: fileName,
+      ).asBroadcastStream();
 
       // save file snapshot if it was succcessful (local caching for _FBInfo object lifetime)
       download.listen((snapshot) => _downloaded =
@@ -73,7 +73,7 @@ class _FBFileInfo implements FileInfo {
 
       return download;
     } on FileCreationException catch (e) {
-      return Stream.value(FileRetrievalSnapshot.error(e.message));
+      return Stream.value(FileRetrievalSnapshot.error(fileName, e.message));
     }
   }
 }
@@ -133,7 +133,8 @@ class FBFileContainer implements FileContainer {
     var task = FirebaseStorage.instance.ref().child(firebasePath).putFile(f);
 
     // convert to this project's upload type
-    var uploaderStream = convertUploaderStream(name, task.events).asBroadcastStream();
+    var uploaderStream =
+        convertUploaderStream(name, task.events).asBroadcastStream();
 
     // add file metadata to firestore when upload successful
     uploaderStream.listen((snapshot) async {
@@ -177,7 +178,6 @@ class FBFileContainer implements FileContainer {
 
   @override
   Future<void> dispose() async {
-    if (_metadataSubscription != null)
-      _metadataSubscription.cancel();
+    if (_metadataSubscription != null) _metadataSubscription.cancel();
   }
 }

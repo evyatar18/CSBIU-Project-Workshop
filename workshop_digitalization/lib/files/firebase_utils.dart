@@ -68,8 +68,8 @@ Stream<FileUploadSnapshot> convertUploaderStream(
       switch (event.type) {
         case StorageTaskEventType.failure:
           // report error
-          yield FileUploadSnapshot.error(fileName);
-          break;
+          yield FileUploadSnapshot.error(fileName, "Failed uploading $fileName;\n error code: ${event.snapshot.error}");
+          return;
         case StorageTaskEventType.resume:
         case StorageTaskEventType.progress:
         case StorageTaskEventType.pause:
