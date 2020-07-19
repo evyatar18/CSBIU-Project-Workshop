@@ -207,27 +207,28 @@ class StudentDetails extends StatelessWidget {
           projectManager: projectManager,
           showAddButton: false,
           onProjectClick: (context, newProject) async {
-            if (currentProject != null)
-              currentProject.studentIds = currentProject.studentIds
-                ..remove(student.id);
-            newProject.studentIds = newProject.studentIds..add(student.id);
+            final changedProject = newProject?.id != currentProject?.id;
 
-            await Future.wait([
-              if (currentProject != null) _deleteFromProject(currentProject),
-              projectManager.save(newProject)
-            ]);
+            // changed a project
+            if (changedProject) {
+              newProject.studentIds = newProject.studentIds..add(student.id);
 
-            await showAlertDialog(
-              context,
-              "Success!",
-              "Set project successfully",
-            );
+              await projectManager.save(newProject);
+
+              await showAlertDialog(
+                context,
+                "Success!",
+                "Set project successfully",
+              );
+            }
 
             // close project table
             Navigator.pop(context);
 
-            // close student view (so we refresh the student project)
-            Navigator.pop(context);
+            if (changedProject) {
+              // close student view (so we refresh the student project)
+              Navigator.pop(context);
+            }
           },
         );
 

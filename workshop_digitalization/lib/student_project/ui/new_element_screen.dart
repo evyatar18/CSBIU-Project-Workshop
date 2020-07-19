@@ -4,6 +4,7 @@ import 'package:workshop_digitalization/global/identified_type.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
 import 'package:workshop_digitalization/student_project/element_manager.dart';
+import 'package:workshop_digitalization/global/ui/circular_loader.dart';
 
 import 'element_form_creator.dart';
 
@@ -114,7 +115,9 @@ class NewElementScreen<T extends StringIdentified> extends StatelessWidget {
           future: elementFuture,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return CircularProgressIndicator();
+              return LabeledCircularLoader(
+                labels: ["Getting a new instance of $elementName"],
+              );
             }
 
             if (snapshot.hasError) {

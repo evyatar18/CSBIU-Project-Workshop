@@ -255,9 +255,31 @@ class FirebaseProjectManager extends ProjectManager<FirebaseProject> {
       (element) => addQueue.contains(element) ? projectDocumentId : null,
     );
 
+    /* delete students of this project from their old projects */
+    final removeFromProjects = addQueue
+        .map((studId) {
+          // find the old project of this student
+          return latestProjects
+              .where((proj) => proj.studentIds.contains(studId))
+              .map((proj) {
+            proj._studentIds.remove(studId);
+            return proj;
+          }).toList();
+        })
+        .expand((list) => list)
+        .toSet()
+        .map((proj) => _docAccessor.save(proj));
+
+    try {
+      await Future.wait(removeFromProjects);
+    } catch (e) {
+      print("error on firebase project (deleting from previous projects): $e");
+    }
+    /* finish deleting from old projects */
+
     project._studentIds.addAll(addQueue);
     project._studentIds.removeWhere((id) => deleteQueue.contains(id));
-    _docAccessor.save(project);
+    return _docAccessor.save(project);
   }
 
   Future<void> delete(FirebaseProject project) async {

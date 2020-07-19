@@ -9,11 +9,10 @@ import 'package:workshop_digitalization/student_project/project/ui/project_table
 import 'package:workshop_digitalization/student_project/student/student.dart';
 import 'package:workshop_digitalization/student_project/student/ui/new_student_view.dart';
 import 'package:workshop_digitalization/student_project/student/ui/student_table.dart';
+import 'package:workshop_digitalization/global/ui/circular_loader.dart';
 
-Widget _loader() {
-  return Center(
-    child: CircularProgressIndicator(),
-  );
+Widget _loader(String title) {
+  return LabeledCircularLoader(labels: [title]);
 }
 
 typedef Widget StudentProjectProvided(BuildContext context,
@@ -23,7 +22,7 @@ Widget createStudentProjectDependent(StudentProjectProvided builder) {
   return Consumer2<StudentManager, ProjectManager>(
     builder: (context, sm, pm, _) {
       if (sm == null || pm == null) {
-        return _loader();
+        return _loader("Acquiring student and project managers");
       }
       return builder(context, sm, pm);
     },
@@ -38,7 +37,7 @@ Widget createStudentDependent(StudentProvided builder) {
   return Consumer<StudentManager>(
     builder: (context, value, _) {
       if (value == null) {
-        return _loader();
+        return _loader("Acquiring student manager");
       }
       return builder(context, value);
     },
@@ -49,7 +48,7 @@ Widget createProjectDependent(ProjectProvided builder) {
   return Consumer<ProjectManager>(
     builder: (context, value, _) {
       if (value == null) {
-        return _loader();
+        return _loader("Acquiring project manager");
       }
       return builder(context, value);
     },

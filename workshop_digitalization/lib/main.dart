@@ -30,6 +30,8 @@ import 'progress/ui/multiple_progress_bars.dart';
 import 'progress/ui/progress_bar.dart';
 import 'progress/ui/progress_displayer.dart';
 import 'student_project/student/ui/student_table.dart';
+import 'global/ui/circular_loader.dart';
+import 'global/ui/completely_centered.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,16 +68,22 @@ class MyApp extends StatelessWidget {
               .document(user.firebaseUser.uid)
               .snapshots(),
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Center(
-                child: CircularProgressIndicator(),
+            if (snapshot.hasError) {
+              return CompletelyCentered(
+                children: <Widget>[
+                  Text("Error on checking if authorized"),
+                  Text(snapshot.error.toString()),
+                ],
               );
+            }
+
+            if (!snapshot.hasData) {
+              return LabeledCircularLoader(labels: ["Checking if authorized"]);
             }
 
             // make sure the document exists and has the admin flag on
             final userDoc = snapshot.data;
             if (!userDoc.exists || !userDoc.data["admin"]) {
-
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -105,15 +113,8 @@ class MyApp extends StatelessWidget {
       future: globs.useRootByName(rootName),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                CircularProgressIndicator(),
-                SizedBox(height: 10),
-                Text("Loading data from firebase..."),
-              ],
-            ),
+          return LabeledCircularLoader(
+            labels: ["Loading data from firebase..."],
           );
         }
 
@@ -138,7 +139,9 @@ class MyApp extends StatelessWidget {
       future: MyAppSettings.defaultRoot,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return CircularProgressIndicator();
+          return LabeledCircularLoader(
+            labels: ["Loading default root"],
+          );
         }
 
         // we use a ValueChangeObserver to change the root when it is changed in the settings
@@ -163,7 +166,9 @@ class MyApp extends StatelessWidget {
       future: Future.wait([students, projects]),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return CircularProgressIndicator();
+          return LabeledCircularLoader(
+            labels: ["Acquiring students and project instances"],
+          );
         }
 
         final StudentManager studs = snapshot.data[0];

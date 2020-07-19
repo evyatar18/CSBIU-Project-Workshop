@@ -8,6 +8,7 @@ import 'package:workshop_digitalization/memos/ui/memos_list.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
 import 'package:workshop_digitalization/student_project/student/ui/student_table.dart';
 import 'package:workshop_digitalization/student_project/student/ui/student_view.dart';
+import 'package:workshop_digitalization/global/ui/circular_loader.dart';
 
 import '../project.dart';
 import 'project_form_wrapper.dart';
@@ -61,7 +62,7 @@ class ProjectDetailsView extends StatelessWidget {
                   .then((value) => value.map((e) => e.email).toList()),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return CircularProgressIndicator();
+                  return LabeledCircularLoader(labels: ["Getting Student Emails"]);
                 }
 
                 return MemoScaffold(
@@ -109,7 +110,7 @@ class _StudentsDisplayerState extends State<_StudentsDisplayer> {
 
           if (ret != null && ret) {
             // update state because we added a student
-            setState(() { });
+            setState(() {});
           }
         },
         child: Icon(Icons.add),
@@ -155,7 +156,9 @@ class _StudentsDisplayerState extends State<_StudentsDisplayer> {
       future: widget.project.students,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return CircularProgressIndicator();
+          return LabeledCircularLoader(
+            labels: ["Getting Students"],
+          );
         }
 
         return Column(
@@ -213,14 +216,17 @@ class _StudentsDisplayerState extends State<_StudentsDisplayer> {
           )
         ],
       ),
-
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          SizedBox(height: 4,),
+          SizedBox(
+            height: 4,
+          ),
           Text("ID: ${student.personalID}"),
-          SizedBox(height: 2,),
+          SizedBox(
+            height: 2,
+          ),
           Text("Grade: ${student.grade.grade}"),
         ],
       ),

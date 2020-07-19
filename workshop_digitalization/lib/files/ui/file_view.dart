@@ -9,6 +9,7 @@ import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/progress/progress.dart';
 import 'package:workshop_digitalization/progress/progress_repo.dart';
 import 'package:workshop_digitalization/progress/ui/progress_displayer.dart';
+import 'package:workshop_digitalization/global/ui/circular_loader.dart';
 
 import '../container.dart';
 import '../transfer.dart';
@@ -62,13 +63,8 @@ class FileContainerDisplayer extends StatelessWidget {
   Widget _buildLoadingData() {
     return Container(
       padding: EdgeInsets.all(20),
-      child: Center(
-        child: Column(
-          children: <Widget>[
-            CircularProgressIndicator(),
-            Text("Loading data...")
-          ],
-        ),
+      child: LabeledCircularLoader(
+        labels: ["Loading data..."],
       ),
     );
   }
@@ -174,10 +170,10 @@ class FileContainerDisplayer extends StatelessWidget {
   }
 }
 
-Widget createFileContainerDisplayer(
-    {@required FileContainer container}) {
+Widget createFileContainerDisplayer({@required FileContainer container}) {
   return Disposer<ProgressRepository>(
     create: () => ProgressRepository(),
-    builder: (context, repo) => FileContainerDisplayer(container: container, repo: repo),
+    builder: (context, repo) =>
+        FileContainerDisplayer(container: container, repo: repo),
   );
 }
