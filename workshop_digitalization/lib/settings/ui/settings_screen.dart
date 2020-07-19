@@ -5,6 +5,7 @@ import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/auth/auth.dart';
+import 'package:workshop_digitalization/auth/ui/sign_out.dart';
 import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
@@ -17,27 +18,13 @@ class AppSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     final children = _buildSettingsGroups(context);
 
+    final auth = Provider.of<Authenticator>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text("Application Settings"),
         actions: <Widget>[
-          RaisedButton(
-            color: Colors.red,
-            onPressed: () async {
-              final auth = Provider.of<Authenticator>(context, listen: false);
-
-              try {
-                await auth.signOut();
-                print("logged out successfully");
-              } catch (e) {
-                showErrorDialog(
-                  context,
-                  title: "Error signing out",
-                  error: e.toString(),
-                );
-              }
-            },
-            child: Text("Logout", style: TextStyle(color: Colors.white),),
+          SignOutButton(
+            authenticator: auth,
           ),
         ],
       ),

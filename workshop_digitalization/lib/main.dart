@@ -5,6 +5,7 @@ import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/auth/auth.dart';
 import 'package:workshop_digitalization/auth/ui/auth_wrapper.dart';
+import 'package:workshop_digitalization/auth/ui/sign_out.dart';
 import 'package:workshop_digitalization/csv/ui/load_screen.dart';
 import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
 import 'package:workshop_digitalization/firebase_consts/lib.dart' as globs;
@@ -59,9 +60,39 @@ class MyApp extends StatelessWidget {
     return AuthWrapper(
       authenticator: auth,
       authBuilder: (context, user) {
-        return Provider.value(
-          value: auth,
-          child: _buildRootUpdater(_mainBodyBuilder),
+        return StreamBuilder<DocumentSnapshot>(
+          stream: Firestore.instance
+              .collection("allowed")
+              .document(user.firebaseUser.uid)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            // make sure the document exists and has the admin flag on
+            final userDoc = snapshot.data;
+            if (!userDoc.exists || !userDoc.data["admin"]) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("You are not allowed to access data in this app."),
+                    Text(
+                        "Please sign in with an authorized account to continue."),
+                    SignOutButton(authenticator: auth, resetAccount: true),
+                  ],
+                ),
+              );
+            }
+
+            return Provider.value(
+              value: auth,
+              child: _buildRootUpdater(_mainBodyBuilder),
+            );
+          },
         );
       },
     );

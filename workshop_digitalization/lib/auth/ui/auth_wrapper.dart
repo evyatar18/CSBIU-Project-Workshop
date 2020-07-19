@@ -47,7 +47,11 @@ class AuthWrapper extends StatelessWidget {
             child: Text("Google Sign-In"),
             onPressed: () async {
               try {
-                await authenticator.googleSignInPrompt();
+                final user = await authenticator.googleSignInPrompt();
+
+                if (user == null) {
+                  showAlertDialog(context, "Did not select a user");
+                }
               } catch (e) {
                 showErrorDialog(
                   context,
