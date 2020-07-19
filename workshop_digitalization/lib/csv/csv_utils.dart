@@ -1,5 +1,6 @@
 import 'package:workshop_digitalization/student_project/project/project.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
+import 'package:workshop_digitalization/person/person.dart';
 
 Map<String, dynamic> studentToData(Student student) {
   final data = Map<String, dynamic>();
@@ -21,36 +22,29 @@ Map<String, dynamic> studentToData(Student student) {
 
   return data;
 }
-
+void _savePerson(Map<String, dynamic> saveTo, String key, Person person) {
+  saveTo["$key-name"] =
+      person == null ? "" : "${person.firstName} ${person.lastName}";
+  saveTo["$key-email"] = person == null ? "" : person.email;
+  saveTo["$key-phone"] = person == null ? "" : person.phoneNumber;
+}
 Map<String, dynamic> projectToData(Project project) {
   final data = Map<String, dynamic>();
-
-  data['initiator'] = project.initiator.firstName + project.initiator.lastName;
-  data['initiatorPhone'] = project.contact.phoneNumber;
-  data['initiatorEmail'] = project.contact.email;
-  data['contact'] = project.contact.firstName + project.contact.lastName;
-  data['contactPhone'] = project.contact.phoneNumber;
-  data['contactEmail'] = project.contact.email;
-
   data['projectSubject'] = project.projectSubject;
   data['projectDomain'] = project.projectDomain;
   data['projectGoal'] = project.projectGoal;
   data['endDate'] = project.endDate;
 
-  data['mentor'] = project.mentor;
+  _savePerson(data, 'initiator', project.initiator);
+  _savePerson(data, 'contact', project.contact);
+  _savePerson(data, 'mentor', project.mentor);
+   
   data['projectChallenges'] = project.projectChallenges;
   data['projectInnovativeDetails'] = project.projectInnovativeDetails;
 
   data['projectStatus'] = project.projectStatus;
 
   data['mentorTechAbility'] = project.mentorTechAbility;
-
-  //data['studentIds'] = project.studentIds;
-
-  // // PROBLEMATIC
-  // data['comments'] = project.comments;
-  // // PROBLEMATIC
-  // data['skills'] = project.skills;
 
   return data;
 }
