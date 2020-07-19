@@ -8,25 +8,26 @@ class MyAppSettings {
   static const String defaultDownloadPathName = "download-path";
   static const String defaultDownloadPathEnabeld = "download-path-switch";
 
-
   static String getDefaultRoot(List<String> versions) {
     return versions.isEmpty ? DateTime.now().year.toString() : versions[0];
   }
 
   static Future<String> get defaultRoot async {
     try {
-      final roots = globs.roots.roots ?? await globs.roots.rootStream.first;
+      final roots = globs.roots.roots ??
+          await globs.roots.rootStream.timeout(Duration(seconds: 5)).first;
+
       final versions = roots.map((root) => root.reference.documentID).toList();
       return getDefaultRoot(versions);
     } catch (e) {
-      print(e);
-      return null;
+      return getDefaultRoot([]);
     }
   }
 
   static void setRoot(String root) {
     Settings.setValue(firebaseRootName, root);
   }
+
   static Future<String> get defaultDownloadPath async {
     try {
       return await Settings.getValue(
@@ -37,10 +38,9 @@ class MyAppSettings {
     }
   }
 
- static Future<bool> get getDefaultDownloadPathEnabled async {
+  static Future<bool> get getDefaultDownloadPathEnabled async {
     try {
-      return await Settings.getValue(
-          defaultDownloadPathEnabeld, false);
+      return await Settings.getValue(defaultDownloadPathEnabeld, false);
     } catch (e) {
       print(e);
       return null;
@@ -51,4 +51,3 @@ class MyAppSettings {
     Settings.setValue(defaultDownloadPathName, path);
   }
 }
-

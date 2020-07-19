@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
@@ -138,6 +139,15 @@ class MyApp extends StatelessWidget {
     return FutureBuilder<String>(
       future: MyAppSettings.defaultRoot,
       builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return CompletelyCentered(
+            children: [
+              Text("Failed loading default root:"),
+              Text(snapshot.error.toString()),
+            ],
+          );
+        }
+
         if (!snapshot.hasData) {
           return LabeledCircularLoader(
             labels: ["Loading default root"],

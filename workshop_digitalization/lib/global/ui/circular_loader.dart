@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'completely_centered.dart';
+
 class LabeledCircularLoader extends StatelessWidget {
   final List<String> labels;
 
