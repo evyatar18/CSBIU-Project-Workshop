@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:workshop_digitalization/auth/auth.dart';
 import 'package:workshop_digitalization/auth/ui/sign_out.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/global/ui/circular_loader.dart';

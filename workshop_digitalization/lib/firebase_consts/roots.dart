@@ -5,10 +5,6 @@ import 'package:rxdart/rxdart.dart';
 
 import 'firebase_root.dart';
 
-Roots roots;
-
-void initRoots() => roots = Roots(startListening: true);
-
 class Roots {
   // the collection which includes all different roots
   final CollectionReference rootsCollection;

@@ -6,12 +6,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/auth/auth.dart';
 import 'package:workshop_digitalization/auth/ui/sign_out.dart';
+import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
 import 'package:workshop_digitalization/settings/settings.dart';
-
-import 'package:workshop_digitalization/firebase_consts/lib.dart' as globs;
 
 class AppSettings extends StatelessWidget {
   @override
@@ -89,30 +88,35 @@ class AppSettings extends StatelessWidget {
   }
 
   List<Widget> _buildRoots(BuildContext context) {
+    final firebase = Provider.of<FirebaseInstance>(context);
+    final currentRoot = firebase.root.root;
+
     return <Widget>[
       StreamBuilder<List<FirebaseRoot>>(
-        stream: globs.roots.rootStream,
-        initialData: globs.roots.roots,
+        stream: firebase.roots.rootStream,
+        initialData: firebase.roots.roots,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Text("Loading database roots...");
           }
 
-          final roots = snapshot.data;
-          final rootNames = roots.map((e) => e.name).toList();
-          final defaultRoot = rootNames.isEmpty ? null : rootNames.first;
+          final rootNames = snapshot.data.map((root) => root.name).toList();
+          final empty = rootNames.isEmpty;
+
+          if (empty) rootNames.add("no roots");
+
+          final defaultRoot = rootNames.first;
 
           return DropDownSettingsTile<String>(
             title: "Database Root",
+            enabled: !empty,
             settingKey: MyAppSettings.firebaseRootName,
-            values: Map.fromEntries(
-              roots
-                  .map((root) => root.name)
-                  .map((name) => MapEntry(name, capitalize(name))),
-            ),
+            values: rootNames
+                .asMap()
+                .map((_, value) => MapEntry(value, capitalize(value))),
             selected:
-                globs.currentRoot != null && roots.contains(globs.currentRoot)
-                    ? globs.currentRoot.name
+                currentRoot != null && rootNames.contains(currentRoot.name)
+                    ? currentRoot.name
                     : defaultRoot,
             onChange: MyAppSettings.setRoot,
           );
@@ -128,7 +132,7 @@ class AppSettings extends StatelessWidget {
                   "Root name cannot be empty");
             } else {
               // create the root if it does not exist
-              globs.roots.getRoot(name);
+              firebase.roots.getRoot(name);
             }
           }
         },

@@ -17,10 +17,10 @@ FirebaseOptions generateAndroidFirebaseOptions(
 
   // get android data
   final googleAppID = androidClient["client_info"]["mobilesdk_app_id"];
-  final apiKey = androidClient["api_key"]["current_key"];
-  final projectID = androidClient["project_info"]["project_id"];
-  final databaseURL = androidClient["project_info"]["firebase_url"];
-  final storageBucket = androidClient["project_info"]["storage_bucket"];
+  final apiKey = androidClient["api_key"].last["current_key"];
+  final projectID = json["project_info"]["project_id"];
+  final databaseURL = json["project_info"]["firebase_url"];
+  final storageBucket = json["project_info"]["storage_bucket"];
 
   // create a `FirebaseOptions` instance
   return FirebaseOptions(

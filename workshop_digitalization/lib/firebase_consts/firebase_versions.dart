@@ -4,18 +4,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
 import 'roots.dart';
 
-const String versionField = "versionName";
+// const String versionField = "versionName";
 
-CollectionReference firestoreRootCollection;
-FirebaseRoot currentRoot;
+// CollectionReference firestoreRootCollection;
+// FirebaseRoot currentRoot;
 
-Future<FirebaseRoot> useRoot(FirebaseRoot root) async {
-  if (!roots.listening) {
-    await root.refreshValues();
-  }
-  return currentRoot = root;
-}
+// Future<FirebaseRoot> useRoot(FirebaseRoot root) async {
+//   if (!roots.listening) {
+//     await root.refreshValues();
+//   }
+//   return currentRoot = root;
+// }
 
-Future<FirebaseRoot> useRootByName(String rootName) async {
-  return await useRoot(await roots.getRoot(rootName));
-}
+// Future<FirebaseRoot> useRootByName(String rootName) async {
+//   return await useRoot(await roots.getRoot(rootName));
+// }

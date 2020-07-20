@@ -1,27 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:path_provider/path_provider.dart';
-
-import '../firebase_consts/lib.dart' as globs;
 
 class MyAppSettings {
   static const String firebaseRootName = "firebase-root";
   static const String defaultDownloadPathName = "download-path";
   static const String defaultDownloadPathEnabeld = "download-path-switch";
 
-  static String getDefaultRoot(List<String> versions) {
+  static String getDefaultRootName(List<String> versions) {
     return versions.isEmpty ? DateTime.now().year.toString() : versions[0];
-  }
-
-  static Future<String> get defaultRoot async {
-    try {
-      final roots = globs.roots.roots ??
-          await globs.roots.rootStream.timeout(Duration(seconds: 5)).first;
-
-      final versions = roots.map((root) => root.reference.documentID).toList();
-      return getDefaultRoot(versions);
-    } catch (e) {
-      return getDefaultRoot([]);
-    }
   }
 
   static void setRoot(String root) {
@@ -49,5 +37,13 @@ class MyAppSettings {
 
   static Future<void> setdefaultDownloadPath(String path) async {
     Settings.setValue(defaultDownloadPathName, path);
+  }
+
+  static void setFirebaseOptions(Map<String, dynamic> optionsMap) {
+    Settings.setValue("firebase-options", jsonEncode(optionsMap));
+  }
+
+  static Map<String, dynamic> getFirebaseOptions() {
+    return jsonDecode(Settings.getValue<String>("firebase-options", null));
   }
 }

@@ -23,7 +23,7 @@ class ActiveRoot {
     return Future.wait([
       _sm.dispose(),
       _pm.dispose(),
-      Future.value(() => root.dispose()),
+      // Future.sync(() => root.dispose()),
     ]);
   }
 }

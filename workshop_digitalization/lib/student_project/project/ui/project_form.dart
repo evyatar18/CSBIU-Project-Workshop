@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
 import 'package:workshop_digitalization/firebase_consts/lib.dart';
 import 'package:workshop_digitalization/global/strings.dart';
@@ -94,7 +95,7 @@ class ProjectForm extends StatelessWidget {
               attribute: 'numberOfStudents',
               readOnly: true,
             ),
-            _buildStatusChips(),
+            _buildStatusChips(context),
             FormBuilderTextField(
               initialValue: writeDate(project.lastUpdate),
               attribute: "lastUpdate",
@@ -134,7 +135,10 @@ class ProjectForm extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusChips() {
+  Widget _buildStatusChips(BuildContext context) {
+    final firebase = Provider.of<FirebaseInstance>(context);
+    final currentRoot = firebase.root.root;
+
     return ChangeNotifierProvider.value(
       value: currentRoot,
       child: Consumer<FirebaseRoot>(
@@ -148,7 +152,7 @@ class ProjectForm extends StatelessWidget {
             children: <Widget>[
               IconButton(
                 tooltip: "Add a new status",
-               // visualDensity: VisualDensity.compact,
+                // visualDensity: VisualDensity.compact,
                 icon: Icon(Icons.add),
                 onPressed: () async {
                   final name = await showTextInputDialog(
