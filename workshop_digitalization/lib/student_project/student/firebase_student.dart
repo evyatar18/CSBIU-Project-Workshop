@@ -4,6 +4,7 @@ import 'package:flamingo/flamingo.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:workshop_digitalization/files/container.dart';
 import 'package:workshop_digitalization/files/firebase.dart';
+import 'package:workshop_digitalization/firebase_consts/active_root.dart';
 import 'package:workshop_digitalization/global/smart_doc_accessor.dart';
 import 'package:workshop_digitalization/memos/firebase_memo.dart';
 import 'package:workshop_digitalization/memos/memo.dart';
@@ -11,7 +12,6 @@ import 'package:workshop_digitalization/progress/progress.dart';
 import 'package:workshop_digitalization/student_project/grade/firebase_grade.dart';
 import 'package:workshop_digitalization/student_project/grade/grade.dart';
 
-import '../firebase_managers.dart';
 import '../project/project.dart';
 import 'student.dart';
 
@@ -19,7 +19,10 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
   FBFileContainer _files;
   MemoManager<Memo> _memos;
 
-  FirebaseStudent({
+  final ActiveRoot root;
+
+  FirebaseStudent(
+    this.root, {
     String id,
     DocumentSnapshot snapshot,
     Map<String, dynamic> values,
@@ -34,14 +37,20 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
   @override
   FileContainer get files {
     if (_files == null)
-      _files = FBFileContainer(super.reference.collection("files"));
+      _files = FBFileContainer(
+        root.firebase.storage,
+        super.reference.collection("files"),
+      );
     return _files;
   }
 
   @override
   MemoManager<Memo> get memos {
     if (_memos == null)
-      _memos = FirebaseMemoManager(super.reference.collection("memos"));
+      _memos = FirebaseMemoManager(
+        root.firebase,
+        super.reference.collection("memos"),
+      );
     return _memos;
   }
 
@@ -115,9 +124,14 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
 
   @override
   Future<Project> get project async =>
-      (await FirebaseManagers.instance.projects).getProject(firebaseProjectId);
+      root.projectManager.getProject(firebaseProjectId);
 
-  Future<void> dispose() async {}
+  Future<void> dispose() {
+    return Future.wait([
+      _files.dispose(),
+      _memos.dispose(),
+    ]);
+  }
 
   FirebaseGrade _grade;
   @override
@@ -126,14 +140,17 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
 }
 
 class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
-  final _collection = Flamingo.instance.rootReference.collection("students");
+  final CollectionReference _collection;
   final _docAccessor = SmartDocumentAccessor();
+
+  final ActiveRoot root;
 
   StreamSubscription _subscription;
   BehaviorSubject<List<FirebaseStudent>> _students =
       BehaviorSubject<List<FirebaseStudent>>();
 
-  FirebaseStudentManager() {
+  FirebaseStudentManager(this.root)
+      : _collection = root.root.reference.collection("students") {
     _subscription = _collection.snapshots().listen(_handleSnapshots);
   }
 
@@ -152,7 +169,8 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
     _students.add(
       snapshot.documents
           .where((doc) => !_docAccessor.isDeleted(doc.data))
-          .map((e) => FirebaseStudent(collectionRef: _collection, snapshot: e))
+          .map((e) =>
+              FirebaseStudent(root, collectionRef: _collection, snapshot: e))
           .toList(),
     );
   }
@@ -161,7 +179,7 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
   List<FirebaseStudent> get latestStudents => _students.value;
 
   Future<FirebaseStudent> createEmpty() async {
-    final student = FirebaseStudent(collectionRef: _collection);
+    final student = FirebaseStudent(root, collectionRef: _collection);
     await _docAccessor.save(student);
     return student;
   }
@@ -170,7 +188,7 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
     final project = await student.project;
 
     if (project != null) {
-      final projs = await FirebaseManagers.instance.projects;
+      final projs = root.projectManager;
       project.studentIds = project.studentIds..remove(student.id);
       await projs.save(project);
     }
@@ -191,7 +209,7 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
   }
 
   FirebaseStudent _fromStudent(Student s) {
-    return FirebaseStudent(collectionRef: _collection)
+    return FirebaseStudent(root, collectionRef: _collection)
       ..personalID = s.personalID
       ..firstName = s.firstName
       ..lastName = s.lastName

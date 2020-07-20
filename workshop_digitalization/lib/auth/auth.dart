@@ -7,8 +7,10 @@ class AuthenticatedUser {
 }
 
 class Authenticator {
-  final _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth;
   final _googleSignIn = GoogleSignIn();
+
+  Authenticator(this._auth);
 
   Stream<AuthenticatedUser> get user =>
       _auth.onAuthStateChanged.map(_userFromFirebaseUser);

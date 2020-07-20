@@ -30,13 +30,18 @@ class _FBFileInfo implements FileInfo {
   @override
   final String path;
 
-  _FBFileInfo(this.fileName, this.fileSize, this.fileType, this.path);
+  final FirebaseStorage _storage;
 
-  factory _FBFileInfo.of(Map<String, dynamic> map) => _FBFileInfo(
-      map[_fnameField] ?? "no name",
-      map[_fsizeField] ?? -1,
-      map[_ftypeField] ?? "no type",
-      map[_fpathField] ?? "no path");
+  _FBFileInfo(
+      this._storage, this.fileName, this.fileSize, this.fileType, this.path);
+
+  factory _FBFileInfo.of(FirebaseStorage storage, Map<String, dynamic> map) =>
+      _FBFileInfo(
+          storage,
+          map[_fnameField] ?? "no name",
+          map[_fsizeField] ?? -1,
+          map[_ftypeField] ?? "no type",
+          map[_fpathField] ?? "no path");
 
   Map<String, dynamic> toData() {
     return <String, dynamic>{
@@ -62,7 +67,7 @@ class _FBFileInfo implements FileInfo {
 
       // download
       final download = downloadFirebaseFile(
-        fileRef: FirebaseStorage.instance.ref().child(path),
+        fileRef: _storage.ref().child(path),
         localFile: file,
         fileName: fileName,
       ).asBroadcastStream();
@@ -84,8 +89,9 @@ class FBFileContainer implements FileContainer {
   final _listHolder = ListModifierHandler<_FBFileInfo>();
   final CollectionReference metadataCollection;
   StreamSubscription _metadataSubscription;
+  final FirebaseStorage storage;
 
-  FBFileContainer(this.metadataCollection) {
+  FBFileContainer(this.storage, this.metadataCollection) {
     // TODO:: maybe take snapshot stream from global static collection
     metadataCollection.snapshots().listen(_onFirebaseUpdate);
   }
@@ -110,7 +116,7 @@ class FBFileContainer implements FileContainer {
 
         // create List<FBFileInfo> from those documents
         .map((doc) => doc.data)
-        .map((data) => _FBFileInfo.of(data))
+        .map((data) => _FBFileInfo.of(storage, data))
         .toList();
 
     // this makes sure that when one file is updated, we create new _FBFileInfo instances
@@ -130,7 +136,7 @@ class FBFileContainer implements FileContainer {
 
     var firebasePath = "${metadataCollection.path}/$name";
 
-    var task = FirebaseStorage.instance.ref().child(firebasePath).putFile(f);
+    var task = storage.ref().child(firebasePath).putFile(f);
 
     // convert to this project's upload type
     var uploaderStream =
@@ -140,7 +146,8 @@ class FBFileContainer implements FileContainer {
     uploaderStream.listen((snapshot) async {
       if (snapshot.status == FileTransferStatus.SUCCESS) {
         await metadataCollection.add(
-            _FBFileInfo(name, await f.length(), type, firebasePath).toData());
+            _FBFileInfo(storage, name, await f.length(), type, firebasePath)
+                .toData());
       }
     });
 
@@ -170,7 +177,7 @@ class FBFileContainer implements FileContainer {
 
     // delete document on storage
     // try {
-    //   await FirebaseStorage.instance.ref().child(file.path).delete();
+    //   await storage.ref().child(file.path).delete();
     // } catch (e) {
     //   print(e);
     // }

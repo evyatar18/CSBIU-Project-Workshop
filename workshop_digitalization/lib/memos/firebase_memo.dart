@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flamingo/flamingo.dart';
 import 'package:workshop_digitalization/files/container.dart';
 import 'package:workshop_digitalization/files/firebase.dart';
+import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/global/disposable.dart';
 import 'package:workshop_digitalization/global/list_modifier.dart';
 import 'package:workshop_digitalization/global/smart_doc_accessor.dart';
@@ -17,7 +18,10 @@ class Definitions {
 }
 
 class FirebaseMemo extends Document<FirebaseMemo> implements Memo, Disposable {
-  FirebaseMemo({
+  final FirebaseInstance _firebase;
+
+  FirebaseMemo(
+    this._firebase, {
     String id,
     DocumentSnapshot snapshot,
     Map<String, dynamic> values,
@@ -53,7 +57,7 @@ class FirebaseMemo extends Document<FirebaseMemo> implements Memo, Disposable {
     // THIS IS VERY IMPORTANT
     // since we use the FirebaseMemo instance when we view memos of an object
     // but there's no need to load all the files data when we just view the preview of the memo
-    return _container = FBFileContainer(
+    return _container = FBFileContainer(_firebase.storage,
         super.reference.collection(Definitions.filesCollection));
   }
 
@@ -86,7 +90,9 @@ class FirebaseMemoManager implements MemoManager<FirebaseMemo> {
   final _docAccessor = SmartDocumentAccessor();
   StreamSubscription _subscription;
 
-  FirebaseMemoManager(this._memoCollection) {
+  final FirebaseInstance _firebase;
+
+  FirebaseMemoManager(this._firebase, this._memoCollection) {
     _subscription = _memoCollection.snapshots().listen(_onFirebaseUpdate);
   }
 
@@ -100,11 +106,14 @@ class FirebaseMemoManager implements MemoManager<FirebaseMemo> {
 
   void _onFirebaseUpdate(QuerySnapshot snapshot) {
     final newMemos = (snapshot)
-          .documents
-          .where((doc) => doc.exists && !_docAccessor.isDeleted(doc.data))
-          .map((doc) =>
-              FirebaseMemo(snapshot: doc, collectionRef: _memoCollection))
-          .toList();
+        .documents
+        .where((doc) => doc.exists && !_docAccessor.isDeleted(doc.data))
+        .map((doc) => FirebaseMemo(
+              _firebase,
+              snapshot: doc,
+              collectionRef: _memoCollection,
+            ))
+        .toList();
 
     _memoList.forEachAndSet(
       _disposeMemo,
@@ -114,7 +123,7 @@ class FirebaseMemoManager implements MemoManager<FirebaseMemo> {
 
   @override
   Future<FirebaseMemo> createEmpty() async {
-    final memo = FirebaseMemo(collectionRef: _memoCollection);
+    final memo = FirebaseMemo(_firebase, collectionRef: _memoCollection);
 
     // save creation date
     await _docAccessor.save(memo);

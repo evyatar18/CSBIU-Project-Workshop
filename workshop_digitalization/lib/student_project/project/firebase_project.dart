@@ -4,12 +4,12 @@ import 'package:flamingo/flamingo.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:workshop_digitalization/files/container.dart';
 import 'package:workshop_digitalization/files/firebase.dart';
+import 'package:workshop_digitalization/firebase_consts/active_root.dart';
 import 'package:workshop_digitalization/global/smart_doc_accessor.dart';
 import 'package:workshop_digitalization/memos/firebase_memo.dart';
 import 'package:workshop_digitalization/memos/memo.dart';
 import 'package:workshop_digitalization/person/person.dart';
 import 'package:workshop_digitalization/person/firebase_person.dart';
-import 'package:workshop_digitalization/student_project/firebase_managers.dart';
 import 'package:workshop_digitalization/student_project/project/project.dart';
 import 'package:workshop_digitalization/student_project/student/firebase_student.dart';
 
@@ -79,7 +79,10 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
   @override
   String mentorTechAbility;
 
-  FirebaseProject({
+  final ActiveRoot root;
+
+  FirebaseProject(
+    this.root, {
     String id,
     DocumentSnapshot snapshot,
     Map<String, dynamic> values,
@@ -157,20 +160,18 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
     final toRemove = _studentIds.where((element) => !ids.contains(element));
     final toAdd = ids.where((element) => !_studentIds.contains(element));
 
-    () async {
-      final projs = await FirebaseManagers.instance.projects;
+    final projs = root.projectManager;
 
-      toRemove
-          .forEach((studentId) => projs.queueRemoveStudent(this.id, studentId));
-      toAdd.forEach((studentId) => projs.queueAddStudent(this.id, studentId));
+    toRemove
+        .forEach((studentId) => projs.queueRemoveStudent(this.id, studentId));
+    toAdd.forEach((studentId) => projs.queueAddStudent(this.id, studentId));
 
-      projs.save(this);
-    }();
+    projs.save(this);
   }
 
   @override
   Future<List<FirebaseStudent>> get students async {
-    final studsInstance = await FirebaseManagers.instance.students;
+    final studsInstance = root.studentManager;
     final studs =
         _studentIds.map((id) => studsInstance.getStudent(id)).toList();
 
@@ -189,7 +190,10 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
   FileContainer _files;
   FileContainer get files {
     if (_files == null) {
-      _files = FBFileContainer(super.reference.collection("files"));
+      _files = FBFileContainer(
+        root.firebase.storage,
+        super.reference.collection("files"),
+      );
     }
 
     return _files;
@@ -198,7 +202,10 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
   MemoManager _memos;
   MemoManager get memos {
     if (_memos == null) {
-      _memos = FirebaseMemoManager(super.reference.collection("memos"));
+      _memos = FirebaseMemoManager(
+        root.firebase,
+        super.reference.collection("memos"),
+      );
     }
 
     return _memos;
@@ -208,10 +215,12 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
 class FirebaseProjectManager extends ProjectManager<FirebaseProject> {
   final CollectionReference _collection;
   final _projects = BehaviorSubject<List<FirebaseProject>>();
+  final ActiveRoot root;
+
   StreamSubscription _subscription;
 
-  FirebaseProjectManager()
-      : _collection = Flamingo.instance.rootReference.collection("projects") {
+  FirebaseProjectManager(this.root)
+      : _collection = root.root.reference.collection("projects") {
     _subscription = _collection
         .snapshots()
         .listen(_projectSnapshotListener, cancelOnError: false);
@@ -231,7 +240,8 @@ class FirebaseProjectManager extends ProjectManager<FirebaseProject> {
       );
 
   Future<FirebaseProject> createEmpty() async {
-    FirebaseProject fbProject = FirebaseProject(collectionRef: _collection);
+    FirebaseProject fbProject =
+        FirebaseProject(this.root, collectionRef: _collection);
     return Future.value(fbProject);
   }
 
@@ -311,6 +321,7 @@ class FirebaseProjectManager extends ProjectManager<FirebaseProject> {
         .where((doc) => !_docAccessor.isDeleted(doc.data))
         .map(
           (doc) => FirebaseProject(
+            this.root,
             collectionRef: _collection,
             snapshot: doc,
           ),
@@ -322,7 +333,7 @@ class FirebaseProjectManager extends ProjectManager<FirebaseProject> {
 
   Future<void> _setProjectIds(List<String> studentIds,
       String Function(String) studentIdToProjectId) async {
-    final studs = await FirebaseManagers.instance.students;
+    final studs = root.studentManager;
 
     final tasks = studentIds.map((studentId) async {
       final student = studs.getStudent(studentId);

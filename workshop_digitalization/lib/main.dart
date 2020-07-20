@@ -6,8 +6,11 @@ import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/auth/auth.dart';
 import 'package:workshop_digitalization/auth/ui/auth_wrapper.dart';
+import 'package:workshop_digitalization/auth/ui/authorization_checker.dart';
 import 'package:workshop_digitalization/auth/ui/sign_out.dart';
 import 'package:workshop_digitalization/csv/ui/load_screen.dart';
+import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
+import 'package:workshop_digitalization/firebase_consts/dynamic_db/ui/db_data.dart';
 import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
 import 'package:workshop_digitalization/firebase_consts/lib.dart' as globs;
 import 'package:workshop_digitalization/student_project/project/firebase_project.dart';
@@ -52,88 +55,37 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       home: Scaffold(
-        body: _authenticator(),
+        body: DynamicDBHandler(
+          builder: (context) {
+            return Authorizer(
+              builder: (context, user) {
+                // now the current user is authorized, we can show the root updater
+                return _buildRootUpdater(_mainBodyBuilder);
+              },
+            );
+          },
+        ),
       ),
     );
   }
 
-  Widget _authenticator() {
-    final auth = Authenticator();
+  /// Builds the students and projects providers
+  /// Then builds the actual application
+  Widget _mainBodyBuilder(BuildContext context) {
+    final firebase = Provider.of<FirebaseInstance>(context);
+    final students = firebase.root.studentManager;
+    final projects = firebase.root.projectManager;
 
-    return AuthWrapper(
-      authenticator: auth,
-      authBuilder: (context, user) {
-        return StreamBuilder<DocumentSnapshot>(
-          stream: Firestore.instance
-              .collection("allowed")
-              .document(user.firebaseUser.uid)
-              .snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return CompletelyCentered(
-                children: <Widget>[
-                  Text("Error on checking if authorized"),
-                  Text(snapshot.error.toString()),
-                ],
-              );
-            }
-
-            if (!snapshot.hasData) {
-              return LabeledCircularLoader(labels: ["Checking if authorized"]);
-            }
-
-            // make sure the document exists and has the admin flag on
-            final userDoc = snapshot.data;
-            if (!userDoc.exists || !userDoc.data["admin"]) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text("You are not allowed to access data in this app."),
-                    Text(
-                      "Please sign in with an authorized account to continue.",
-                    ),
-                    SignOutButton(authenticator: auth),
-                  ],
-                ),
-              );
-            }
-
-            return Provider.value(
-              value: auth,
-              child: _buildRootUpdater(_mainBodyBuilder),
-            );
-          },
-        );
-      },
+    return MultiProvider(
+      providers: [
+        Provider.value(value: students),
+        Provider.value(value: projects),
+      ],
+      child: MyHomePage(),
     );
   }
 
-  Widget _rootRefresher(String rootName, WidgetBuilder childBuilder) {
-    return FutureBuilder<FirebaseRoot>(
-      future: globs.useRootByName(rootName),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return LabeledCircularLoader(
-            labels: ["Loading data from firebase..."],
-          );
-        }
-
-        // reconfigure flamingo on root change
-        final root = snapshot.data.reference;
-
-        Flamingo.configure(
-          firestore: Firestore.instance,
-          storage: FirebaseStorage.instance,
-          root: root,
-        );
-
-        // rebuild app
-        return Builder(builder: childBuilder);
-      },
-    );
-  }
-
+  /// The widget which updates the view each time the root is changed
   Widget _buildRootUpdater(WidgetBuilder childBuilder) {
     // we use FutureBuilder to get a **default** root collection
     return FutureBuilder<String>(
@@ -154,42 +106,38 @@ class MyApp extends StatelessWidget {
           );
         }
 
+        final firebase = Provider.of<FirebaseInstance>(context);
+
         // we use a ValueChangeObserver to change the root when it is changed in the settings
         return ValueChangeObserver(
           cacheKey: MyAppSettings.firebaseRootName,
           defaultValue: snapshot.data,
           builder: (context, versionName, _) {
-            return _rootRefresher(versionName, childBuilder);
+            // after changed a root in the settings, get the corresponding FirebaseRoot object
+            // and use it as the current firebase root
+            return FutureBuilder<void>(
+              future:
+                  firebase.roots.getRoot(versionName).then(firebase.useRoot),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return CompletelyCentered(children: [
+                    Text(
+                      "Failed getting and using the firebase root $versionName",
+                    ),
+                    Text(snapshot.error.toString()),
+                  ]);
+                }
+
+                if (!snapshot.hasData) {
+                  return LabeledCircularLoader(
+                    labels: ["Getting root `$versionName` from firebase..."],
+                  );
+                }
+
+                return Builder(builder: childBuilder);
+              },
+            );
           },
-        );
-      },
-    );
-  }
-
-  /// Builds the providers
-  Widget _mainBodyBuilder(BuildContext _) {
-    FirebaseManagers.instance.reset();
-    final students = FirebaseManagers.instance.students;
-    final projects = FirebaseManagers.instance.projects;
-
-    return FutureBuilder<List>(
-      future: Future.wait([students, projects]),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return LabeledCircularLoader(
-            labels: ["Acquiring students and project instances"],
-          );
-        }
-
-        final StudentManager studs = snapshot.data[0];
-        final ProjectManager projs = snapshot.data[1];
-
-        return MultiProvider(
-          providers: [
-            Provider.value(value: studs),
-            Provider.value(value: projs),
-          ],
-          child: MyHomePage(),
         );
       },
     );

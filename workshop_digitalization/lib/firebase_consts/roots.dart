@@ -21,8 +21,9 @@ class Roots {
 
   final BehaviorSubject<List<FirebaseRoot>> _roots;
 
-  Roots({bool startListening = false})
-      : rootsCollection = Firestore.instance.collection("version"),
+  Roots({bool startListening = false, Firestore firestore})
+      : assert(firestore != null),
+        rootsCollection = firestore.collection("version"),
         _roots = BehaviorSubject() {
     if (startListening) {
       listen();
@@ -92,5 +93,15 @@ class Roots {
     }
 
     return _constructRoot(snapshot);
+  }
+
+  Future<void> dispose() {
+    final tasks = [
+      Future<void>.value(_cachedRoots.values.map((e) => e.dispose())),
+      _roots.close(),
+      stopListening(),
+    ];
+
+    return Future.wait(tasks);
   }
 }
