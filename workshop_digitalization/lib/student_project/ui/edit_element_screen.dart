@@ -16,13 +16,14 @@ class EditElementForm<T extends StringIdentified> extends StatefulWidget {
     @required this.elementManager,
     @required this.formCreator,
     this.enableDeleting = true,
-  });
+    Key key,
+  }) : super(key: key);
 
   @override
-  _EditElementFormState<T> createState() => _EditElementFormState<T>();
+  EditElementFormState<T> createState() => EditElementFormState<T>();
 }
 
-class _EditElementFormState<T extends StringIdentified>
+class EditElementFormState<T extends StringIdentified>
     extends State<EditElementForm<T>> {
   var _readOnly = true;
 
@@ -61,7 +62,11 @@ class _EditElementFormState<T extends StringIdentified>
               readOnly: _readOnly,
               formBuilderKey: _fbKey,
             ),
-            if (!_readOnly) _saveSection(),
+            if (!_readOnly)
+              WillPopScope(
+                child: _saveSection(),
+                onWillPop: () => canPop,
+              ),
           ],
         ),
       ),
@@ -85,9 +90,17 @@ class _EditElementFormState<T extends StringIdentified>
     );
   }
 
+  /// returns true if can pop
+  Future<bool> get canPop => _readOnly
+      ? Future.value(true)
+      : showAgreementDialog(
+          context, "Are you sure you want to exit without saving?");
+
   void _onSubmit() {
     if (_fbKey.currentState.validate()) {
-      setState(() => _fbKey.currentState.save());
+      setState(() {
+        _fbKey.currentState.save();
+      });
       widget.elementManager.save(widget.element).then(
         (value) => showSuccessDialog(context, title: "Save successful"),
         onError: (err) {

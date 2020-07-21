@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
+import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
+import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
 import 'package:workshop_digitalization/global/ui/tab_title.dart';
@@ -17,11 +19,13 @@ class ProjectDetailsView extends StatelessWidget {
   final Project project;
   final ProjectManager projectManager;
   final StudentManager studentManager;
+  final FirebaseInstance firebaseInstance;
 
   ProjectDetailsView({
     @required this.project,
     @required this.projectManager,
     @required this.studentManager,
+    @required this.firebaseInstance,
   });
 
   @override
@@ -56,13 +60,15 @@ class ProjectDetailsView extends StatelessWidget {
             ProjectFormWrapper(
               project: project,
               projectManager: projectManager,
+              firebase: firebaseInstance,
             ),
             FutureBuilder<List<String>>(
               future: project.students
                   .then((value) => value.map((e) => e.email).toList()),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return LabeledCircularLoader(labels: ["Getting Student Emails"]);
+                  return LabeledCircularLoader(
+                      labels: ["Getting Student Emails"]);
                 }
 
                 return MemoScaffold(
@@ -76,6 +82,7 @@ class ProjectDetailsView extends StatelessWidget {
               project: project,
               projectManager: projectManager,
               studentManager: studentManager,
+              firebase: firebaseInstance,
             ),
           ],
         ),
@@ -88,11 +95,13 @@ class _StudentsDisplayer extends StatefulWidget {
   final Project project;
   final ProjectManager projectManager;
   final StudentManager studentManager;
+  final FirebaseInstance firebase;
 
   _StudentsDisplayer({
     @required this.project,
     @required this.projectManager,
     @required this.studentManager,
+    @required this.firebase,
   });
 
   @override
@@ -177,6 +186,7 @@ class _StudentsDisplayerState extends State<_StudentsDisplayer> {
             context,
             MaterialPageRoute(
               builder: (context) => StudentDetails(
+                firebase: widget.firebase,
                 student: student,
                 projectManager: widget.projectManager,
                 studentManager: widget.studentManager,

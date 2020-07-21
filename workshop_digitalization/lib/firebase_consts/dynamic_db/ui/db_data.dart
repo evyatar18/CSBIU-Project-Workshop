@@ -13,7 +13,10 @@ import 'package:workshop_digitalization/settings/settings.dart';
 
 class FirebaseConnectionBloc {
   final _controller = StreamController<FirebaseInstance>();
-  Stream<FirebaseInstance> get instances => _controller.stream;
+  Stream<FirebaseInstance> _broadcastStream;
+  Stream<FirebaseInstance> get instances =>
+      _broadcastStream ??
+      (_broadcastStream = _controller.stream.asBroadcastStream());
 
   FirebaseConnectionBloc({bool load = false, bool saveSettings = true}) {
     if (load) {

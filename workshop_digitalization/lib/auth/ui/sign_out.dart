@@ -28,7 +28,7 @@ class SignOutButton extends StatelessWidget {
       },
       child: Text(
         "Logout",
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
       ),
     );
   }

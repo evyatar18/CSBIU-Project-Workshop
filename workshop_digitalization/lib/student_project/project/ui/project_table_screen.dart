@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/student_project/project/ui/new_project_screen.dart';
 import 'package:workshop_digitalization/student_project/project/ui/project_view.dart';
@@ -27,6 +28,8 @@ class ProjectTableScreen<T extends Student, S extends Project>
   static void _onProjectClick(BuildContext context, Project project) {
     StudentManager sm = Provider.of<StudentManager>(context, listen: false);
     ProjectManager pm = Provider.of<ProjectManager>(context, listen: false);
+    FirebaseInstance firebase =
+        Provider.of<FirebaseInstance>(context, listen: false);
 
     Navigator.push(
       context,
@@ -35,6 +38,7 @@ class ProjectTableScreen<T extends Student, S extends Project>
           project: project,
           studentManager: sm,
           projectManager: pm,
+          firebaseInstance: firebase,
         ),
       ),
     );
@@ -43,14 +47,17 @@ class ProjectTableScreen<T extends Student, S extends Project>
   Widget _buildAddButton() {
     return Builder(
       builder: (context) {
+        final firebase = Provider.of<FirebaseInstance>(context);
         return FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    NewProjectScreen(projectManager: projectManager),
+                builder: (context) => NewProjectScreen(
+                  projectManager: projectManager,
+                  firebase: firebase,
+                ),
               ),
             );
           },

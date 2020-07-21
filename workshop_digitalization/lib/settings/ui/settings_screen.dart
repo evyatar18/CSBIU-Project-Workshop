@@ -47,8 +47,19 @@ class AppSettings extends StatelessWidget {
         children: _buildDefaultPaths(context),
       ),
       SettingsGroup(
-        title: "Change Database",
-        children: [ChangeDBButton()],
+        title: "Change Firebase Database",
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+              child: ChangeDBButton(
+                buttonColor: Theme.of(context).accentColor,
+                textColor: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
+          )
+        ],
       )
     ];
   }

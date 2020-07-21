@@ -9,6 +9,7 @@ import 'package:workshop_digitalization/firebase_consts/lib.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
 import 'package:workshop_digitalization/person/ui/person_form.dart';
+import 'package:workshop_digitalization/student_project/ui/element_form_creator.dart';
 
 import '../project.dart';
 
@@ -23,16 +24,23 @@ class ProjectForm extends StatelessWidget {
     this.readOnly = true,
   });
 
-  static ProjectForm elementForm({
-    @required Project element,
-    @required bool readOnly,
-    @required GlobalKey<FormBuilderState> formBuilderKey,
-  }) =>
-      ProjectForm(
-        project: element,
-        readOnly: readOnly,
-        fbKey: formBuilderKey,
+  static ElementForm<Project> createProjectCreator(FirebaseInstance firebase) {
+    return ({
+      @required Project element,
+      @required bool readOnly,
+      @required GlobalKey<FormBuilderState> formBuilderKey,
+    }) {
+      return Provider.value(
+        value: firebase,
+        child: ProjectForm(
+          project: element,
+          readOnly: readOnly,
+          fbKey: formBuilderKey,
+        ),
       );
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     return FormBuilder(

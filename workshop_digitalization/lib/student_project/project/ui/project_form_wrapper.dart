@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/student_project/project/project_element_manager.dart';
 import 'package:workshop_digitalization/student_project/ui/edit_element_screen.dart';
 
@@ -8,10 +9,12 @@ import '../project.dart';
 class ProjectFormWrapper extends StatelessWidget {
   final Project project;
   final ProjectManager projectManager;
+  final FirebaseInstance firebase;
 
   ProjectFormWrapper({
     @required this.project,
     @required this.projectManager,
+    @required this.firebase,
   });
 
   @override
@@ -19,7 +22,7 @@ class ProjectFormWrapper extends StatelessWidget {
     return EditElementForm(
       element: project,
       elementManager: ProjectElementManager(projectManager),
-      formCreator: ProjectForm.elementForm,
+      formCreator: ProjectForm.createProjectCreator(firebase),
     );
   }
 }

@@ -5,9 +5,11 @@ import 'db_data.dart';
 
 class ChangeDBButton extends StatelessWidget {
   final Color buttonColor;
+  final Color textColor;
 
   ChangeDBButton({
     this.buttonColor = Colors.yellow,
+    this.textColor = Colors.black,
   });
 
   @override
@@ -15,7 +17,10 @@ class ChangeDBButton extends StatelessWidget {
     final firebase = Provider.of<FirebaseConnectionBloc>(context);
     return RaisedButton(
       color: this.buttonColor,
-      child: Text("Change Database"),
+      child: Text(
+        "Change Database",
+        style: TextStyle(color: textColor),
+      ),
       onPressed: firebase.clearInstance,
     );
   }

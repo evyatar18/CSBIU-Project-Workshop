@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:workshop_digitalization/csv/ui/load_screen.dart';
+import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/settings/ui/settings_screen.dart';
 import 'package:workshop_digitalization/student_project/project/project.dart';
 import 'package:workshop_digitalization/student_project/project/ui/new_project_screen.dart';
@@ -30,8 +31,9 @@ Widget createStudentProjectDependent(StudentProjectProvided builder) {
 }
 
 typedef Widget StudentProvided(BuildContext context, StudentManager manager);
-
 typedef Widget ProjectProvided(BuildContext context, ProjectManager manager);
+typedef Widget FirebaseProvided(
+    BuildContext context, FirebaseInstance instance);
 
 Widget createStudentDependent(StudentProvided builder) {
   return Consumer<StudentManager>(
@@ -49,6 +51,17 @@ Widget createProjectDependent(ProjectProvided builder) {
     builder: (context, value, _) {
       if (value == null) {
         return _loader("Acquiring project manager");
+      }
+      return builder(context, value);
+    },
+  );
+}
+
+Widget createFirebaseDependent(FirebaseProvided builder) {
+  return Consumer<FirebaseInstance>(
+    builder: (context, value, _) {
+      if (value == null) {
+        return _loader("Acquiring firebase instance");
       }
       return builder(context, value);
     },
@@ -82,12 +95,18 @@ Widget createSettingsScreen() {
 void pushWithProviderValues(BuildContext context, WidgetBuilder widget) {
   final sm = Provider.of<StudentManager>(context, listen: false);
   final pm = Provider.of<ProjectManager>(context, listen: false);
+  final FirebaseInstance firebase =
+      Provider.of<FirebaseInstance>(context, listen: false);
 
   Navigator.push(
     context,
     MaterialPageRoute(builder: (context) {
       return MultiProvider(
-        providers: [Provider.value(value: sm), Provider.value(value: pm)],
+        providers: [
+          Provider.value(value: sm),
+          Provider.value(value: pm),
+          Provider.value(value: firebase),
+        ],
         child: Builder(builder: (context) => widget(context)),
       );
     }),
@@ -121,7 +140,13 @@ void pushNewProjectScreen(BuildContext context) {
     pushWithProviderValues(
       context,
       (_) => createProjectDependent(
-          (context, manager) => NewProjectScreen(projectManager: manager)),
+        (context, manager) => createFirebaseDependent(
+          (context, instance) => NewProjectScreen(
+            projectManager: manager,
+            firebase: instance,
+          ),
+        ),
+      ),
     );
   }
 }

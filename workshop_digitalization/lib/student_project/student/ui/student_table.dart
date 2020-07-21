@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/student_project/project/project.dart';
 import 'package:workshop_digitalization/student_project/student/ui/student_filterable_table.dart';
@@ -26,8 +27,9 @@ class StudentTableScreen<T extends Student, S extends Project>
   });
 
   static void _onStudentClick(BuildContext context, Student student) {
-    StudentManager sm = Provider.of<StudentManager>(context, listen: false);
-    ProjectManager pm = Provider.of<ProjectManager>(context, listen: false);
+    final sm = Provider.of<StudentManager>(context, listen: false);
+    final pm = Provider.of<ProjectManager>(context, listen: false);
+    final firebase = Provider.of<FirebaseInstance>(context, listen: false);
 
     Navigator.push(
       context,
@@ -36,6 +38,7 @@ class StudentTableScreen<T extends Student, S extends Project>
           student: student,
           studentManager: sm,
           projectManager: pm,
+          firebase: firebase,
         ),
       ),
     );
