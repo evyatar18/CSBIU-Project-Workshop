@@ -33,17 +33,22 @@ class Authorizer extends StatelessWidget {
                 children: <Widget>[
                   Text("Error on checking if authorized"),
                   Text(snapshot.error.toString()),
+                  SignOutButton(authenticator: auth),
                 ],
               );
             }
 
-            if (!snapshot.hasData) {
-              return LabeledCircularLoader(labels: ["Checking if authorized"]);
+            if (snapshot.connectionState == ConnectionState.waiting &&
+                !snapshot.hasData) {
+              return LabeledCircularLoader(
+                labels: ["Checking if authorized"],
+                children: [SignOutButton(authenticator: auth)],
+              );
             }
 
             // make sure the document exists and has the admin flag on
             final userDoc = snapshot.data;
-            if (!userDoc.exists || !userDoc.data["admin"]) {
+            if (userDoc == null || !userDoc.exists || !userDoc.data["admin"]) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
