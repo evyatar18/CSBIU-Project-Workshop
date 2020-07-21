@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -9,60 +8,8 @@ import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/global/ui/circular_loader.dart';
 import 'package:workshop_digitalization/global/ui/completely_centered.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
-import 'package:workshop_digitalization/settings/settings.dart';
 
-class FirebaseConnectionBloc {
-  final _controller = StreamController<FirebaseInstance>();
-  Stream<FirebaseInstance> _broadcastStream;
-  Stream<FirebaseInstance> get instances =>
-      _broadcastStream ??
-      (_broadcastStream = _controller.stream.asBroadcastStream());
-
-  FirebaseConnectionBloc({bool load = false, bool saveSettings = true}) {
-    if (load) {
-      loadSettings();
-    }
-
-    if (saveSettings) {
-      instances.listen(_settingsSaver);
-    }
-  }
-
-  Future<void> _settingsSaver(FirebaseInstance firebase) async {
-    if (firebase == null) {
-      MyAppSettings.setFirebaseOptions(null);
-      return;
-    }
-
-    final opts = await firebase.app.options;
-    MyAppSettings.setFirebaseOptions(opts.asMap);
-  }
-
-  Future<void> loadSettings() {
-    final opts = MyAppSettings.getFirebaseOptions();
-
-    if (opts != null) {
-      return useInstance(FirebaseOptions.from(opts));
-    } else {
-      return Future.sync(() => null);
-    }
-  }
-
-  Future<void> useInstance(FirebaseOptions opts) async {
-    try {
-      final instance = await initializeApp(opts);
-      _controller.sink.add(instance);
-    } catch (e, trace) {
-      _controller.sink.addError(e, trace);
-    }
-  }
-
-  void clearInstance() {
-    _controller.sink.add(null);
-  }
-
-  Future<void> dispose() => _controller.close();
-}
+import '../firebase_connection_bloc.dart';
 
 class DynamicDBHandler extends StatelessWidget {
   final WidgetBuilder builder;
