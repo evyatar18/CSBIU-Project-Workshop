@@ -1,8 +1,8 @@
 workshop_digitalization/pubspec.lock
 workshop_digitalization/test/test.csv
 workshop_digitalization/test/test.dart
-.vscode/launch.json
 workshop_digitalization/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
 workshop_digitalization/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
 workshop_digitalization/ios/Runner.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
 workshop_digitalization/ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+.vscode
