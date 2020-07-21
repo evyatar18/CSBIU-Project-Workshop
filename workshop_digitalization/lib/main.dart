@@ -70,9 +70,7 @@ class MyApp extends StatelessWidget {
     return FutureBuilder<String>(
       future: () async {
         final rootsFuture = firebase.roots.rootStream.first;
-        final roots = firebase.roots.roots;
-        final rootNames =
-            (roots ?? await rootsFuture).map((root) => root.name).toList();
+        final rootNames = (await rootsFuture).map((root) => root.name).toList();
 
         return MyAppSettings.getDefaultRootName(rootNames);
       }(),

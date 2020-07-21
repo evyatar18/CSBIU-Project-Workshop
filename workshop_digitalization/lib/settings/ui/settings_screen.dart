@@ -110,7 +110,6 @@ class AppSettings extends StatelessWidget {
     return <Widget>[
       StreamBuilder<List<FirebaseRoot>>(
         stream: firebase.roots.rootStream,
-        initialData: firebase.roots.roots,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Text("Loading database roots...");

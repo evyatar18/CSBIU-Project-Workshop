@@ -47,5 +47,5 @@ class FirebaseInstance {
 }
 
 Future<FirebaseInstance> initializeApp(FirebaseOptions opts) =>
-    FirebaseApp.configure(name: "dynamic-app", options: opts)
+    FirebaseApp.configure(name: opts.googleAppID, options: opts)
         .then((app) => FirebaseInstance(app));

@@ -15,12 +15,12 @@ class Roots {
   StreamSubscription _sub;
   bool get listening => _sub != null;
 
-  final BehaviorSubject<List<FirebaseRoot>> _roots;
+  final ReplaySubject<List<FirebaseRoot>> _roots;
 
   Roots({bool startListening = false, Firestore firestore})
       : assert(firestore != null),
         rootsCollection = firestore.collection("version"),
-        _roots = BehaviorSubject() {
+        _roots = ReplaySubject() {
     if (startListening) {
       listen();
     }
@@ -46,8 +46,7 @@ class Roots {
     return future;
   }
 
-  ValueStream<List<FirebaseRoot>> get rootStream => _roots;
-  List<FirebaseRoot> get roots => _roots.value;
+  Stream<List<FirebaseRoot>> get rootStream => _roots.stream;
 
   FirebaseRoot _constructRoot(DocumentSnapshot snapshot) {
     final name = snapshot.data[FirebaseRoot.rootNameField];
