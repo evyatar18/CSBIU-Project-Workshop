@@ -104,21 +104,28 @@ class FirebaseMemoManager implements MemoManager<FirebaseMemo> {
 
   static void _disposeMemo(FirebaseMemo fbMemo) => fbMemo.dispose();
 
-  void _onFirebaseUpdate(QuerySnapshot snapshot) {
-    final newMemos = (snapshot)
-        .documents
-        .where((doc) => doc.exists && !_docAccessor.isDeleted(doc.data))
-        .map((doc) => FirebaseMemo(
-              _firebase,
-              snapshot: doc,
-              collectionRef: _memoCollection,
-            ))
-        .toList();
+  static Future<void> _disposeMemos(Iterable<FirebaseMemo> memos) =>
+      Future.wait(memos.map((memo) => memo.dispose()));
 
-    _memoList.forEachAndSet(
-      _disposeMemo,
-      newMemos,
-    );
+  bool disposed = false;
+
+  void _onFirebaseUpdate(QuerySnapshot snapshot) {
+    if (!disposed) {
+      final newMemos = (snapshot)
+          .documents
+          .where((doc) => doc.exists && !_docAccessor.isDeleted(doc.data))
+          .map((doc) => FirebaseMemo(
+                _firebase,
+                snapshot: doc,
+                collectionRef: _memoCollection,
+              ))
+          .toList();
+
+      _memoList.forEachAndSet(
+        _disposeMemo,
+        newMemos,
+      );
+    }
   }
 
   @override
@@ -148,6 +155,8 @@ class FirebaseMemoManager implements MemoManager<FirebaseMemo> {
 
   @override
   Future<void> dispose() async {
+    disposed = true;
     await _subscription.cancel();
+    _disposeMemos(latestMemos ?? []);
   }
 }

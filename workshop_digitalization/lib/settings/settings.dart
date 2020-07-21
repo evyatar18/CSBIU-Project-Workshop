@@ -44,6 +44,7 @@ class MyAppSettings {
   }
 
   static Map<String, dynamic> getFirebaseOptions() {
-    return jsonDecode(Settings.getValue<String>("firebase-options", null));
+    final jsonString = Settings.getValue("firebase-options", "");
+    return jsonString == "" ? null : jsonDecode(jsonString);
   }
 }

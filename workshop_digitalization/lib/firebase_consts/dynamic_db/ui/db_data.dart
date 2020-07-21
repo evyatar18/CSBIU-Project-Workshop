@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/firebase_options_reader.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
+import 'package:workshop_digitalization/global/ui/circular_loader.dart';
 import 'package:workshop_digitalization/global/ui/completely_centered.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
 import 'package:workshop_digitalization/settings/settings.dart';
@@ -14,19 +15,31 @@ class FirebaseConnectionBloc {
   final _controller = StreamController<FirebaseInstance>();
   Stream<FirebaseInstance> get instances => _controller.stream;
 
-  FirebaseConnectionBloc({bool load = false}) {
+  FirebaseConnectionBloc({bool load = false, bool saveSettings = true}) {
     if (load) {
       loadSettings();
     }
+
+    if (saveSettings) {
+      instances.listen(_settingsSaver);
+    }
+  }
+
+  Future<void> _settingsSaver(FirebaseInstance firebase) async {
+    if (firebase == null) {
+      MyAppSettings.setFirebaseOptions(null);
+      return;
+    }
+
+    final opts = await firebase.app.options;
+    MyAppSettings.setFirebaseOptions(opts.asMap);
   }
 
   Future<void> loadSettings() {
     final opts = MyAppSettings.getFirebaseOptions();
 
     if (opts != null) {
-      return useInstance(
-        FirebaseOptions.from(MyAppSettings.getFirebaseOptions()),
-      );
+      return useInstance(FirebaseOptions.from(opts));
     } else {
       return Future.sync(() => null);
     }
@@ -36,8 +49,6 @@ class FirebaseConnectionBloc {
     try {
       final instance = await initializeApp(opts);
       _controller.sink.add(instance);
-
-      MyAppSettings.setFirebaseOptions(opts.asMap);
     } catch (e, trace) {
       _controller.sink.addError(e, trace);
     }
@@ -59,8 +70,15 @@ class DynamicDBHandler extends StatelessWidget {
   Widget build(BuildContext context) {
     return Provider<FirebaseConnectionBloc>(
       create: (_) => FirebaseConnectionBloc(load: true),
+      dispose: (_, value) => value.dispose(),
       builder: (context, child) {
         final bloc = Provider.of<FirebaseConnectionBloc>(context);
+
+        if (bloc == null) {
+          return LabeledCircularLoader(
+            labels: ["Loading FirebaseConnectionBloc object"],
+          );
+        }
 
         return StreamBuilder<FirebaseInstance>(
           stream: bloc.instances,
@@ -83,8 +101,11 @@ class DynamicDBHandler extends StatelessWidget {
                 builder: (context, _) => builder(context),
               );
             } else {
-              return SingleChildScrollView(
-                child: _buildChooser(context, bloc),
+              return Container(
+                padding: EdgeInsets.only(top: 50),
+                child: SingleChildScrollView(
+                  child: _buildChooser(context, bloc),
+                ),
               );
             }
           },
@@ -127,18 +148,17 @@ class DynamicDBHandler extends StatelessWidget {
           },
         ),
         StreamBuilder(
-          stream: Stream.periodic(Duration(microseconds: 500)).asyncMap(
+          // show new clipboard values every 500ms
+          stream: Stream.periodic(Duration(milliseconds: 500)).asyncMap(
             (_) async => (await Clipboard.getData("text/plain"))?.text,
           ),
           builder: (context, snapshot) {
-            return SingleChildScrollView(
-              child: Wrap(
-                children: <Widget>[
-                  Text("Current Clipboard:"),
-                  SizedBox(height: 20),
-                  Text(snapshot.data ?? "(empty)")
-                ],
-              ),
+            return Column(
+              children: <Widget>[
+                Text("Current Clipboard:"),
+                SizedBox(height: 30),
+                Text(snapshot.data ?? "(empty)")
+              ],
             );
           },
         )

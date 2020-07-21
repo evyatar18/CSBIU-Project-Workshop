@@ -1,14 +1,18 @@
+import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/auth/ui/authorization_checker.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/ui/db_data.dart';
+import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
 import 'package:workshop_digitalization/menu/ui/home_page.dart';
 
 import 'settings/settings.dart';
 import 'global/ui/circular_loader.dart';
 import 'global/ui/completely_centered.dart';
+import 'student_project/project/project.dart';
+import 'student_project/student/student.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,13 +50,13 @@ class MyApp extends StatelessWidget {
   /// Then builds the actual application
   Widget _mainBodyBuilder(BuildContext context) {
     final firebase = Provider.of<FirebaseInstance>(context);
-    final students = firebase.root.studentManager;
-    final projects = firebase.root.projectManager;
+    final students = firebase.activeRoot.studentManager;
+    final projects = firebase.activeRoot.projectManager;
 
     return MultiProvider(
       providers: [
-        Provider.value(value: students),
-        Provider.value(value: projects),
+        Provider<StudentManager>.value(value: students),
+        Provider<ProjectManager>.value(value: projects),
       ],
       child: MyHomePage(),
     );
@@ -68,7 +72,8 @@ class MyApp extends StatelessWidget {
       future: () async {
         final rootsFuture = firebase.roots.rootStream.first;
         final roots = firebase.roots.roots;
-        final rootNames = (roots ?? await rootsFuture).map((root) => root.name).toList();
+        final rootNames =
+            (roots ?? await rootsFuture).map((root) => root.name).toList();
 
         return MyAppSettings.getDefaultRootName(rootNames);
       }(),
@@ -115,6 +120,14 @@ class MyApp extends StatelessWidget {
                     labels: ["Getting root `$versionName` from firebase..."],
                   );
                 }
+
+                final firebase = Provider.of<FirebaseInstance>(context);
+                // configure flamingo to use this instance of firebase
+                Flamingo.configure(
+                  firestore: firebase.firestore,
+                  storage: firebase.storage,
+                  root: firebase.activeRoot.root.reference,
+                );
 
                 return Builder(builder: childBuilder);
               },

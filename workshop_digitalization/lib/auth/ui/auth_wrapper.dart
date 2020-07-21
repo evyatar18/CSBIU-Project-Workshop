@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:workshop_digitalization/auth/auth.dart';
+import 'package:workshop_digitalization/firebase_consts/dynamic_db/ui/change_db.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
 
 typedef Widget AuthBuilder(BuildContext context, AuthenticatedUser user);
@@ -63,6 +64,9 @@ class AuthWrapper extends StatelessWidget {
               }
             },
           ),
+          SizedBox(height: 10),
+          Text("Or change a database:"),
+          ChangeDBButton(),
         ],
       ),
     );

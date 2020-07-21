@@ -32,7 +32,7 @@ class _TextFilterState extends State<TextFilter> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 

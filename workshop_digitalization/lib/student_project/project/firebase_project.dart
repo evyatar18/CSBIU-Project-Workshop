@@ -307,15 +307,23 @@ class FirebaseProjectManager extends ProjectManager<FirebaseProject> {
     _clearQueue(_deleteQueue, projectId);
   }
 
+  Future<void> _disposeElements() {
+    final projects = _projects.value;
+    if (projects == null) {
+      return Future.value();
+    }
+    return Future.wait(projects.map((p) => p.dispose()));
+  }
+
   @override
   Future<void> dispose() async {
+    await _disposeElements();
     await _subscription.cancel();
     await _projects.close();
   }
 
   void _projectSnapshotListener(QuerySnapshot snapshot) {
-    final oldProjects = _projects.value;
-    oldProjects?.forEach((proj) => proj.dispose());
+    _disposeElements();
 
     final projects = snapshot.documents
         .where((doc) => !_docAccessor.isDeleted(doc.data))

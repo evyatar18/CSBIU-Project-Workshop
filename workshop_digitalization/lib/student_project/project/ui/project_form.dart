@@ -137,7 +137,7 @@ class ProjectForm extends StatelessWidget {
 
   Widget _buildStatusChips(BuildContext context) {
     final firebase = Provider.of<FirebaseInstance>(context);
-    final currentRoot = firebase.root.root;
+    final currentRoot = firebase.activeRoot.root;
 
     return ChangeNotifierProvider.value(
       value: currentRoot,

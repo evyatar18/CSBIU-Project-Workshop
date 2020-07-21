@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/auth/auth.dart';
 import 'package:workshop_digitalization/auth/ui/sign_out.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
+import 'package:workshop_digitalization/firebase_consts/dynamic_db/ui/change_db.dart';
 import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
@@ -45,6 +46,10 @@ class AppSettings extends StatelessWidget {
         title: "Default Paths",
         children: _buildDefaultPaths(context),
       ),
+      SettingsGroup(
+        title: "Change Database",
+        children: [ChangeDBButton()],
+      )
     ];
   }
 
@@ -83,13 +88,13 @@ class AppSettings extends StatelessWidget {
             },
           )
         ],
-      )
+      ),
     ];
   }
 
   List<Widget> _buildRoots(BuildContext context) {
     final firebase = Provider.of<FirebaseInstance>(context);
-    final currentRoot = firebase.root.root;
+    final currentRoot = firebase.activeRoot.root;
 
     return <Widget>[
       StreamBuilder<List<FirebaseRoot>>(

@@ -93,7 +93,7 @@ class Roots {
 
   Future<void> dispose() {
     final tasks = [
-      Future<void>.value(_cachedRoots.values.map((e) => e.dispose())),
+      Future<void>.sync(() => _cachedRoots.values.forEach((e) => e?.dispose())),
       _roots.close(),
       stopListening(),
     ];

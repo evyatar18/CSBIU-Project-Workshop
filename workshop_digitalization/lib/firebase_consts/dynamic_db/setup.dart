@@ -34,7 +34,7 @@ class FirebaseInstance {
   Future<void> dispose() => roots.dispose();
 
   ActiveRoot _root;
-  ActiveRoot get root => _root;
+  ActiveRoot get activeRoot => _root;
 
   Future<void> useRoot(FirebaseRoot root) {
     final tasks = [

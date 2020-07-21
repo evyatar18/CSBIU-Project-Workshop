@@ -146,8 +146,9 @@ class FBFileContainer implements FileContainer {
     uploaderStream.listen((snapshot) async {
       if (snapshot.status == FileTransferStatus.SUCCESS) {
         await metadataCollection.add(
-            _FBFileInfo(storage, name, await f.length(), type, firebasePath)
-                .toData());
+          _FBFileInfo(storage, name, await f.length(), type, firebasePath)
+              .toData(),
+        );
       }
     });
 

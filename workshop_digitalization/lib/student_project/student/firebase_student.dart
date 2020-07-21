@@ -128,8 +128,8 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
 
   Future<void> dispose() {
     return Future.wait([
-      _files.dispose(),
-      _memos.dispose(),
+      if (_files != null) _files.dispose(),
+      if (_memos != null) _memos.dispose(),
     ]);
   }
 
@@ -154,13 +154,13 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
     _subscription = _collection.snapshots().listen(_handleSnapshots);
   }
 
-  Future<void> _disposeElements() async {
-    if (!_students.hasValue) {
-      return;
-    }
-
+  Future<void> _disposeElements() {
     final elements = _students.value;
-    await Future.wait(elements.map((e) => e.dispose()));
+    if (elements == null) {
+      return Future.sync(() => null);
+    } else {
+      return Future.wait(elements.map((e) => e.dispose()));
+    }
   }
 
   void _handleSnapshots(QuerySnapshot snapshot) {
@@ -238,8 +238,14 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
   }
 
   Future<void> dispose() async {
-    await _disposeElements();
-    await _subscription?.cancel();
-    await _students.close();
+    try {
+      await _disposeElements();
+      await _subscription?.cancel();
+      await _students.close();
+    } catch (e, stack) {
+      print("exception: $e");
+      print("stack: $stack");
+      rethrow;
+    }
   }
 }
