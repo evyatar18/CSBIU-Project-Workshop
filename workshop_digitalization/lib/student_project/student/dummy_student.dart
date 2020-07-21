@@ -52,7 +52,7 @@ class DummyStudent implements Student {
 
   @override
   // TODO: implement project
-  Future<Project> get project => null;
+  Project get project => null;
 
   @override
   void setProject(String projectId) {

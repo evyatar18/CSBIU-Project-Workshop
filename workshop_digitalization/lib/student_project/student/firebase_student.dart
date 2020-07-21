@@ -123,7 +123,7 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
   }
 
   @override
-  Future<Project> get project async =>
+  Project get project =>
       root.projectManager.getProject(firebaseProjectId);
 
   Future<void> dispose() {

@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/global/strings.dart';
+import 'package:workshop_digitalization/global/ui/circular_loader.dart';
+import 'package:workshop_digitalization/global/ui/completely_centered.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
 import 'package:workshop_digitalization/global/ui/tab_title.dart';
 import 'package:workshop_digitalization/memos/ui/memos_list.dart';
@@ -105,7 +107,12 @@ class StudentDetails extends StatelessWidget {
               memoEmailRecipients: [student.email ?? ""],
             ),
             createFileContainerDisplayer(container: student.files),
-            _buildProjectView(),
+            _ProjectView(
+              student: student,
+              studentManager: studentManager,
+              projectManager: projectManager,
+              firebase: firebase,
+            ),
           ],
         ),
       ),
@@ -117,7 +124,8 @@ class StudentDetails extends StatelessWidget {
       enableDeleting: false,
       element: student,
       elementManager: StudentElementManager(studentManager),
-      formCreator: ({Student element, formBuilderKey, readOnly, initialValues}) {
+      formCreator: (
+          {Student element, formBuilderKey, readOnly, initialValues}) {
         return FormBuilder(
           key: formBuilderKey,
           initialValue: initialValues ?? {},
@@ -149,13 +157,62 @@ class StudentDetails extends StatelessWidget {
       },
     );
   }
+}
 
-  Widget _buildProjectView() {
-    return FutureBuilder<Project>(
-      future: student.project,
+class _ProjectView extends StatefulWidget {
+  final Student student;
+  final StudentManager studentManager;
+  final ProjectManager projectManager;
+  final FirebaseInstance firebase;
+
+  _ProjectView({
+    @required this.student,
+    @required this.studentManager,
+    @required this.projectManager,
+    @required this.firebase,
+  });
+
+  @override
+  __ProjectViewState createState() => __ProjectViewState();
+}
+
+class __ProjectViewState extends State<_ProjectView> {
+  Student student;
+  StudentManager get studentManager => widget.studentManager;
+  ProjectManager get projectManager => widget.projectManager;
+  FirebaseInstance get firebase => widget.firebase;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<Student>(
+      stream: widget.studentManager.students.asyncMap(
+        (studs) => studs.firstWhere(
+          (element) => element.id == widget.student.id,
+        ),
+      ),
       initialData: null,
       builder: (context, snapshot) {
-        final project = snapshot.data;
+        if (snapshot.hasError) {
+          if (snapshot.error is StateError) {
+            return CompletelyCentered(children: [
+              Text("Student has been deleted from remote database"),
+              Text("Cannot show project"),
+            ]);
+          } else {
+            return CompletelyCentered(children: [
+              Text("An unexpected error occurred"),
+              Text(snapshot.error.toString()),
+            ]);
+          }
+        }
+
+        if (!snapshot.hasData) {
+          return LabeledCircularLoader(labels: ["Loading Project..."]);
+        }
+
+        final student = snapshot.data;
+        final project = student.project;
+        this.student = student;
 
         return Wrap(
           spacing: 8,
@@ -197,42 +254,55 @@ class StudentDetails extends StatelessWidget {
     );
   }
 
-  Future<void> _deleteFromProject(Project project) {
-    project.studentIds = project.studentIds..remove(student.id);
-    return projectManager.save(project);
-  }
+  void _refresh() => setState(() => null);
 
   Widget _setProjectButton(BuildContext context, Project currentProject) {
     return RaisedButton(
       child: Text("Set Project"),
       onPressed: () {
+        bool clicked = false;
+
         final projects = ProjectTableScreen(
           title: "Choose a Project",
           studentManager: studentManager,
           projectManager: projectManager,
           showAddButton: false,
           onProjectClick: (context, newProject) async {
+            if (clicked) {
+              return;
+            }
+
+            clicked = true;
+
             final changedProject = newProject?.id != currentProject?.id;
 
             // changed a project
             if (changedProject) {
               newProject.studentIds = newProject.studentIds..add(student.id);
 
-              await projectManager.save(newProject);
+              try {
+                await projectManager.save(newProject);
 
-              await showAlertDialog(
-                context,
-                "Success!",
-                "Set project successfully",
-              );
+                await showAlertDialog(
+                  context,
+                  "Success!",
+                  "Set project successfully",
+                );
+              } catch (e, stack) {
+                await showErrorDialog(
+                  context,
+                  title: "Error when changing project",
+                  error: "$e\nstacktrace: $stack",
+                );
+              }
             }
 
             // close project table
             Navigator.pop(context);
 
             if (changedProject) {
-              // close student view (so we refresh the student project)
-              Navigator.pop(context);
+              // refresh this view
+              _refresh();
             }
           },
         );
@@ -245,16 +315,29 @@ class StudentDetails extends StatelessWidget {
     );
   }
 
+  Future<void> _deleteFromProject(Project project) {
+    project.studentIds = project.studentIds..remove(student.id);
+    return projectManager.save(project);
+  }
+
   Widget _deleteProject(BuildContext context, Project project) {
+    bool deleting = false;
+
     return RaisedButton(
       child: Text("Remove From Project"),
       onPressed: () async {
+        if (deleting) {
+          return;
+        }
+
         bool del = await showAgreementDialog(context, "Are you sure?");
 
         if (del == null || !del) {
           print("did not delete");
           return;
         }
+
+        deleting = true;
 
         try {
           await _deleteFromProject(project);
@@ -265,8 +348,8 @@ class StudentDetails extends StatelessWidget {
             message: "Removed from project successfully",
           );
 
-          // close student view for refresh
-          Navigator.pop(context);
+          // refresh this view
+          _refresh();
         } catch (e) {
           showErrorDialog(
             context,
@@ -274,6 +357,8 @@ class StudentDetails extends StatelessWidget {
             error: e.toString(),
           );
         }
+
+        deleting = false;
       },
     );
   }

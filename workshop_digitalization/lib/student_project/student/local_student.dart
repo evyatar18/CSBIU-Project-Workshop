@@ -64,7 +64,7 @@ class LocalStudent implements Student {
       studyYear: int.parse(nullIfEmpty(json['year']?.toString())) ?? DateTime.now().year,
     );
   }
-  
+
 
   @override
   // TODO: implement files
@@ -88,7 +88,7 @@ class LocalStudent implements Student {
 
   @override
   // TODO: implement project
-  Future<Project> get project => null;
+  Project get project => null;
 
   @override
   void setProject(String projectId) {

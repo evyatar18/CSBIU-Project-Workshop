@@ -2,13 +2,20 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-Future<void> showAlertDialog(BuildContext context, String title, [String body = ""]) {
+Future<void> showAlertDialog(BuildContext context, String title,
+    [String body = ""]) {
   return showDialog(
     context: context,
     barrierDismissible: true,
     child: AlertDialog(
       title: Text(title),
       content: Text(body),
+      actions: <Widget>[
+        FlatButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text("OK"),
+        )
+      ],
     ),
   );
 }

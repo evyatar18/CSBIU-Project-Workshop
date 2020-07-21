@@ -45,7 +45,7 @@ abstract class Student implements StringIdentified {
 
   Grade grade;
 
-  Future<Project> get project;
+  Project get project;
 }
 
 abstract class StudentManager<StudentType extends Student> implements Disposable {
