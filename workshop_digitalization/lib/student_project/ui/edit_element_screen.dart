@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:workshop_digitalization/global/identified_type.dart';
@@ -35,40 +36,45 @@ class EditElementFormState<T extends StringIdentified>
 
     return Padding(
       padding: EdgeInsets.all(18),
-      child: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            ListTile(
-              // title: Text("Edit by clicking"),
-              trailing: Wrap(
-                children: <Widget>[
-                  FlatButton(
-                    onPressed: _toggleEdit,
-                    child: Icon(Icons.edit, color: color),
-                  ),
-                  if (widget.enableDeleting)
-                    IconButton(
-                      icon: Icon(Icons.delete),
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                // title: Text("Edit by clicking"),
+                trailing: Wrap(
+                  children: <Widget>[
+                    FlatButton(
                       onPressed: () async {
-                        await _delete(context);
-                        Navigator.pop(this.context);
+                        if (await canPop) {
+                          _toggleEdit();
+                        }
                       },
+                      child: Icon(Icons.edit, color: color),
                     ),
-                ],
+                    if (widget.enableDeleting)
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () async {
+                          await _delete(context);
+                          Navigator.pop(this.context);
+                        },
+                      ),
+                  ],
+                ),
               ),
-            ),
-            widget.formCreator(
-              element: widget.element,
-              readOnly: _readOnly,
-              formBuilderKey: _fbKey,
-            ),
-            if (!_readOnly)
-              WillPopScope(
-                child: _saveSection(),
-                onWillPop: () => canPop,
+              widget.formCreator(
+                element: widget.element,
+                readOnly: _readOnly,
+                formBuilderKey: _fbKey,
+                // initialValues: _initialValues,
               ),
-          ],
+            ],
+          ),
         ),
+        bottomNavigationBar: _readOnly
+            ? null
+            : WillPopScope(child: _saveSection(), onWillPop: () => canPop),
       ),
     );
   }
@@ -90,22 +96,40 @@ class EditElementFormState<T extends StringIdentified>
     );
   }
 
+  final _mapComparer = MapEquality<String, dynamic>().equals;
+  Map<String, dynamic> get _latestValues => _fbKey.currentState.value;
+  Map<String, dynamic> _valuesBeforeEdit = {};
+
   /// returns true if can pop
-  Future<bool> get canPop => _readOnly
-      ? Future.value(true)
-      : showAgreementDialog(
-          context, "Are you sure you want to exit without saving?");
+  Future<bool> get canPop =>
+      // test if we're on readonly, or we're on edit but the values didnt change
+        _readOnly
+          ? Future.value(true)
+          : showAgreementDialog(
+              context, "Are you sure you want to discard the latest changes?");
+
+  void _ensureValues() {
+    final values = _latestValues;
+    _fbKey.currentState.fields.forEach((key, value) {
+      if (values.containsKey(key)) value.currentState.didChange(values[key]);
+    });
+  }
 
   void _onSubmit() {
     if (_fbKey.currentState.validate()) {
       setState(() {
         _fbKey.currentState.save();
+        // _initialValues = _fbKey.currentState.value;
+        _ensureValues();
       });
       widget.elementManager.save(widget.element).then(
         (value) => showSuccessDialog(context, title: "Save successful"),
         onError: (err) {
-          showErrorDialog(context,
-              title: "Error on save", error: err.toString());
+          showErrorDialog(
+            context,
+            title: "Error on save",
+            error: err.toString(),
+          );
         },
       );
     }
@@ -113,10 +137,14 @@ class EditElementFormState<T extends StringIdentified>
 
   void _toggleEdit() {
     setState(() {
+      _valuesBeforeEdit = _latestValues;
+
       // remove values from form if toggled off
       if (!_readOnly) {
         _fbKey.currentState.reset();
       }
+
+      _ensureValues();
 
       _readOnly = !_readOnly;
     });

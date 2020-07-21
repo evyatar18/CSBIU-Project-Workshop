@@ -9,8 +9,12 @@ class StudentDetailsForm extends StatelessWidget {
   final Student student;
   final StudentManager studentManager;
 
-  StudentDetailsForm({@required this.student, @required this.studentManager})
-      : assert(student != null);
+  StudentDetailsForm({
+    @required this.student,
+    @required this.studentManager,
+    Key key,
+  })  : assert(student != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

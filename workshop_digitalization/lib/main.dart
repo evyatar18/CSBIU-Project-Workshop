@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/auth/ui/authorization_checker.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/ui/db_data.dart';
-import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
 import 'package:workshop_digitalization/menu/ui/home_page.dart';
 
 import 'settings/settings.dart';

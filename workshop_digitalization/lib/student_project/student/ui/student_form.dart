@@ -29,23 +29,26 @@ class StudentForm extends StatelessWidget {
   final Student student;
   final bool readOnly;
   final GlobalKey<FormBuilderState> formBuilderKey;
+  final Map<String, dynamic> initials;
 
   StudentForm({
     this.student,
     this.readOnly = false,
     this.formBuilderKey,
+    this.initials = const {},
   });
 
   static StudentForm elementForm({
     @required Student element,
     @required bool readOnly,
     @required GlobalKey<FormBuilderState> formBuilderKey,
+    Map<String, dynamic> initialValues,
   }) =>
       StudentForm(
-        student: element,
-        readOnly: readOnly,
-        formBuilderKey: formBuilderKey,
-      );
+          student: element,
+          readOnly: readOnly,
+          formBuilderKey: formBuilderKey,
+          initials: initialValues);
 
   Map<String, dynamic> _makeInitials(Student s) {
     return {
@@ -57,7 +60,8 @@ class StudentForm extends StatelessWidget {
       "year": s.studyYear,
       "status": s.status,
       "lastUpdate": writeDate(s.lastUpdate),
-      "loadDate": writeDate(s.loadDate)
+      "loadDate": writeDate(s.loadDate),
+      ...(initials ?? {}),
     };
   }
 

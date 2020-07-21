@@ -88,9 +88,8 @@ dependencies:
 
   directory_picker: ^1.0.0
 
-
-
-
+  # https://pub.dev/packages/collection useful collection operations
+  collection:
 
 
 dev_dependencies:

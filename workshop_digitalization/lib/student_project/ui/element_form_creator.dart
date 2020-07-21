@@ -5,4 +5,5 @@ typedef Widget ElementForm<T>({
   @required T element,
   @required bool readOnly,
   @required GlobalKey<FormBuilderState> formBuilderKey,
+  Map<String, dynamic> initialValues,
 });

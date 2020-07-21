@@ -17,11 +17,13 @@ class ProjectForm extends StatelessWidget {
   final Project project;
   final bool readOnly;
   final GlobalKey<FormBuilderState> fbKey;
+  final Map<String, dynamic> initials;
 
   ProjectForm({
     @required this.project,
     @required this.fbKey,
     this.readOnly = true,
+    this.initials = const {},
   });
 
   static ElementForm<Project> createProjectCreator(FirebaseInstance firebase) {
@@ -29,6 +31,7 @@ class ProjectForm extends StatelessWidget {
       @required Project element,
       @required bool readOnly,
       @required GlobalKey<FormBuilderState> formBuilderKey,
+      Map<String, dynamic> initialValues,
     }) {
       return Provider.value(
         value: firebase,
@@ -36,6 +39,7 @@ class ProjectForm extends StatelessWidget {
           project: element,
           readOnly: readOnly,
           fbKey: formBuilderKey,
+          initials: initialValues,
         ),
       );
     };
@@ -44,6 +48,7 @@ class ProjectForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormBuilder(
+      initialValue: initials ?? {},
       key: fbKey,
       readOnly: readOnly,
       autovalidate: true,
