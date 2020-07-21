@@ -35,7 +35,7 @@ abstract class Project implements StringIdentified {
   DateTime get loadDate;
 
   List<String> studentIds;
-  Future<List<Student>> get students;
+  List<Student> get students;
 
   FileContainer get files;
   MemoManager get memos;

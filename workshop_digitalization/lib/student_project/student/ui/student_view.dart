@@ -27,15 +27,12 @@ class StudentDetails extends StatelessWidget {
   final ProjectManager projectManager;
   final FirebaseInstance firebase;
 
-  final GlobalObjectKey<HtmlEditorState> _htmlKey;
-
   StudentDetails({
     @required this.student,
     @required this.studentManager,
     @required this.projectManager,
     @required this.firebase,
-  }) : _htmlKey =
-            GlobalObjectKey<HtmlEditorState>("${student.id}-grade-editor");
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -254,8 +251,6 @@ class __ProjectViewState extends State<_ProjectView> {
     );
   }
 
-  void _refresh() => setState(() => null);
-
   Widget _setProjectButton(BuildContext context, Project currentProject) {
     return RaisedButton(
       child: Text("Set Project"),
@@ -299,11 +294,6 @@ class __ProjectViewState extends State<_ProjectView> {
 
             // close project table
             Navigator.pop(context);
-
-            if (changedProject) {
-              // refresh this view
-              _refresh();
-            }
           },
         );
 
@@ -347,9 +337,6 @@ class __ProjectViewState extends State<_ProjectView> {
             context,
             message: "Removed from project successfully",
           );
-
-          // refresh this view
-          _refresh();
         } catch (e) {
           showErrorDialog(
             context,

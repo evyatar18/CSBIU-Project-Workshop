@@ -170,7 +170,7 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
   }
 
   @override
-  Future<List<FirebaseStudent>> get students async {
+  List<FirebaseStudent> get students {
     final studsInstance = root.studentManager;
     final studs =
         _studentIds.map((id) => studsInstance.getStudent(id)).toList();

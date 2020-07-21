@@ -72,7 +72,7 @@ class DummyProject implements Project {
 
   @override
   // TODO: implement students
-  Future<List<Student>> get students => throw UnimplementedError();
+  List<Student> get students => throw UnimplementedError();
 
   @override
   Person initiator;
