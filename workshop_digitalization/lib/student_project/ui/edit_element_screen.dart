@@ -25,13 +25,20 @@ class EditElementForm<T extends StringIdentified> extends StatefulWidget {
 }
 
 class EditElementFormState<T extends StringIdentified>
-    extends State<EditElementForm<T>> {
+    extends State<EditElementForm<T>>
+    with AutomaticKeepAliveClientMixin<EditElementForm<T>> {
   var _readOnly = true;
 
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
 
+  // persists this state as long as we're editing
+  @override
+  bool get wantKeepAlive => !_readOnly;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     Color color = Theme.of(context).primaryColor;
 
     return Padding(
@@ -74,12 +81,12 @@ class EditElementFormState<T extends StringIdentified>
         ),
         bottomNavigationBar: _readOnly
             ? null
-            : WillPopScope(child: _saveSection(), onWillPop: () => canPop),
+            : WillPopScope(child: _saveSection(context), onWillPop: () => canPop),
       ),
     );
   }
 
-  Widget _saveSection() {
+  Widget _saveSection(BuildContext context) {
     return Container(
       child: ButtonBar(
         children: <Widget>[
@@ -89,7 +96,7 @@ class EditElementFormState<T extends StringIdentified>
           ),
           MaterialButton(
             child: Text("Reset"),
-            onPressed: () => setState(() => _fbKey.currentState.reset()),
+            onPressed: () => _reset(context),
           ),
         ],
       ),
@@ -103,7 +110,7 @@ class EditElementFormState<T extends StringIdentified>
   /// returns true if can pop
   Future<bool> get canPop =>
       // test if we're on readonly, or we're on edit but the values didnt change
-        _readOnly
+      _readOnly
           ? Future.value(true)
           : showAgreementDialog(
               context, "Are you sure you want to discard the latest changes?");
@@ -113,6 +120,12 @@ class EditElementFormState<T extends StringIdentified>
     _fbKey.currentState.fields.forEach((key, value) {
       if (values.containsKey(key)) value.currentState.didChange(values[key]);
     });
+  }
+
+  Future<void> _reset(BuildContext context) async {
+    if (await canPop) {
+      _fbKey.currentState.reset();
+    }
   }
 
   void _onSubmit() {
