@@ -81,7 +81,8 @@ class EditElementFormState<T extends StringIdentified>
         ),
         bottomNavigationBar: _readOnly
             ? null
-            : WillPopScope(child: _saveSection(context), onWillPop: () => canPop),
+            : WillPopScope(
+                child: _saveSection(context), onWillPop: () => canPop),
       ),
     );
   }
@@ -104,13 +105,22 @@ class EditElementFormState<T extends StringIdentified>
   }
 
   final _mapComparer = MapEquality<String, dynamic>().equals;
-  Map<String, dynamic> get _latestValues => _fbKey.currentState.value;
-  Map<String, dynamic> _valuesBeforeEdit = {};
+  Map<String, dynamic> get _latestValues {
+    final vals = Map.of(_fbKey.currentState.value);
+
+    _fbKey.currentState.fields.forEach((key, value) {
+      vals[key] = value.currentState.value;
+    });
+
+    return vals;
+  }
+
+  Map<String, dynamic> _savedValues = {};
 
   /// returns true if can pop
   Future<bool> get canPop =>
       // test if we're on readonly, or we're on edit but the values didnt change
-      _readOnly
+      _readOnly || _mapComparer(_latestValues, _savedValues)
           ? Future.value(true)
           : showAgreementDialog(
               context, "Are you sure you want to discard the latest changes?");
@@ -132,7 +142,7 @@ class EditElementFormState<T extends StringIdentified>
     if (_fbKey.currentState.validate()) {
       setState(() {
         _fbKey.currentState.save();
-        // _initialValues = _fbKey.currentState.value;
+        _savedValues = _latestValues;
         _ensureValues();
       });
       widget.elementManager.save(widget.element).then(
@@ -150,7 +160,10 @@ class EditElementFormState<T extends StringIdentified>
 
   void _toggleEdit() {
     setState(() {
-      _valuesBeforeEdit = _latestValues;
+      // save old values if we're going now into editing mode
+      if (_readOnly) {
+        _savedValues = _latestValues;
+      }
 
       // remove values from form if toggled off
       if (!_readOnly) {
