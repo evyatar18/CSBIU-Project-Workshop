@@ -1,10 +1,9 @@
 import 'dart:async';
 
-import 'package:rxdart/rxdart.dart';
 import 'package:workshop_digitalization/filter/filterable.dart';
 
 abstract class TableDataController<T> implements Filterable<T> {
-  ValueStream<TableData<T>> get data;
+  Stream<TableData<T>> get data;
   StreamSubscription get dataSubscription;
 
   void orderBy(String columnName, bool ascending);

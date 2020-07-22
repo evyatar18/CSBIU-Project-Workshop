@@ -128,7 +128,12 @@ class _FilterableTableState<Object> extends State<FilterableTable> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: StreamBuilder(
+          stream: _controller.data.map((event) => event?.objects?.length),
+          builder: (context, snapshot) {
+            return Text("${widget.title }(${snapshot.data ?? "?"})");
+          },
+        ),
         actions: <Widget>[
           ...List<Row>.generate(staticFilters.length, _buildFilter),
           IconButton(

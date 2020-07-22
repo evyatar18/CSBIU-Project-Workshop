@@ -29,12 +29,28 @@ Filter<String> matches(String reg) {
   return (val) => regex.hasMatch(val);
 }
 
+Filter<String> fullRegex(String reg) {
+  RegExp regex;
+
+  if (!reg.startsWith("^"))
+    reg = "^" + reg;
+
+  if (!reg.endsWith("\$"))
+    reg = reg + "\$";
+
+  try { regex = RegExp(reg); }
+  catch (e) { regex = RegExp(""); }
+
+  return (val) => regex.hasMatch(val);
+}
+
 Map<String, FilterCreator<String, String>> textFilters = {
   "equals": equalsFilter,
   "contains": stringContains,
   "starts-with": startsWith,
   "ends-with": endsWith,
-  "regex": matches
+  "contains-regex": matches,
+  "regex": fullRegex,
 };
 
 Map<String, FilterCreator> selectionFilters = {

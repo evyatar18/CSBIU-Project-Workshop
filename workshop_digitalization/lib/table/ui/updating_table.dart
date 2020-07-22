@@ -19,7 +19,6 @@ class UpdatingTable<T> extends StatelessWidget {
   Widget _buildTable(
       List<dynamic> objects, Map<String, dynamic> Function(dynamic) jsoner,
       [String orderColumn, bool ascending = false]) {
-
     final List<Map<String, dynamic>> jsonObjects = objects.map(jsoner).toList();
 
     return JsonTable(
@@ -37,6 +36,24 @@ class UpdatingTable<T> extends StatelessWidget {
         );
       },
       showColumnToggle: true,
+      tableCellBuilder: (value) {
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 10.0),
+          decoration: BoxDecoration(
+            border: Border.all(
+              width: 0.5,
+              color: Colors.grey.withOpacity(0.5),
+            ),
+          ),
+          child: Text(
+            value,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20.0,
+            ),
+          ),
+        );
+      },
       onRowSelect:
           onClick == null ? null : (index, jsonMap) => onClick(objects[index]),
     );
@@ -45,7 +62,6 @@ class UpdatingTable<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<TableData<dynamic>>(
-      initialData: controller.data.value,
       stream: controller.data,
       builder: (context, snapshot) {
         if (!snapshot.hasData || snapshot.data == null) {

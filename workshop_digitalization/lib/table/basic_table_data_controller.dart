@@ -34,7 +34,7 @@ class BasicTableDataController<T> implements TableDataController<T> {
     _subscription = supplier.listen(_dataListener);
   }
 
-  final _controller = BehaviorSubject<TableData<T>>();
+  final _controller = ReplaySubject<TableData<T>>();
 
   void _dataListener(List<T> data) {
     if (data == null) {
@@ -69,7 +69,7 @@ class BasicTableDataController<T> implements TableDataController<T> {
   }
 
   @override
-  ValueStream<TableData<T>> get data => _controller;
+  Stream<TableData<T>> get data => _controller;
 
   void _onDataChange() async {
     _dataListener(supplier.value);

@@ -10,7 +10,10 @@ class JsonTableHeader extends StatelessWidget {
   final bool ascending;
 
   JsonTableHeader(
-      {@required String header, this.onClick, this.isOrderedBy, this.ascending = false})
+      {@required String header,
+      this.onClick,
+      this.isOrderedBy,
+      this.ascending = false})
       : header = header
             .split(_beforeCapitalLetter)
             .map((i) => (i[0].toUpperCase() + i.substring(1) + ' '))
@@ -23,8 +26,8 @@ class JsonTableHeader extends StatelessWidget {
         header,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.headline.copyWith(
-              fontWeight: FontWeight.w700,
-              fontSize: 14.0,
+              fontWeight: FontWeight.w500,
+              fontSize: 18.0,
               color: Colors.black87,
             ),
       ),
@@ -44,11 +47,7 @@ class JsonTableHeader extends StatelessWidget {
       child: FlatButton(
         onPressed: onClick,
         child: Row(
-          children: <Widget>[
-            text,
-            if (symbol != null)
-              symbol
-          ],
+          children: <Widget>[text, if (symbol != null) symbol],
         ),
       ),
     );
