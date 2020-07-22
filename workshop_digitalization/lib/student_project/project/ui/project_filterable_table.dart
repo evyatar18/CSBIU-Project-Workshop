@@ -37,7 +37,12 @@ final numberOfStudents = ObjectField<Project, int>(
   getter: (obj) => obj.numberOfStudents,
 );
 
-final textFields = [subject, goal, mentorName];
+final status = ObjectField<Project, String>(
+  name: "status",
+  getter: (obj) => obj.projectStatus,
+);
+
+final textFields = [subject, goal, mentorName, status];
 
 final castedSelections = [
   createCastingFilterableField(createSelectionFilterable(numberOfStudents)),

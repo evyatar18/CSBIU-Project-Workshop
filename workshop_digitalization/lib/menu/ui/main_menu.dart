@@ -55,7 +55,6 @@ class MainMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).canvasColor,
         title: Text("CS-BIU Workshop"),
       ),
       body: Padding(

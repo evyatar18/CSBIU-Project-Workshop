@@ -74,7 +74,8 @@ class ProjectForm extends StatelessWidget {
               onSaved: (goal) => project.projectGoal = goal,
             ),
             FormBuilderDateTimePicker(
-              initialDate: project.endDate ?? DateTime.now(),
+              initialEntryMode: DatePickerEntryMode.calendar,
+              initialValue: project.endDate ?? DateTime.now(),
               attribute: 'endDate',
               inputType: InputType.date,
               format: DateFormat("dd-MM-yyyy"),
