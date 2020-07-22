@@ -42,7 +42,8 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.workshop_digitalization"
+        // applicationId "com.example.workshop_digitalization"
+        applicationId "il.ac.biu.cs.workshop_digitalization"
 
         // minSdkVersion 23 supports firebase
         minSdkVersion 23
