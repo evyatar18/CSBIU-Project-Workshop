@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:html_editor/html_editor.dart';
-import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/global/strings.dart';

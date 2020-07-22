@@ -61,42 +61,29 @@ class LocalStudent implements Student {
       phoneNumber: nullIfEmpty(json['phoneNumber'].toString()),
       // status: StudentStatus.values[json['status']],
       status: DEFAULT_STUDENT_STATUS,
-      studyYear: int.parse(nullIfEmpty(json['year']?.toString())) ?? DateTime.now().year,
+      studyYear: int.parse(nullIfEmpty(json['year']?.toString())) ??
+          DateTime.now().year,
     );
   }
 
-
   @override
-  // TODO: implement files
   FileContainer get files => null;
 
   @override
-  // TODO: implement id
   String get id => null;
 
   @override
-  // TODO: implement lastUpdate
   DateTime get lastUpdate => null;
 
   @override
-  // TODO: implement loadDate
   DateTime get loadDate => null;
 
   @override
-  // TODO: implement memos
   MemoManager<Memo> get memos => null;
 
   @override
-  // TODO: implement project
   Project get project => null;
-
-  @override
-  void setProject(String projectId) {
-    // TODO: implement setProject
-  }
 
   @override
   Grade grade;
 }
-
-

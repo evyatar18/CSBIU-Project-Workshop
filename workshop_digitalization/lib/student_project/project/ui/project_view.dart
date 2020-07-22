@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
-import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/completely_centered.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';

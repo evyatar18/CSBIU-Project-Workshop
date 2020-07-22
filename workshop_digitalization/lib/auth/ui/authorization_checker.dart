@@ -113,6 +113,5 @@ class __RefreshingAuthorizerState extends State<_RefreshingAuthorizer> {
         );
       },
     );
-    ;
   }
 }
