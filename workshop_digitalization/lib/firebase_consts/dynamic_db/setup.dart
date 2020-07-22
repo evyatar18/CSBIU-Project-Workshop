@@ -27,7 +27,7 @@ class FirebaseInstance {
       : firestore = Firestore(app: app),
         storage = FirebaseStorage(app: app),
         auth = FirebaseAuth.fromApp(app) {
-    _roots = Roots(firestore: firestore, startListening: true);
+    _roots = Roots(firestore: firestore);
     _authenticator = Authenticator(auth);
   }
 

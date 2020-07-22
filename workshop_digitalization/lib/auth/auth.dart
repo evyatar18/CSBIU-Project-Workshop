@@ -20,22 +20,29 @@ class Authenticator {
   }
 
   Future<void> signOut() {
-    return Future.wait([_auth.signOut(), _googleSignIn.signOut()]);
+    return _auth.signOut();
   }
 
   Future<AuthenticatedUser> register(String email, String password) async {
     try {
-      final account = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      final account = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
       return AuthenticatedUser(account.user);
-    }
-    catch (e) {
+    } catch (e) {
       rethrow;
     }
   }
 
   Future<AuthenticatedUser> login(String email, String password) async {
     try {
-      final account = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      final account = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      await account.user.reload();
+
       return AuthenticatedUser(account.user);
     } catch (e) {
       rethrow;
@@ -83,5 +90,9 @@ class Authenticator {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<void> reload() {
+    return this._auth.currentUser().then((value) => value.reload());
   }
 }

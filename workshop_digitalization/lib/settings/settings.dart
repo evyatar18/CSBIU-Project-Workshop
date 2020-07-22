@@ -47,4 +47,13 @@ class MyAppSettings {
     final jsonString = Settings.getValue("firebase-options", "");
     return jsonString == "" ? null : jsonDecode(jsonString);
   }
+
+  static String get email => Settings.getValue("email", "");
+  static set email(String s) => Settings.setValue("email", s);
+
+  static String get password => Settings.getValue("password", "");
+  static set password(String s) => Settings.setValue("password", s);
+
+  static bool get savingPassword => Settings.getValue("save_password", false);
+  static set savingPassword(bool b) => Settings.setValue("save_password", b);
 }

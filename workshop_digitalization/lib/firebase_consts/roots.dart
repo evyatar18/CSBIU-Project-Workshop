@@ -10,7 +10,7 @@ class Roots {
   final CollectionReference rootsCollection;
 
   // holds already created root objects
-  final _cachedRoots = <String, FirebaseRoot>{};
+  var _cachedRoots = <String, FirebaseRoot>{};
 
   StreamSubscription _sub;
   bool get listening => _sub != null;
@@ -21,22 +21,59 @@ class Roots {
       : assert(firestore != null),
         rootsCollection = firestore.collection("version"),
         _roots = ReplaySubject() {
+    _roots.add([]);
+
     if (startListening) {
       listen();
     }
+
+    _roots.stream.listen((value) {
+      print("roots: ${value.map((e) => e.name).toList()}");
+    });
+  }
+
+  void listenAndStopOld() {
+    if (listening) {
+      _sub?.cancel();
+    }
+    _sub = null;
+    listen();
   }
 
   void listen() {
     if (!listening) {
-      _sub = rootsCollection.snapshots().listen(_snapshotListener);
+      _sub = rootsCollection.snapshots().listen(
+        _snapshotListener,
+        onError: (error, stackTrace) {
+          _roots.addError(error, stackTrace);
+          _sub = null;
+        },
+        cancelOnError: true,
+      );
     }
   }
 
   void _snapshotListener(QuerySnapshot snapshot) {
+    print("received roots: ${snapshot.documents.length} roots");
     final roots = snapshot.documents
         .where((doc) => doc.exists)
         .map(_constructRoot)
         .toList();
+
+    // calculate the new root entries
+    final newRootEntries = Map.fromEntries(
+      roots.map((e) => MapEntry(e.name, e)),
+    );
+
+    // dispose of old roots
+    final availableRoots = roots.map((e) => e.reference.documentID);
+    _cachedRoots.values.map((e) => e.reference.documentID).toSet()
+      ..removeAll(availableRoots)
+      ..forEach((element) => _cachedRoots[element]?.dispose());
+
+    // set new cached roots
+    _cachedRoots = newRootEntries;
+
     _roots.add(roots);
   }
 

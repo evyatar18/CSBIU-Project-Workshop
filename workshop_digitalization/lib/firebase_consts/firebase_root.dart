@@ -12,7 +12,7 @@ class FirebaseRoot extends ChangeNotifier {
 
   Map<String, dynamic> get _values => _vals;
   set _values(Map<String, dynamic> vals) {
-    _vals = vals;
+    _vals = (vals = vals ?? {});
 
     if (!vals.containsKey(rootNameField)) {
       vals[rootNameField] = _ref.documentID;

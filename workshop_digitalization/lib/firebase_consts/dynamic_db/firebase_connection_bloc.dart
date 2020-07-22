@@ -31,10 +31,15 @@ class FirebaseConnectionBloc {
   Future<void> loadSettings() {
     final opts = MyAppSettings.getFirebaseOptions();
 
-    if (opts != null) {
-      return useInstance(FirebaseOptions.from(opts));
-    } else {
-      return Future.sync(() => null);
+    try {
+      if (opts != null) {
+        return useInstance(FirebaseOptions.from(opts));
+      } else {
+        return Future.sync(() => null);
+      }
+    } catch (e, trace) {
+      _controller.addError(e, trace);
+      rethrow;
     }
   }
 

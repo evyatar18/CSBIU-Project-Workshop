@@ -116,23 +116,38 @@ class AppSettings extends StatelessWidget {
           }
 
           final rootNames = snapshot.data.map((root) => root.name).toList();
-          final empty = rootNames.isEmpty;
 
-          if (empty) rootNames.add("no roots");
+          if (rootNames.isEmpty) {
+            return Text(
+              "Weird error occurred, couldn't get any root.\n"
+              "Probably an issue with Roots.rootStream",
+            );
+          }
+
+          if (!rootNames.contains(currentRoot.name)) {
+            return Text(
+              "New update from server does not contain the current root(${currentRoot.name})\n"
+              "Please check the firestore database and confirm this root exists",
+            );
+          }
 
           final defaultRoot = rootNames.first;
+          final selected =
+              currentRoot != null && rootNames.contains(currentRoot.name)
+                  ? currentRoot.name
+                  : defaultRoot;
+
+          print(
+            "current root names: $rootNames, number of roots: ${snapshot.data.length}",
+          );
 
           return DropDownSettingsTile<String>(
             title: "Database Root",
-            enabled: !empty,
             settingKey: MyAppSettings.firebaseRootName,
             values: rootNames
                 .asMap()
                 .map((_, value) => MapEntry(value, capitalize(value))),
-            selected:
-                currentRoot != null && rootNames.contains(currentRoot.name)
-                    ? currentRoot.name
-                    : defaultRoot,
+            selected: selected,
             onChange: MyAppSettings.setRoot,
           );
         },

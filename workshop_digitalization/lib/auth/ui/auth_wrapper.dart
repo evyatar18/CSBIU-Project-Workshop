@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:workshop_digitalization/auth/auth.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/ui/change_db.dart';
 import 'package:workshop_digitalization/global/ui/completely_centered.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
+import 'package:workshop_digitalization/settings/settings.dart';
 
 typedef Widget AuthBuilder(BuildContext context, AuthenticatedUser user);
 
-class AuthWrapper extends StatelessWidget {
+class AuthWrapper extends StatefulWidget {
   final AuthBuilder authBuilder;
   final Authenticator authenticator;
 
@@ -16,6 +16,32 @@ class AuthWrapper extends StatelessWidget {
     @required this.authenticator,
     Key key,
   }) : super(key: key);
+
+  @override
+  _AuthWrapperState createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  AuthBuilder get authBuilder => widget.authBuilder;
+  Authenticator get authenticator => widget.authenticator;
+
+  TextEditingController _email, _password;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _email = TextEditingController(text: MyAppSettings.email);
+    _password = TextEditingController(text: MyAppSettings.password);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    _email.dispose();
+    _password.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +66,25 @@ class AuthWrapper extends StatelessWidget {
     );
   }
 
+  bool get _savePassword => MyAppSettings.savingPassword;
+  void _changeSavePassword(bool b) {
+    setState(() {
+      MyAppSettings.savingPassword = b;
+    });
+  }
+
+  void _saveDetails([bool withPassword]) {
+    // use the `_savePassword getter` to infer the value of `withPassword`
+    if (withPassword == null) {
+      withPassword = _savePassword;
+    }
+
+    MyAppSettings.email = _email.text;
+    // save blank password if `withPassword` is false (to clear old password)
+    _password.text =
+        MyAppSettings.password = withPassword ? _password.text : "";
+  }
+
   Widget _buildSignIn(BuildContext context) {
     return CompletelyCentered(children: [
       _buildSignInEmail(context),
@@ -59,8 +104,10 @@ class AuthWrapper extends StatelessWidget {
     };
   }
 
+  String get email => _email.text;
+  String get password => _password.text;
+
   Widget _buildSignInEmail(BuildContext context) {
-    String email = "", password = "";
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 30),
       child: Column(
@@ -68,11 +115,11 @@ class AuthWrapper extends StatelessWidget {
           Text("Sign in with email"),
           TextField(
             decoration: InputDecoration(labelText: "email"),
-            onChanged: (value) => email = value,
+            controller: _email,
           ),
           TextField(
             decoration: InputDecoration(labelText: "password"),
-            onChanged: (value) => password = value,
+            controller: _password,
             obscureText: true,
           ),
           SizedBox(height: 20),
@@ -83,6 +130,9 @@ class AuthWrapper extends StatelessWidget {
                 child: Text("Login"),
                 onPressed: () => authenticator
                     .login(email, password)
+
+                    // on successful login, save details
+                    .then((_) => _saveDetails())
                     .catchError(onErrorHandler(context)),
               ),
               // SizedBox(width: 20),
@@ -90,22 +140,47 @@ class AuthWrapper extends StatelessWidget {
                 child: Text("Register"),
                 onPressed: () => authenticator
                     .register(email, password)
+                    // on successful registration, save details
+                    .then((_) => _saveDetails())
+
+                    // we want the user to appear on the console
+                    // and only after they are authorized may then sign in
+                    .then((value) => authenticator.signOut())
+                    .then(
+                      (value) => showSuccessDialog(
+                        context,
+                        message: "Registered successfully,"
+                            "login after confirmed on firebase",
+                      ),
+                    )
+
+                    // return `false` so this error is unhandled
+                    // and the other callbacks are not called
                     .catchError(onErrorHandler(context)),
               ),
               RaisedButton(
                 child: Text("Forgotten Password"),
                 onPressed: () {
-                  return authenticator.forgotten(email).then(
-                        (_) => showSuccessDialog(
-                          context,
-                          message: "Sent password reset email",
-                        ),
-                        onError: onErrorHandler(context),
-                      );
+                  authenticator
+                      .forgotten(email)
+                      .then((_) => showSuccessDialog(context,
+                          message: "Sent password reset email"))
+                      .catchError(onErrorHandler(context));
                 },
               )
             ],
-          )
+          ),
+          Row(
+            children: <Widget>[
+              Switch(
+                onChanged: _changeSavePassword,
+                value: _savePassword,
+              ),
+              Text(
+                "Save password on device?\n (saving in plaintext, insecure)",
+              ),
+            ],
+          ),
         ],
       ),
     );
