@@ -80,7 +80,7 @@ class Roots {
   Future<void> stopListening() {
     var future = _sub?.cancel();
     _sub = null;
-    return future;
+    return future.then((_) => _roots.add([]));
   }
 
   Stream<List<FirebaseRoot>> get rootStream => _roots.stream;

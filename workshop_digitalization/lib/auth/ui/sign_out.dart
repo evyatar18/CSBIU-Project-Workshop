@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
 
 import '../auth.dart';
@@ -17,6 +19,9 @@ class SignOutButton extends StatelessWidget {
       onPressed: () async {
         try {
           await authenticator.signOut();
+          final firebase = Provider.of<FirebaseInstance>(context, listen: false);
+          await firebase.roots.stopListening();
+
           print("logged out successfully");
         } catch (e) {
           showErrorDialog(

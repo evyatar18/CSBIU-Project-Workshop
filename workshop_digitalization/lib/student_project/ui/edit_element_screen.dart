@@ -125,8 +125,8 @@ class EditElementFormState<T extends StringIdentified>
           : showAgreementDialog(
               context, "Are you sure you want to discard the latest changes?");
 
-  void _ensureValues() {
-    final values = _latestValues;
+  void _ensureSavedValues() {
+    final values = _savedValues;
     _fbKey.currentState.fields.forEach((key, value) {
       if (values.containsKey(key)) value.currentState.didChange(values[key]);
     });
@@ -142,8 +142,8 @@ class EditElementFormState<T extends StringIdentified>
     if (_fbKey.currentState.validate()) {
       setState(() {
         _fbKey.currentState.save();
-        _savedValues = _latestValues;
-        _ensureValues();
+        _savedValues = _fbKey.currentState.value;
+        _ensureSavedValues();
       });
       widget.elementManager.save(widget.element).then(
         (value) => showSuccessDialog(context, title: "Save successful"),
@@ -168,9 +168,8 @@ class EditElementFormState<T extends StringIdentified>
       // remove values from form if toggled off
       if (!_readOnly) {
         _fbKey.currentState.reset();
+        _ensureSavedValues();
       }
-
-      _ensureValues();
 
       _readOnly = !_readOnly;
     });
