@@ -13,12 +13,10 @@ class BottomFab extends StatefulWidget {
   BottomFab(int index) : index = index;
 
   @override
-  State<StatefulWidget> createState() {
-    return BottomFabState();
-  }
+  State<StatefulWidget> createState() => _BottomFabState();
 }
 
-class BottomFabState extends State<BottomFab> {
+class _BottomFabState extends State<BottomFab> {
   List<List<SpeedDialChild>> _children(BuildContext context) {
     StudentsFileDownloader studentsFileDownloader = new StudentsFileDownloader(
       studentManager: Provider.of<StudentManager>(context, listen: false),
@@ -27,20 +25,7 @@ class BottomFabState extends State<BottomFab> {
       projectManager: Provider.of<ProjectManager>(context, listen: false),
     );
     return [
-      [
-        SpeedDialChild(
-            child: Icon(Icons.settings),
-            backgroundColor: Colors.green,
-            label: 'Settings',
-            labelStyle: TextStyle(fontSize: 18.0),
-            onTap: () => pushSettingsScreen(context)),
-        SpeedDialChild(
-            child: Icon(Icons.person),
-            backgroundColor: Colors.blue,
-            label: 'Profile',
-            labelStyle: TextStyle(fontSize: 18.0),
-            onTap: () => print('profile')),
-      ],
+      [],
       [
         SpeedDialChild(
             child: Icon(Icons.person_add),
@@ -79,38 +64,33 @@ class BottomFabState extends State<BottomFab> {
           onTap: () => projectsFileDownloader.writeProjectsToFile(context),
         ),
       ],
-      [
-        SpeedDialChild(
-            child: Icon(Icons.person),
-            backgroundColor: Colors.green,
-            label: 'Profile',
-            labelStyle: TextStyle(fontSize: 18.0),
-            onTap: () => print('FIRST CHILD')),
-      ]
+      []
     ];
   }
 
   @override
   Widget build(BuildContext context) {
+    final children = _children(context)[widget.index];
     return SpeedDial(
-        // both default to 16
-        marginRight: 18,
-        marginBottom: 20,
-        animatedIcon: AnimatedIcons.menu_close,
-        animatedIconTheme: IconThemeData(size: 22.0),
-        // this is ignored if animatedIcon is non null
-        //\ child: Icon(Icons.add),
-        visible: true,
-        // If true user is forced to close dial manually
-        // by tapping main button and overlay is not rendered.
-        closeManually: false,
-        curve: Curves.bounceIn,
-        overlayColor: Colors.black,
-        overlayOpacity: 0.5,
-        backgroundColor: Colors.red,
-        foregroundColor: Colors.white,
-        elevation: 8.0,
-        shape: CircleBorder(),
-        children: (_children(context)[widget.index]));
+      // both default to 16
+      marginRight: 18,
+      marginBottom: 20,
+      animatedIcon: AnimatedIcons.menu_close,
+      animatedIconTheme: IconThemeData(size: 22.0),
+      // this is ignored if animatedIcon is non null
+      //\ child: Icon(Icons.add),
+      visible: children.isNotEmpty,
+      // If true user is forced to close dial manually
+      // by tapping main button and overlay is not rendered.
+      closeManually: false,
+      curve: Curves.bounceIn,
+      overlayColor: Colors.black,
+      overlayOpacity: 0.5,
+      backgroundColor: Colors.red,
+      foregroundColor: Colors.white,
+      elevation: 8.0,
+      shape: CircleBorder(),
+      children: children,
+    );
   }
 }

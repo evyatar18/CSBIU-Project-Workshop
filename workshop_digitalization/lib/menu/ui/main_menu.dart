@@ -55,30 +55,8 @@ class MainMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.person, color: Theme.of(context).primaryColorDark),
         backgroundColor: Theme.of(context).canvasColor,
-        // flexibleSpace: Image(
-        //   image: AssetImage('assets/logo.png'),
-        // ),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            UserAccountsDrawerHeader(
-              accountName: Text('FULL NAME'),
-              accountEmail: Text('email@email.com'),
-              currentAccountPicture: Icon(Icons.person),
-              decoration: BoxDecoration(color: Colors.blueAccent),
-            ),
-            ListTile(
-              trailing: Icon(
-                Icons.settings,
-                color: Theme.of(context).primaryColorDark,
-              ),
-              title: Text('Settings'),
-            )
-          ],
-        ),
+        title: Text("CS-BIU Workshop"),
       ),
       body: Padding(
         padding: EdgeInsets.all(10),
@@ -101,9 +79,6 @@ class MainMenu extends StatelessWidget {
               ),
               onPressed: () => pushNewStudentScreen(context),
             ),
-            // Center(
-            //   child:
-            // ),
             FlatButton(
               child: BigIcon(
                 icon: Icons.dashboard,
@@ -119,22 +94,6 @@ class MainMenu extends StatelessWidget {
                 color: Colors.yellow,
               ),
               onPressed: () => pushNewProjectScreen(context),
-            ),
-            FlatButton(
-              child: BigIcon(
-                icon: Icons.settings,
-                text: 'Settings',
-                color: Colors.purpleAccent,
-              ),
-              onPressed: () => pushSettingsScreen(context),
-            ),
-            FlatButton(
-              child: BigIcon(
-                icon: Icons.person,
-                text: 'Profile',
-                color: Colors.orange,
-              ),
-              onPressed: () {},
             ),
             FlatButton(
               child: BigIcon(
