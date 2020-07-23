@@ -106,3 +106,27 @@ https://firebase.google.com/docs/functions/get-started#set-up-node.js-and-the-fi
         1. `disableOnRegister` with the trigger `user.create`
         2. `enableAllowedAccounts` with the trigger `document.write; allowed/{doc_id}`
 6. Everything on the firebase side is ready for use now.
+
+
+## Linking the Android Application to the Firebase Application
+1. After all the previous steps were passed, you can finally open the Android Application
+2. Copy the `google-services.json` contents into your clipboard
+3. You should see the contents of your clipboard as plaintext in the main screen of the application. You may confirm everything was copied correctly. If not, try repeating `step 2 and 3`
+4. If everything seems ok, hit the `Load` button to load the firebase instance contents for use with the application. You should see the login screen now. If not, click the `Change Database` button and then try repeating `steps 2-4`. If the error persists, you may have to re-initalize the Android Application on your Firebase (and download a new `google-services.json`) as described in `Part 1`.
+
+## Authorizing Accounts (Do this for every user that logs in for the first time)
+1. You are now in the login screen, and you're almost ready to start using the application.
+2. Choose your login credentials, we recommend using a randomly generated password and then enabling the `Save Password` option as it will make things much more convenient for you as a user.
+
+    **Note**: The password is saved as plaintext on the SharedPreferences of your android phone, so make sure **NOT** to enable it if you use that one password which you repeat in several places.
+3. Hit the register button. You should see a success message. If not, there is a problem with connection to firebase, or you may have initialized things wrong.
+4. Go to your **Firebase Console** under the **Authentication** section and locate the **Users** Tab.
+5. You should see a newly registered **Disabled** user with the mail you just specified in the login screen.
+6. Copy the user id (for example `kh5lph2GJTR6IfXUmtbwtDdHzPl2`) and go to the `Database` section.
+7. In `Cloud Firestore`, start a new collection (if doesn't exist) named `allowed`
+8. Under that collection, create a new document with an id identical to the previously copied user id(example: `kh5lph2GJTR6IfXUmtbwtDdHzPl2`). The new document should include a boolean field named `admin`.
+9. If you want to give permissions to the new user, make sure `admin` is set to `true`. If it is set to `false`, or if the document does not exist, the user permissions are **revoked**
+
+    **Note**: The revoking doesn't work with logged in users, as firebase functions don't allow revoking an OAuth2 credential given to a user. The revoking must happen while the user is logged out.
+10. Now go back to the `Authentication` section and check if the newly created user is enabled/disabled(according to the **admin** value). This may take a little while for the `enableAllowedAccounts` function to start running, so if you don't see it immediately, try to refresh a few times.
+11. After the user is enabled, you can finally log into the app and start using it. You may need to hit the `Create Root` button to start using for the first time.
