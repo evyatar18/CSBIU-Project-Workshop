@@ -1,12 +1,33 @@
+# Instructions for initializing the application with your own Firebase Instance
+There are 4 main steps:
+1. Create and initialize a **firebase application**
+2. **Initialize Firebase Tools** on your local machine and **deploy functions and rules** to your firebase instance
+3. Link your **android application instance** to your firebase application
+4. **Authorize accounts** for use with the firebase instance
+
+## Creating & Initializing a Firebase Application
+1. Go to https://console.firebase.google.com/ and create a new project. You may use Google Analytics.
+2. Register the android application with the firebase instance:
+    * Create a new android application in the console with the package name `il.ac.biu.cs.workshop_digitalization`
+    * Make sure to download and save `google-services.json` as you will need it for the linking process
+    * Steps 3 and 4 in the initialization may be skipped since the application already passed them
+3. Initialize **Authentication**, **Database** and **Storage**:
+    * Authentication - Enable the sign up method named `Email/Password`
+    * Database - Create a Database (in **Production Mode**), you may choose whatever database location you want. We used eur3 (europe-west).
+    * Storage - Create a Storage Bucket
+
 First, we have to **install and initialize** Firebase Tools on our local machine:
 
-## Online Instructions
-The instructions for the installation of are available in this video:
+## Initialize Firebase Tools and Deploy Functions & Rules
+
+### **Online Instructions**
+The instructions for the **installation**(without deploying) are available in this video:
 https://youtu.be/DYfP-UIKxH0
-Or in this link:
+
+And in this link:
 https://firebase.google.com/docs/functions/get-started#set-up-node.js-and-the-firebase-cli (steps 2 and 3)
 
-## In Summary
+### **Full Instructions (with deployment)**
 1. **Install NPM**(node package manager) and make sure it's set in the PATH
 2. **Installing Firebase Tools**: Run the command `npm install -g firebase-tools`
     * To ensure latest version use:
@@ -27,7 +48,7 @@ https://firebase.google.com/docs/functions/get-started#set-up-node.js-and-the-fi
     ```
     * Grab the `Project ID` of the desired firebase project and type in console `firebase use <ProjectID>`, in my example I would type `firebase use test-a97ea`.
     * Now you are ready to deploy the firebase functions and rules.
-4. Make sure your console working directory is `firebase_functions`, after that, type in the console `firebase deploy`. This will upload the **firebase functions** and **custom rules** for **firestore** and **storage**.
+4. **Deploy**: Make sure your console working directory is `firebase_functions`, after that, type in the console `firebase deploy`. This will upload the **firebase functions** and **custom rules** for **firestore** and **storage**.
     * You should be expecting output ending like this:
         ```
         +  functions: Finished running predeploy script.
@@ -56,7 +77,7 @@ https://firebase.google.com/docs/functions/get-started#set-up-node.js-and-the-fi
 
         +  Deploy complete!
         ```
-5. You may test everything was deployed:
+5. **Test**: You may test everything was deployed:
 
     * In the `Database` section, under the `Rules` tab you should see the following content:
         ```
