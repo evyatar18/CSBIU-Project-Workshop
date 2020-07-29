@@ -67,7 +67,7 @@ class DynamicDBHandler extends StatelessWidget {
   Widget _buildChooser(BuildContext context, FirebaseConnectionBloc bloc) {
     return CompletelyCentered(
       children: [
-        Text("Please copy `google-services.json`"),
+        Text("Please copy `${getFirebaseFilename()}`"),
         Text(" to your clipboard"),
         Text(" and then click the load database button"),
         RaisedButton(
