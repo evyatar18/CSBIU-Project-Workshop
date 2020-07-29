@@ -48,7 +48,8 @@ https://firebase.google.com/docs/functions/get-started#set-up-node.js-and-the-fi
     ```
     * Grab the `Project ID` of the desired firebase project and type in console `firebase use <ProjectID>`, in my example I would type `firebase use test-a97ea`.
     * Now you are ready to deploy the firebase functions and rules.
-4. **Deploy**: Make sure your console working directory is `firebase_functions`, after that, type in the console `firebase deploy`. This will upload the **firebase functions** and **custom rules** for **firestore** and **storage**.
+4. **Install Dependencies**: You need the NPM dependencies installed on your machine. To install run the command `firebase install` in the project folder.
+5. **Deploy**: Make sure your console working directory is `firebase_functions`, after that, type in the console `firebase deploy`. This will upload the **firebase functions** and **custom rules** for **firestore** and **storage**.
     * You should be expecting output ending like this:
         ```
         +  functions: Finished running predeploy script.
@@ -77,7 +78,7 @@ https://firebase.google.com/docs/functions/get-started#set-up-node.js-and-the-fi
 
         +  Deploy complete!
         ```
-5. **Test**: You may test everything was deployed:
+6. **Test**: You may test everything was deployed:
 
     * In the `Database` section, under the `Rules` tab you should see the following content:
         ```
@@ -105,7 +106,7 @@ https://firebase.google.com/docs/functions/get-started#set-up-node.js-and-the-fi
 
         1. `disableOnRegister` with the trigger `user.create`
         2. `enableAllowedAccounts` with the trigger `document.write; allowed/{doc_id}`
-6. Everything on the firebase side is ready for use now.
+7. Everything on the firebase side is ready for use now.
 
 
 ## Linking the Android Application to the Firebase Application
