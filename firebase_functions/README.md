@@ -48,7 +48,7 @@ https://firebase.google.com/docs/functions/get-started#set-up-node.js-and-the-fi
     ```
     * Grab the `Project ID` of the desired firebase project and type in console `firebase use <ProjectID>`, in my example I would type `firebase use test-a97ea`.
     * Now you are ready to deploy the firebase functions and rules.
-4. **Install Dependencies**: You need the NPM dependencies installed on your machine. To install run the command `firebase install` in the project folder.
+4. **Install Dependencies**: You need the NPM dependencies installed on your machine. To install run the command `npm install` in the project folder(`firebase_functions` folder).
 5. **Deploy**: Make sure your console working directory is `firebase_functions`, after that, type in the console `firebase deploy`. This will upload the **firebase functions** and **custom rules** for **firestore** and **storage**.
     * You should be expecting output ending like this:
         ```
