@@ -18,10 +18,12 @@ class NewProjectScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return NewElementScreen<Project>(
-      elementManager: ProjectElementManager(projectManager),
-      elementName: "project",
-      elementFormCreator: ProjectForm.createProjectCreator(firebase),
+    return Scaffold(
+      body: NewElementScreen<Project>(
+        elementManager: ProjectElementManager(projectManager),
+        elementName: "project",
+        elementFormCreator: ProjectForm.createProjectCreator(firebase),
+      ),
     );
   }
 }

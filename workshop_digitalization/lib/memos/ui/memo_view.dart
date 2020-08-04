@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:html_editor/html_editor.dart';
 import 'package:intl/intl.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
+import 'package:workshop_digitalization/global/ui/dialogs.dart';
 
 import '../memo.dart';
 import 'memo_send_popup.dart';
@@ -94,6 +95,9 @@ class MemoViewState extends State<MemoView> {
 
     // save
     widget.manager.save(widget.memo);
+
+    //notfication
+    await showSuccessDialog(context , message: "Saved Successfully");
   }
 
   bool _opening = false;

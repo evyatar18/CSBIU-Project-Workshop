@@ -39,7 +39,6 @@ class EditElementFormState<T extends StringIdentified>
   Widget build(BuildContext context) {
     super.build(context);
 
-    Color color = Theme.of(context).primaryColor;
 
     return Padding(
       padding: EdgeInsets.all(18),
@@ -57,7 +56,7 @@ class EditElementFormState<T extends StringIdentified>
                           _toggleEdit();
                         }
                       },
-                      child: Icon(Icons.edit, color: color),
+                      child: Icon(Icons.edit),
                     ),
                     if (widget.enableDeleting)
                       IconButton(

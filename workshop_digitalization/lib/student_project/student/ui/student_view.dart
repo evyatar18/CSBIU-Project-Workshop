@@ -34,7 +34,6 @@ class StudentDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color color = Theme.of(context).canvasColor;
 
     return DefaultTabController(
       length: 5,
@@ -66,7 +65,7 @@ class StudentDetails extends StatelessWidget {
                 onPressed: () async {
                   await launch('tel:${student.phoneNumber}');
                 },
-                child: Icon(Icons.call, color: color),
+                child: Icon(Icons.call,color: Colors.white,),
               ),
             ),
             Tooltip(
@@ -75,7 +74,7 @@ class StudentDetails extends StatelessWidget {
                 onPressed: () async {
                   await launch('mailto:${student.email}');
                 },
-                child: Icon(Icons.mail, color: color),
+                child: Icon(Icons.mail,color: Colors.white),
               ),
             ),
           ],
