@@ -1,6 +1,7 @@
 
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
+import 'package:workshop_digitalization/download/download_file.dart';
 import 'package:workshop_digitalization/global/path_suplier.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
@@ -16,10 +17,13 @@ class StudentsFileDownloader {
   });
 
   void writeStudentsToFile(BuildContext context) async {
-    final path = await getDownloadPath(context);
-    if (path == null) {
-      return;
-    }
+      print('s---------------------');
+
+    // final path = await getDownloadPath(context);
+    // if (path == null) {
+    //   return;
+    // }
+
     List<Student> students = (studentManager.latestStudents);
     List<List<dynamic>> rows = students
         .map((s) => studentToData(s))
@@ -30,7 +34,8 @@ class StudentsFileDownloader {
         students.map((s) => studentToData(s)).toList()[0].keys.toList();
     rows.insert(0, topics);
     String csv = const ListToCsvConverter().convert(rows);
-    FileIO.write(path: '$path/students.csv', data: csv);
-    showSuccessDialog(context, message: "The file saved in : $path");
+    DownloadFile.download(csv,"students.csv");
+    //FileIO.write(path: '$path/students.csv', data: csv);
+    // showSuccessDialog(context, message: "The file saved in : $path");
   }
 }

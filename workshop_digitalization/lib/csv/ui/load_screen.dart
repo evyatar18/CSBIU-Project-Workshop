@@ -1,4 +1,15 @@
+import 'dart:convert';
+import 'dart:html' as html;
+import 'dart:io' as io;
+import 'dart:convert' as convert;
+import 'dart:typed_data';
+
+
+// import 'package:mime_type/mime_type.dart';
+import 'package:path/path.dart' as Path;
+import 'package:image_picker_web/image_picker_web.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:workshop_digitalization/global/ui/disposer.dart';
@@ -24,23 +35,135 @@ enum FilesListState { BEFORE, WHILE, AFTER }
 
 class _LoadScreenState extends State<LoadScreen> {
   ProgressRepository repo;
-  Map<String, String> _paths;
+  List<io.File> _files;
   String _extension = 'csv';
   bool _loadingPath = false;
   Stream<ProgressSnapshot> progressSnapshot;
 
+  Future<List<io.File>> openFileExplorerAndroid() async {
+    var _paths = await FilePicker.getMultiFilePath(
+        type: FileType.custom,
+        allowedExtensions: (_extension?.isNotEmpty ?? false)
+            ? _extension?.replaceAll(' ', '')?.split(',')
+            : null);
+    return _paths.entries.map((e) => io.File(e.value)).toList();
+  }
+   
+List<int> _selectedFile;
+Uint8List _bytesData;
+
+ startWebFilePicker() async {
+    html.InputElement uploadInput = html.FileUploadInputElement();
+    uploadInput.multiple = true;
+    uploadInput.draggable = true;
+    uploadInput.click();
+
+    uploadInput.onChange.listen((e) {
+      final files = uploadInput.files;
+      final file = files[0];
+      final reader = new html.FileReader();
+
+      reader.onLoadEnd.listen((e) {
+        _handleResult(reader.result);
+      });
+      reader.readAsDataUrl(file);
+    });
+  }
+
+  void _handleResult(Object result) {
+    setState(() {
+      print("dsgdfag");
+      _bytesData = Base64Decoder().convert(result.toString().split(",").last);
+      _selectedFile = _bytesData;
+    });}
+
+ 
+
+  void _read2() {
+    html.InputElement uploadInput = html.FileUploadInputElement();
+    uploadInput.click();
+
+    uploadInput.onChange.listen((e) {
+      // read file content as dataURL
+      final files = uploadInput.files;
+      if (files.length == 1) {
+        final file = files[0];
+        final reader = new html.FileReader();
+
+        reader.onLoadEnd.listen((e) {
+          Uint8List uploadedImage = reader.result;
+          print(new String.fromCharCodes(uploadedImage));
+          _files = [io.File(reader.result)];
+        });
+        reader.readAsDataUrl(file);
+      }
+    });
+  }
+
+  void _read() {
+    html.InputElement uploadInput = html.FileUploadInputElement();
+    uploadInput.click();
+
+    uploadInput.onChange.listen((e) {
+      final files = uploadInput.files;
+      if (files.length == 1) {
+        final file = files[0];
+        final reader = new html.FileReader();
+        reader.onLoadEnd.listen((e) {
+          print("loaded: ${file.name}");
+          print("type: ${reader.result.runtimeType}");
+        });
+        reader.onError.listen((e) {
+          print(e);
+        });
+        reader.readAsArrayBuffer(file);
+      }
+    });
+  }
+
+  String _startFilePicker() {
+    html.InputElement uploadInput = html.FileUploadInputElement();
+    uploadInput.click();
+    print('1');
+
+    uploadInput.onChange.listen((e) {
+      // read file content as dataURL
+      print(2);
+      final files = uploadInput.files;
+      if (files.length == 1) {
+        final file = files[0];
+        html.FileReader reader = html.FileReader();
+        reader.readAsText(file);
+        print(3);
+        reader.onLoad.listen((data) {
+          return reader.result.toString();
+        });
+        print(4);
+        reader.onError.listen((fileEvent) {
+          return "Some Error occured while reading the file";
+        });
+      }
+      return 'here';
+    });
+    return 'here2';
+  }
+
   //this widget open the file explorer for choose csv files
   Future<void> _openFileExplorer() async {
     setState(() => _loadingPath = true);
-    try {
-      _paths = await FilePicker.getMultiFilePath(
-          type: FileType.custom,
-          allowedExtensions: (_extension?.isNotEmpty ?? false)
-              ? _extension?.replaceAll(' ', '')?.split(',')
-              : null);
-    } on PlatformException catch (e) {
-      print("Unsupported operation" + e.toString());
+    if (kIsWeb) {
+      await startWebFilePicker();
+      print(_selectedFile);
+      print(_files);
+      // print(_startFilePicker());
+    } else {
+      try {
+        openFileExplorerAndroid();
+      } on PlatformException catch (e) {
+        print("Unsupported operation" + e.toString());
+      }
     }
+
     if (!mounted) return;
     setState(() {
       _loadingPath = false;
@@ -50,25 +173,24 @@ class _LoadScreenState extends State<LoadScreen> {
   Future<void> loadFiles(ProgressRepository progressRepository) async {
     FileParser parser = CsvFileParser();
     List<Map<String, dynamic>> jsons = [];
-    if (_paths != null) {
+    if (_files != null) {
       var fields = LocalStudent.getFields();
-      for (var path in _paths.values) {
-        jsons = jsons..addAll(await parser.parse(path, fields));
+      for (var file in _files) {
+        jsons = jsons..addAll(await parser.parse(file, fields));
       }
-      List<Student> students = jsons
-          .map((json) => LocalStudent.fromJson(json))
-          .toList(); //= jsons..map((json)=>));
+      List<Student> students =
+          jsons.map((json) => LocalStudent.fromJson(json)).toList();
 
       final progressSnapshot = widget.studentManager.addStudents(students);
       feedStream(progressRepository, progressSnapshot);
       setState(() {
-        _paths = null;
+        _files = null;
       });
     }
   }
 
   Widget uploadButton() {
-    return _paths != null
+    return _files != null
         ? Builder(builder: (BuildContext context) {
             return RaisedButton(
               onPressed: () => loadFiles(this.repo),
@@ -90,19 +212,19 @@ class _LoadScreenState extends State<LoadScreen> {
             ? Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: const CircularProgressIndicator())
-            : _paths != null
+            : _files != null
                 ? Container(
                     padding: const EdgeInsets.only(bottom: 30.0),
                     height: MediaQuery.of(context).size.height * 0.50,
                     child: Scrollbar(
                         child: ListView.separated(
-                      itemCount: _paths != null && _paths.isNotEmpty
-                          ? _paths.length
+                      itemCount: _files != null && _files.isNotEmpty
+                          ? _files.length
                           : 1,
                       itemBuilder: (BuildContext context, int index) {
-                        final String name =
-                            'File $index: ' + (_paths.keys.toList()[index]);
-                        final path = _paths.values.toList()[index].toString();
+                        final String name = 'File $index: ' +
+                            (_files.map((e) => e.path).toList()[index]);
+                        final path = _files.toList()[index].toString();
 
                         return ListTile(
                           title: Text(

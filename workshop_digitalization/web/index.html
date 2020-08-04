@@ -18,20 +18,27 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
-
+  <script>
+    function webSaveAs(blob, name) {
+      saveAs(blob, name);
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"> 
+  </script>
   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-firestore.js"></script>
   <script>
     // Your web app's Firebase configuration
     var firebaseConfig = {
-      apiKey: "AIzaSyDAmWvBs5umwBFKoDwh1L894hLmTJvYHZo",
-      authDomain: "flutter-firebase-plugins.firebaseapp.com",
+      apiKey: "AIzaSyCfuMAlUZvUNviuU9-1_pvCfEYSI40RMP4",
+      authDomain: "workshop-a85eb.firebaseapp.com",
       databaseURL: "https://workshop-a85eb.firebaseio.com",
       projectId: "workshop-a85eb",
-      storageBucket: "fworkshop-a85eb.appspot.com",
+      storageBucket: "workshop-a85eb.appspot.com",
       messagingSenderId: "818805500247",
-      appId: "1:159623150305:web:b2b676fa6ead437bbf95a0"
+      appId: "1:818805500247:web:63c948a6a1199fe09e3612",
+      measurementId: "G-Q4QLWZ7CW5"
     };
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
