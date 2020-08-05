@@ -79,7 +79,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
       withPassword = _savePassword;
     }
 
-    MyAppSettings.email = _email.text;
+    MyAppSettings.email = email;
     // save blank password if `withPassword` is false (to clear old password)
     _password.text =
         MyAppSettings.password = withPassword ? _password.text : "";
@@ -104,7 +104,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
     };
   }
 
-  String get email => _email.text;
+  String get email => _email.text.trim();
   String get password => _password.text;
 
   Widget _buildSignInEmail(BuildContext context) {
