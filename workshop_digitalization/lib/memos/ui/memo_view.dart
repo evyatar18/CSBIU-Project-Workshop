@@ -85,19 +85,29 @@ class MemoViewState extends State<MemoView> {
   }
 
   void _save() async {
-    final txt = await keyEditor.currentState.getText();
+    final topic = _topicController.text;
+    final content = await keyEditor.currentState.getText();
 
-    // update memo data
-    setState(() {
-      widget.memo.content = txt;
-      widget.memo.topic = _topicController.text;
-    });
+    final memo = widget.memo;
 
-    // save
-    widget.manager.save(widget.memo);
+    memo.content = content;
+    memo.topic = topic;
 
-    //notfication
-    await showSuccessDialog(context , message: "Saved Successfully");
+    try {
+      // attempt saving
+      await widget.manager.save(memo);
+
+      // notify change to memo has occurred, and show a `saved successfully` message
+      setState(() {});
+      await showSuccessDialog(context, message: "Saved Successfully");
+    } catch (e) {
+      // error when saved memo
+      await showErrorDialog(
+        context,
+        title: "Error saving memo",
+        error: e.toString(),
+      );
+    }
   }
 
   bool _opening = false;
