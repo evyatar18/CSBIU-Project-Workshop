@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:intl/intl.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/global/strings.dart';
@@ -129,10 +130,11 @@ class StudentDetails extends StatelessWidget {
               FormBuilderSlider(
                 decoration: InputDecoration(labelText: "Grade"),
                 attribute: "grade-grade",
-                min: 0,
-                max: 100,
-                initialValue: element.grade.grade,
+                min: 0.0,
+                max: 100.0,
+                initialValue: element.grade.grade.toDouble(),
                 divisions: 100,
+                numberFormat: NumberFormat("#"),
                 onSaved: (val) =>
                     element.grade.grade = num.parse(val.toString()),
               ),
