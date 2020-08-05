@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
@@ -264,9 +265,43 @@ class _StudentsDisplayerState extends State<_StudentsDisplayer> {
           );
         }
 
-        return Column(
-          children: _project.students.map(_buildStudentCard).toList(),
-        );
+        final students = _project.students;
+        final studentEmails = students
+            .map((e) => e.email)
+            .where((email) => email != null)
+            .join(",");
+        final nullEmails = students.length - studentEmails.length;
+        final nullEmailsMessage = nullEmails > 0
+            ? "There were $nullEmails students with undefined emails."
+            : "";
+
+        return Builder(builder: (context) {
+          return Column(
+            children: [
+              RaisedButton(
+                child: Text("Copy Emails"),
+                onPressed: () async {
+                  try {
+                    await Clipboard.setData(ClipboardData(text: studentEmails));
+
+                    showSuccessDialog(
+                      context,
+                      title: "Copied student emails into clipboard",
+                      message: "Emails: $studentEmails\n$nullEmailsMessage",
+                    );
+                  } catch (e) {
+                    showErrorDialog(
+                      context,
+                      title: "Error copying student emails into clipboard",
+                      error: e.toString(),
+                    );
+                  }
+                },
+              ),
+              ...students.map(_buildStudentCard)
+            ],
+          );
+        });
       },
     );
   }
