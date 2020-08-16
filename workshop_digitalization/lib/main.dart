@@ -8,6 +8,7 @@ import 'package:workshop_digitalization/auth/ui/authorization_checker.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/ui/db_data.dart';
 import 'package:workshop_digitalization/menu/ui/home_page.dart';
+import 'package:workshop_digitalization/platform/init.dart';
 
 import 'settings/settings.dart';
 import 'global/ui/circular_loader.dart';
@@ -20,6 +21,8 @@ import 'firebase_consts/firebase_root.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await initializePlatform();
 
   // use default shared preferences provider
   await Settings.init();

@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:html_editor/html_editor.dart';
 import 'package:intl/intl.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
+import 'package:workshop_digitalization/platform/init.dart';
 
 import '../memo.dart';
 import '../memo_sender.dart';
@@ -24,10 +28,15 @@ class MemoView extends StatefulWidget {
 }
 
 class MemoViewState extends State<MemoView> {
-  GlobalKey<HtmlEditorState> keyEditor = GlobalKey();
   GlobalKey<HtmlEditorState> keyTopic = GlobalKey();
   final _dateFormat = DateFormat('dd/MM/yyyy');
   final _topicController = TextEditingController();
+
+  /// filter only text requests which have not been completed
+  Stream<Completer<String>> get _textRequests =>
+      _textRequestsController.stream.where((event) => !event.isCompleted);
+
+  StreamController<Completer<String>> _textRequestsController;
 
   Future<bool> _onWillPop() async {
     var ch = await _thereIsChanges();
@@ -61,30 +70,39 @@ class MemoViewState extends State<MemoView> {
 
   void initState() {
     super.initState();
+
     _topicController.text = widget.memo.topic;
+    _textRequestsController = BehaviorSubject<Completer<String>>();
   }
 
   @override
   void dispose() {
     _topicController.dispose();
+    _textRequestsController.close();
+
     super.dispose();
   }
 
   void _reset() {
     setState(() {
-      keyEditor.currentState.setText(widget.memo.content);
       _topicController.text = widget.memo.topic;
     });
   }
 
+  Future<String> _getText() {
+    final req = Completer<String>();
+    _textRequestsController.add(req);
+    return req.future;
+  }
+
   Future<bool> _thereIsChanges() async {
-    final txt = await keyEditor.currentState.getText();
+    final txt = await _getText();
     return (widget.memo.content != txt ||
         widget.memo.topic != _topicController.text);
   }
 
   void _save() async {
-    final txt = await keyEditor.currentState.getText();
+    final txt = await _getText();
 
     // update memo data
     setState(() {
@@ -206,13 +224,7 @@ class MemoViewState extends State<MemoView> {
               children: <Widget>[
                 dates(),
                 subject(),
-                HtmlEditor(
-                  hint: "Your text here...",
-                  value: widget.memo.content,
-                  key: keyEditor,
-                  height: 400,
-                  decoration: BoxDecoration(),
-                ),
+                currentPlatform.htmlEditor(widget.memo.content, _textRequests),
                 bottomButtonSection(),
               ],
             ),

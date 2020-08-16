@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:workshop_digitalization/firebase_consts/dynamic_db/firebase_options_reader.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/global/ui/circular_loader.dart';
 import 'package:workshop_digitalization/global/ui/completely_centered.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
+import 'package:workshop_digitalization/platform/init.dart';
 
 import '../firebase_connection_bloc.dart';
 
@@ -67,9 +67,9 @@ class DynamicDBHandler extends StatelessWidget {
   Widget _buildChooser(BuildContext context, FirebaseConnectionBloc bloc) {
     return CompletelyCentered(
       children: [
-        Text("Please copy `${getFirebaseFilename()}`"),
-        Text(" to your clipboard"),
-        Text(" and then click the load database button"),
+        Text("Please copy ${currentPlatform.firebaseFilename}"),
+        Text("to your clipboard"),
+        Text("and then click the load database button"),
         RaisedButton(
           child: Text("Load"),
           onPressed: () async {
@@ -86,7 +86,8 @@ class DynamicDBHandler extends StatelessWidget {
             }
 
             try {
-              final opts = await generateOptions(clipboardData.text);
+              final opts =
+                  currentPlatform.parseFirebaseOptions(clipboardData.text);
               bloc.useInstance(opts);
             } catch (e) {
               showErrorDialog(
