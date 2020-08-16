@@ -96,6 +96,8 @@ dependencies:
   # https://pub.dev/packages/collection useful collection operations
   collection:
 
+  # for web
+  characters: ^1.0.0
 
 dev_dependencies:
   flutter_test:
