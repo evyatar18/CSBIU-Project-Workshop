@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mutex/mutex.dart';
 import 'package:workshop_digitalization/global/strings.dart';
-import 'package:workshop_digitalization/memos/ui/memo_send_popup.dart';
+import 'package:workshop_digitalization/memos/memo_sender.dart';
 
 import '../memo.dart';
 import 'memo_view.dart';
@@ -20,7 +20,8 @@ class MemoScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _opener.openNew(context, recipients: memoEmailRecipients),
+        onPressed: () =>
+            _opener.openNew(context, recipients: memoEmailRecipients),
         child: Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -110,9 +111,8 @@ class MemoCard extends StatelessWidget {
             if (emailRecipients != null)
               IconButton(
                 icon: Icon(Icons.email),
-                onPressed: () {
-                  showMemoSendPopup(context, memo, emailRecipients);
-                },
+                onPressed: () =>
+                    openMemoEmail(memo: memo, recipients: emailRecipients),
               )
           ]),
         ),

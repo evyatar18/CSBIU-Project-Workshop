@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
 
 import '../memo.dart';
-import 'memo_send_popup.dart';
+import '../memo_sender.dart';
 
 class MemoView extends StatefulWidget {
   final Memo memo;
@@ -154,7 +154,7 @@ class MemoViewState extends State<MemoView> {
         ),
         FlatButton(
           onPressed: () =>
-              showMemoSendPopup(context, widget.memo, widget.recipients),
+              openMemoEmail(memo: widget.memo, recipients: widget.recipients),
           child: Icon(Icons.mail, color: Colors.white),
         ),
       ],

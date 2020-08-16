@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
+import 'package:workshop_digitalization/global/emails.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/circular_loader.dart';
 import 'package:workshop_digitalization/global/ui/completely_centered.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
+import 'package:workshop_digitalization/global/ui/exception_handler.dart';
 import 'package:workshop_digitalization/global/ui/tab_title.dart';
 import 'package:workshop_digitalization/memos/ui/memos_list.dart';
 import 'package:workshop_digitalization/student_project/project/project.dart';
@@ -72,8 +74,12 @@ class StudentDetails extends StatelessWidget {
             Tooltip(
               message: 'Send an Email',
               child: FlatButton(
-                onPressed: () async {
-                  await launch('mailto:${student.email}');
+                onPressed: () {
+                  handleExceptions(
+                    context,
+                    Email(to: [student.email]).send(),
+                    "Couldn't send email",
+                  );
                 },
                 child: Icon(Icons.mail, color: color),
               ),

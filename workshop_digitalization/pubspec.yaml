@@ -76,8 +76,9 @@ dependencies:
   # https://pub.dev/packages/mutex
   mutex:
 
-  # https://pub.dev/packages/flutter_email_sender for sending emails
-  flutter_email_sender: 3.0.1
+  # for sending emails
+  mailto: 1.0.0
+
   flutter_speed_dial: ^1.2.5
 
   path_provider: ^1.6.10
