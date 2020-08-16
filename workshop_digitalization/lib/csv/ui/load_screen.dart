@@ -1,13 +1,9 @@
 import 'dart:convert';
 import 'dart:html' as html;
 import 'dart:io' as io;
-import 'dart:convert' as convert;
 import 'dart:typed_data';
 
 
-// import 'package:mime_type/mime_type.dart';
-import 'package:path/path.dart' as Path;
-import 'package:image_picker_web/image_picker_web.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +44,7 @@ class _LoadScreenState extends State<LoadScreen> {
             : null);
     return _paths.entries.map((e) => io.File(e.value)).toList();
   }
-   
+
 List<int> _selectedFile;
 Uint8List _bytesData;
 
@@ -77,7 +73,7 @@ Uint8List _bytesData;
       _selectedFile = _bytesData;
     });}
 
- 
+
 
   void _read2() {
     html.InputElement uploadInput = html.FileUploadInputElement();

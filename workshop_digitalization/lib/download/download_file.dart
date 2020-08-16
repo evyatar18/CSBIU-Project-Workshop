@@ -1,7 +1,6 @@
 import 'dart:html';
 
 //import 'dart:io' show Platform;
-import 'dart:js';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:workshop_digitalization/csv/file_IO.dart';
