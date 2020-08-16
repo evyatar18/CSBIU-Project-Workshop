@@ -61,8 +61,18 @@ FirebaseOptions generateWebFirebaseOptions(Map<String, dynamic> json) {
   );
 }
 
+final nameRegex = RegExp("^\\s*(\\w+):", multiLine: true);
+
+String preprocessJson(String data) {
+  // make sure every name is surrounded by ""
+  return data.splitMapJoin(nameRegex, onMatch: (match) {
+    final name = match.group(1);
+    return '"$name":';
+  });
+}
+
 Future<FirebaseOptions> generateOptions(String data) async {
-  final json = jsonDecode(data);
+  final json = jsonDecode(preprocessJson(data));
 
   if (kIsWeb) {
     return generateWebFirebaseOptions(json);
