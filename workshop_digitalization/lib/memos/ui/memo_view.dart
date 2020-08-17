@@ -3,9 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:html_editor/html_editor.dart';
 import 'package:intl/intl.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
-import 'package:workshop_digitalization/platform/init.dart';
+import 'package:workshop_digitalization/global/ui/exception_handler.dart';
 
 import '../memo.dart';
 import '../memo_sender.dart';
@@ -118,16 +117,16 @@ class MemoViewState extends State<MemoView> {
   }
 
   void _save() async {
-    final txt = await _getText();
+    final memo = widget.memo;
 
-    // update memo data
-    setState(() {
-      widget.memo.content = txt;
-      widget.memo.topic = _topicController.text;
-    });
+    memo.content = await _getText();
+    memo.topic = _topicController.text;
 
-    // save
-    widget.manager.save(widget.memo);
+    // save memo
+    await handleExceptions(context, widget.manager.save(memo), "Error saving memo", successMessage: "Saved Successfully");
+
+    // notify change to memo has occurred
+    setState(() {});
   }
 
   bool _opening = false;

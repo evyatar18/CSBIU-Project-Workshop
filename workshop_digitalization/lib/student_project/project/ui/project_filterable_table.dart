@@ -43,10 +43,11 @@ final status = ObjectField<Project, String>(
   getter: (obj) => obj.projectStatus,
 );
 
-final textFields = [subject, goal, mentorName, status];
+final textFields = [subject, goal, mentorName];
 
 final castedSelections = [
   createCastingFilterableField(createSelectionFilterable(numberOfStudents)),
+  createCastingFilterableField(createSelectionFilterable(status)),
 ];
 
 final domain = ObjectField<Project, String>(

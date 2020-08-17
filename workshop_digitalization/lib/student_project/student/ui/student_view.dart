@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:intl/intl.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/global/emails.dart';
@@ -36,7 +37,6 @@ class StudentDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color color = Theme.of(context).canvasColor;
 
     return DefaultTabController(
       length: 5,
@@ -68,7 +68,7 @@ class StudentDetails extends StatelessWidget {
                 onPressed: () async {
                   await launch('tel:${student.phoneNumber}');
                 },
-                child: Icon(Icons.call, color: color),
+                child: Icon(Icons.call,color: Colors.white,),
               ),
             ),
             Tooltip(
@@ -81,7 +81,7 @@ class StudentDetails extends StatelessWidget {
                     "Couldn't send email",
                   );
                 },
-                child: Icon(Icons.mail, color: color),
+                child: Icon(Icons.mail,color: Colors.white),
               ),
             ),
           ],
@@ -136,10 +136,11 @@ class StudentDetails extends StatelessWidget {
               FormBuilderSlider(
                 decoration: InputDecoration(labelText: "Grade"),
                 attribute: "grade-grade",
-                min: 0,
-                max: 100,
-                initialValue: element.grade.grade,
+                min: 0.0,
+                max: 100.0,
+                initialValue: element.grade.grade.toDouble(),
                 divisions: 100,
+                numberFormat: NumberFormat("#"),
                 onSaved: (val) =>
                     element.grade.grade = num.parse(val.toString()),
               ),
