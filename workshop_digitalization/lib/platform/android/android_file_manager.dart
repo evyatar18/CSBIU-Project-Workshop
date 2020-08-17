@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:workshop_digitalization/platform/files.dart';
+import 'package:workshop_digitalization/settings/settings.dart';
 
 class AndroidFileManager implements PlatformFileManager {
   @override
@@ -18,7 +19,8 @@ class AndroidFileManager implements PlatformFileManager {
   Stream<int> saveFile(PlatformFile file, [String directory]) async* {
     yield 0;
 
-    final path = directory == null ? file.name : "$directory/${file.name}";
+    directory ??= await MyAppSettings.defaultDownloadPath;
+    final path = "$directory/${file.name}";
     final androidFile = File(path);
 
     if (await androidFile.exists()) {
