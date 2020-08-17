@@ -52,7 +52,9 @@ class ProgressRepository implements Disposable {
       change(cpy);
       currentSnapshots = cpy;
 
-      yield _current = cpy.entries.map((entry) => IdentifiedProgressSnapshot(entry.key, entry.value)).toList();
+      yield _current = cpy.entries
+          .map((entry) => IdentifiedProgressSnapshot(entry.key, entry.value))
+          .toList();
     }
   }
 
@@ -109,10 +111,12 @@ class ProgressRepository implements Disposable {
   }
 }
 
-Future<int> feedStream(ProgressRepository repo, Stream<ProgressSnapshot> snapshots) async {
-  snapshots = snapshots.asBroadcastStream();
+extension StreamFeeder on ProgressRepository {
+  Future<int> feed(Stream<ProgressSnapshot> snapshots) async {
+    snapshots = snapshots.asBroadcastStream();
 
-  int id = await repo.createId(await snapshots.first);
-  snapshots.listen((snapshot) => repo.pushUpdate(id, snapshot));
-  return id;
+    int id = await createId(await snapshots.first);
+    snapshots.listen((snapshot) => pushUpdate(id, snapshot));
+    return id;
+  }
 }
