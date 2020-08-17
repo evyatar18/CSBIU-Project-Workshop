@@ -21,7 +21,7 @@ class ObjectField<Object, FieldType> {
   }
 }
 
-String _defaultStringer(dynamic input) => input.toString();
+String _defaultStringer(dynamic input) => input?.toString();
 
 abstract class Filterable<T> {
   static final ObjectFilter acceptingAll = (obj, json) => true;

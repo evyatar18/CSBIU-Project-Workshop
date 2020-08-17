@@ -49,8 +49,8 @@ Map<String, dynamic> Function(dynamic) makeJsoner<T>(
     Iterable<ObjectField> fields) {
   return (obj) {
     final object = obj as T;
-    final entries =
-        fields.map((field) => MapEntry(field.name, field.asString(object)));
+    final entries = fields
+        .map((field) => MapEntry(field.name, field.asString(object) ?? ""));
     return Map.fromEntries(entries);
   };
 }
