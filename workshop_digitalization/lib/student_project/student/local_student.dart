@@ -36,17 +36,11 @@ class LocalStudent implements Student {
     this.studyYear,
   });
 
-  static getFields() {
-    return [
-      'id',
-      'firstName',
-      'lastName',
-      'phoneNumber',
-      'email',
-      'year',
-      // 'status'
-    ];
-  }
+  static final List<String> fields = List.unmodifiable(
+    ['id', 'firstName', 'lastName', 'phoneNumber', 'email', 'year'],
+  );
+
+  static List<String> getFields() => fields;
 
   static String nullIfEmpty(String s) {
     return s == null || s.isEmpty ? null : s;
