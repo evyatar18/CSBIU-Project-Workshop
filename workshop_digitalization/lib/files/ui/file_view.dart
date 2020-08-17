@@ -127,6 +127,9 @@ class FileContainerDisplayer extends StatelessWidget {
   }
 
   Future<void> _addFiles(BuildContext context) async {
+    // TODO change this when possible
+    // currently the firebase storage only supports the `File` class so for web
+    // this will not work
     final files = await FilePicker.getMultiFile();
 
     if (files == null) {
