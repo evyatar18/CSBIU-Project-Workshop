@@ -11,10 +11,12 @@ Future<void> showAlertDialog(BuildContext context, String title,
       title: Text(title),
       content: Text(body),
       actions: <Widget>[
-        FlatButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text("OK"),
-        )
+        Builder(builder: (context) {
+          return FlatButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text("OK"),
+          );
+        })
       ],
     ),
   );
