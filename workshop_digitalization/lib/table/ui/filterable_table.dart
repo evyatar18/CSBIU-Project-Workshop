@@ -6,7 +6,12 @@ import 'package:workshop_digitalization/filter/filterable.dart';
 import 'package:workshop_digitalization/filter/ui/field_filter.dart';
 import 'package:workshop_digitalization/filter/ui/filterable_field.dart';
 import 'package:workshop_digitalization/filter/ui/filters_scaffold.dart';
+import 'package:workshop_digitalization/global/ui/dialogs.dart';
+import 'package:workshop_digitalization/global/ui/exception_handler.dart';
+import 'package:workshop_digitalization/platform/files.dart';
+import 'package:workshop_digitalization/platform/init.dart';
 import 'package:workshop_digitalization/table/basic_table_data_controller.dart';
+import 'package:workshop_digitalization/table/table_data_controller.dart';
 import 'package:workshop_digitalization/table/ui/updating_table.dart';
 
 // we use stateful widget just because we need the dispose
@@ -88,9 +93,9 @@ class _FilterableTableState<Object> extends State<FilterableTable> {
     super.dispose();
   }
 
-  _openFiltersWidget(BuildContext context, Filterable controller,
+  Future<void> _openFiltersWidget(BuildContext context, Filterable controller,
       Map<int, FilterWidgetCreator> filterWidgets) {
-    Navigator.push(
+    return Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => FiltersScaffold(
@@ -121,6 +126,33 @@ class _FilterableTableState<Object> extends State<FilterableTable> {
     );
   }
 
+  Future<void> _downloadFiltered(TableData<Object> data) async {
+    final filename = await showTextInputDialog(context, "Pick a file name");
+
+    if (filename == null || filename.isEmpty) {
+      await showAlertDialog(context, "Download aborted, no file name provided");
+      return;
+    }
+
+    final outData = [
+      // create comma separated values of field names
+      data.columns.join(","),
+      "\n",
+      // create comma separated values of each object
+      ...data.objects.map(data.jsoner).map((e) => e.values.join(",") + "\n")
+    ];
+
+    final file = MemoryFile(filename, outData);
+    final fileSave = currentPlatform.files.saveFile(file);
+
+    return handleExceptions(
+      context,
+      fileSave.last,
+      "Failed saving filtered values",
+      successMessage: "Saved filtered values successfully into file $filename",
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // initialize subscription if needed
@@ -131,15 +163,30 @@ class _FilterableTableState<Object> extends State<FilterableTable> {
         title: StreamBuilder(
           stream: _controller.data.map((event) => event?.objects?.length),
           builder: (context, snapshot) {
-            return Text("${widget.title }(${snapshot.data ?? "?"})");
+            return Text("${widget.title}(${snapshot.data ?? "?"})");
           },
         ),
         actions: <Widget>[
           ...List<Row>.generate(staticFilters.length, _buildFilter),
+          StreamBuilder(
+            stream: _controller.data,
+            builder: (context, snapshot) {
+              // disable download if there's no data
+              final downloadFunction = snapshot.hasData
+                  ? () => _downloadFiltered(snapshot.data)
+                  : null;
+              return IconButton(
+                tooltip: "download filtered",
+                icon: Icon(Icons.file_download),
+                onPressed: downloadFunction,
+              );
+            },
+          ),
           IconButton(
             icon: Icon(Icons.filter_list),
-            onPressed: () =>
-                _openFiltersWidget(context, _controller, _filterWidgets),
+            onPressed: () {
+              _openFiltersWidget(context, _controller, _filterWidgets);
+            },
           ),
         ],
       ),
