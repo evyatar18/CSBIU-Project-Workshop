@@ -36,6 +36,8 @@ abstract class PlatformSpecific {
   ///
   /// `inputRequests` is a stream of input requests. When the editor gets a request, it is expected to complete the completer
   /// with the current input
+  ///
+  /// TODO maybe remove this, this is currently not used anywhere (was used in the past)
   Widget htmlEditor(String value, Stream<Completer<String>> inputRequests);
 
   /// Get the file manager of this platform

@@ -31,12 +31,7 @@ class MemoViewState extends State<MemoView> {
   GlobalKey<HtmlEditorState> keyTopic = GlobalKey();
   final _dateFormat = DateFormat('dd/MM/yyyy');
   final _topicController = TextEditingController();
-
-  /// filter only text requests which have not been completed
-  Stream<Completer<String>> get _textRequests =>
-      _textRequestsController.stream.where((event) => !event.isCompleted);
-
-  StreamController<Completer<String>> _textRequestsController;
+  final _bodyController = TextEditingController();
 
   Future<bool> _onWillPop() async {
     var ch = await _thereIsChanges();
@@ -70,29 +65,50 @@ class MemoViewState extends State<MemoView> {
 
   void initState() {
     super.initState();
-
     _topicController.text = widget.memo.topic;
-    _textRequestsController = BehaviorSubject<Completer<String>>();
+    _bodyController.text = widget.memo.content;
   }
 
   @override
   void dispose() {
     _topicController.dispose();
-    _textRequestsController.close();
+    _bodyController.dispose();
 
     super.dispose();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: appBarSection(),
+        body: SingleChildScrollView(
+          child: Card(
+            child: Column(
+              children: <Widget>[
+                dates(),
+                subject(),
+                _buildMemoBody(),
+                bottomButtonSection(),
+              ],
+            ),
+          ),
+        ),
+        resizeToAvoidBottomPadding: false,
+      ),
+    );
+  }
+
   void _reset() {
     setState(() {
+      _bodyController.text = widget.memo.content;
       _topicController.text = widget.memo.topic;
     });
   }
 
   Future<String> _getText() {
-    final req = Completer<String>();
-    _textRequestsController.add(req);
-    return req.future;
+    return Future.value(_bodyController.text);
   }
 
   Future<bool> _thereIsChanges() async {
@@ -212,26 +228,11 @@ class MemoViewState extends State<MemoView> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return new WillPopScope(
-      onWillPop: _onWillPop,
-      child: Scaffold(
-        appBar: appBarSection(),
-        body: SingleChildScrollView(
-          child: Card(
-            child: Column(
-              children: <Widget>[
-                dates(),
-                subject(),
-                currentPlatform.htmlEditor(widget.memo.content, _textRequests),
-                bottomButtonSection(),
-              ],
-            ),
-          ),
-        ),
-        resizeToAvoidBottomPadding: false,
-      ),
+  Widget _buildMemoBody() {
+    return TextField(
+      controller: _bodyController,
+      keyboardType: TextInputType.multiline,
+      maxLines: null,
     );
   }
 }
