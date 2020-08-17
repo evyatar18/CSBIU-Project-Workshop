@@ -6,6 +6,8 @@ import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+import 'files.dart';
+
 final _nameRegex = RegExp("^\\s*(\\w+):", multiLine: true);
 
 String _preprocessJson(String data) {
@@ -35,4 +37,7 @@ abstract class PlatformSpecific {
   /// `inputRequests` is a stream of input requests. When the editor gets a request, it is expected to complete the completer
   /// with the current input
   Widget htmlEditor(String value, Stream<Completer<String>> inputRequests);
+
+  /// Get the file manager of this platform
+  PlatformFileManager get files;
 }

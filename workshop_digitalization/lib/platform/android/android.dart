@@ -4,6 +4,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:html_editor/html_editor.dart';
 import 'package:package_info/package_info.dart';
+import 'package:workshop_digitalization/platform/android/android_file_manager.dart';
+import 'package:workshop_digitalization/platform/files.dart';
 import 'package:workshop_digitalization/platform/platform.dart';
 
 class AndroidPlatform extends PlatformSpecific {
@@ -57,4 +59,7 @@ class AndroidPlatform extends PlatformSpecific {
       decoration: BoxDecoration(),
     );
   }
+
+  @override
+  PlatformFileManager get files => AndroidFileManager();
 }

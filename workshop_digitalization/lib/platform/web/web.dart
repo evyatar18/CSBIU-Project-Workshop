@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:workshop_digitalization/platform/files.dart';
 import 'package:workshop_digitalization/platform/platform.dart';
 import 'package:workshop_digitalization/platform/web/web_html_editor.dart';
+
+import 'web_file_manager.dart';
 
 class WebPlatform extends PlatformSpecific {
   @override
@@ -30,4 +33,7 @@ class WebPlatform extends PlatformSpecific {
       storageBucket: storageBucket,
     );
   }
+
+  @override
+  PlatformFileManager get files => WebFileManager();
 }
