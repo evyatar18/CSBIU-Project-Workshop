@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 /// A representation of a logged in user
 class AuthenticatedUser {
@@ -10,7 +9,6 @@ class AuthenticatedUser {
 /// The service class which provides the authentication methods
 class Authenticator {
   final FirebaseAuth _auth;
-  final _googleSignIn = GoogleSignIn();
 
   Authenticator(this._auth);
 
