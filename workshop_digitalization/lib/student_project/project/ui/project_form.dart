@@ -26,6 +26,7 @@ class ProjectForm extends StatelessWidget {
     this.initials = const {},
   });
 
+  // return function that can create prohect from with the provided values
   static ElementForm<Project> createProjectCreator(FirebaseInstance firebase) {
     return ({
       @required Project element,

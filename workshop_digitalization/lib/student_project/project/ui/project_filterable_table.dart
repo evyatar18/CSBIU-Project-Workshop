@@ -91,6 +91,7 @@ final _projectPersonFields = [
 
 Widget createFilterableProjectsTable(Stream<List<Project>> projects,
     void Function(BuildContext, Project) onClick, String title) {
+  // create filterable table with all the fields of projects that can be filterd
   return FilterableTable<Project>(
     title: title,
     objects: projects,

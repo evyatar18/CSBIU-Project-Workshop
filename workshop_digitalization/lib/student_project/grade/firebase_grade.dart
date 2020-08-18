@@ -19,6 +19,7 @@ class FirebaseGrade extends Model implements Grade {
   String comments = "";
 
   @override
+  // Grade to map
   Map<String, dynamic> toData() {
     return <String, dynamic>{
       "comments": comments,
@@ -27,6 +28,7 @@ class FirebaseGrade extends Model implements Grade {
   }
 
   @override
+  // create Grade from map
   void fromData(Map<String, dynamic> data) {
     comments = valueFromKey<String>(data, "comments");
     grade = valueFromKey<num>(data, "grade");

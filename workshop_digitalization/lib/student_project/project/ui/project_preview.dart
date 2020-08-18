@@ -15,7 +15,6 @@ class ProjectPreview extends StatelessWidget {
     return ListTile(
       title: Text(
         project.projectSubject ?? "Unnamed Project",
-        // style: Theme.of(context).textTheme.headline6,
       ),
 
       subtitle: Container(
