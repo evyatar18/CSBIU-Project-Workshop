@@ -1,29 +1,8 @@
-import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:workshop_digitalization/global/emails.dart';
 
 import 'memo.dart';
 
-Future<Email> createMemoEmail(
-    {Memo memo, List<String> recipients, bool attachFiles}) async {
-  List<String> filePaths;
-
-  if (attachFiles) {
-    final files = await memo.attachedFiles.files.first;
-
-    final fileDownloads = files
-        .map((file) => file.getFile().last)
-        .map((snapshot) async => (await snapshot).file)
-        .map((file) async => (await file).path)
-        .toList();
-
-    filePaths = await Future.wait(fileDownloads);
-  }
-
-  return Email(
-    subject: memo.topic,
-    body: memo.content,
-    isHTML: true,
-    recipients: recipients,
-    attachmentPaths: filePaths,
-  );
+Future<void> openMemoEmail({Memo memo, List<String> recipients}) {
+  final email = Email(to: recipients, subject: memo.topic, body: memo.content);
+  return email.send();
 }
-

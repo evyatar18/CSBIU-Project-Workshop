@@ -127,6 +127,9 @@ class FileContainerDisplayer extends StatelessWidget {
   }
 
   Future<void> _addFiles(BuildContext context) async {
+    // TODO change this when possible
+    // currently the firebase storage only supports the `File` class so for web
+    // this will not work
     final files = await FilePicker.getMultiFile();
 
     if (files == null) {
@@ -138,11 +141,13 @@ class FileContainerDisplayer extends StatelessWidget {
     final uploads = files.map((file) => container.addFile(file));
 
     // convert the upload streams to progress streams
-    final uploadsAsProgress = uploads.map((stream) => stream.map((fs) =>
-        fileTransferAsProgress(fs, taskName: "Uploading ${fs.fileName}")));
+    final uploadsAsProgress = uploads.map(
+      (stream) => stream.map((fs) =>
+          fileTransferAsProgress(fs, taskName: "Uploading ${fs.fileName}")),
+    );
 
     // for each created progress stream, insert it into the repository
-    uploadsAsProgress.forEach((fs) => feedStream(repo, fs));
+    uploadsAsProgress.forEach(repo.feed);
 
     showSnackbarMessage(context, "uploading files...");
   }
@@ -155,7 +160,7 @@ class FileContainerDisplayer extends StatelessWidget {
     final progress = download.map((fs) =>
         fileTransferAsProgress(fs, taskName: "Downloading ${fs.fileName}"));
 
-    int taskId = await feedStream(repo, progress);
+    int taskId = await repo.feed(progress);
 
     try {
       final retreival = await info.getFile().first;

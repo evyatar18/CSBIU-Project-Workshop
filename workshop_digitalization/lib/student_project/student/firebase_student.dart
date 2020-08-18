@@ -185,7 +185,7 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
   }
 
   Future<void> delete(FirebaseStudent student) async {
-    final project = await student.project;
+    final project = student.project;
 
     if (project != null) {
       final projs = root.projectManager;

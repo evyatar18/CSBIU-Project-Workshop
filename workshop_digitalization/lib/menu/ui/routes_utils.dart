@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:workshop_digitalization/csv/ui/load_screen.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
 import 'package:workshop_digitalization/settings/ui/settings_screen.dart';
 import 'package:workshop_digitalization/student_project/project/project.dart';
 import 'package:workshop_digitalization/student_project/project/ui/new_project_screen.dart';
 import 'package:workshop_digitalization/student_project/project/ui/project_table_screen.dart';
+import 'package:workshop_digitalization/student_project/student/load/load_students.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
 import 'package:workshop_digitalization/student_project/student/ui/new_student_view.dart';
 import 'package:workshop_digitalization/student_project/student/ui/student_table.dart';
@@ -159,7 +159,8 @@ void pushLoadScreen(BuildContext context) {
   pushWithProviderValues(
     context,
     (_) => createStudentDependent(
-        (context, manager) => LoadScreen(studentManager: manager)),
+      (context, manager) => StudentLoaderScreen(manager),
+    ),
   );
 }
 

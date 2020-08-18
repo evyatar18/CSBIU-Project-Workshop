@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
+import 'package:workshop_digitalization/global/emails.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/completely_centered.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
+import 'package:workshop_digitalization/global/ui/exception_handler.dart';
 import 'package:workshop_digitalization/global/ui/tab_title.dart';
 import 'package:workshop_digitalization/memos/ui/memos_list.dart';
 import 'package:workshop_digitalization/student_project/student/student.dart';
@@ -64,18 +65,16 @@ class ProjectDetailsView extends StatelessWidget {
                           ? null
                           : () async {
                               final email = Email(
+                                to: snapshot.data,
                                 subject:
                                     "Project: ${project?.projectSubject ?? ""}",
-                                recipients: snapshot.data,
                               );
 
-                              try {
-                                await FlutterEmailSender.send(email);
-                              } catch (e, stack) {
-                                showErrorDialog(context,
-                                    title: "Couldn't open an email",
-                                    error: "$e\nstacktrace: $stack");
-                              }
+                              handleExceptions(
+                                context,
+                                email.send(),
+                                "Couldn't send email",
+                              );
                             },
                       child: snapshot.hasError
                           ? Text("Couldn't get emails")
@@ -334,12 +333,16 @@ class _StudentsDisplayerState extends State<_StudentsDisplayer> {
         children: <Widget>[
           IconButton(
             icon: Icon(Icons.mail),
-            onPressed: () async {
-              FlutterEmailSender.send(
-                Email(
-                  recipients: [student.email],
-                  subject: "Project: ${_project.projectSubject ?? ""}",
-                ),
+            onPressed: () {
+              final email = Email(
+                to: [student.email],
+                subject: "Project: ${_project.projectSubject ?? ""}",
+              );
+
+              handleExceptions(
+                context,
+                email.send(),
+                "Couldn't send email",
               );
             },
           ),
