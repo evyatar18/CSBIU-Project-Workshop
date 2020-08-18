@@ -46,9 +46,15 @@ abstract class ProjectManager<ProjectType extends Project> implements Disposable
   Stream<List<ProjectType>> get projects;
   List<ProjectType> get latestProjects;
 
+  /// get a project with a given id
   ProjectType getProject(String id);
 
+  /// create a new project
   Future<ProjectType> createEmpty();
+
+  /// save an edited project
   Future<void> save(ProjectType project);
+
+  /// delete a given project
   Future<void> delete(ProjectType project);
 }
