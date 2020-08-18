@@ -61,6 +61,7 @@ class ProjectDetailsView extends StatelessWidget {
                   ),
                   builder: (context, snapshot) {
                     return FlatButton(
+                      // if there is no emails yet , dont do nothing
                       onPressed: !snapshot.hasData
                           ? null
                           : () async {
@@ -89,20 +90,23 @@ class ProjectDetailsView extends StatelessWidget {
           bottom: TabBar(
             isScrollable: true,
             tabs: [
-              Tab(child: TabName(title: 'Details')),
-              Tab(child: TabName(title: 'Memos')),
-              Tab(child: TabName(title: 'Documents')),
-              Tab(child: TabName(title: 'Students'))
+              Tab(child: TabTitle(title: 'Details')),
+              Tab(child: TabTitle(title: 'Memos')),
+              Tab(child: TabTitle(title: 'Documents')),
+              Tab(child: TabTitle(title: 'Students'))
             ],
           ),
         ),
         body: TabBarView(
           children: [
+            // tab of project form that presents the details of the project
+            // that can be edited if it neccessery 
             ProjectFormWrapper(
               project: project,
               projectManager: projectManager,
               firebase: firebaseInstance,
             ),
+            // create memos tab
             StreamBuilder<List<String>>(
               stream: _currentProjectStream.map(
                 (event) => event.students.map((e) => e.email).toList(),
@@ -220,14 +224,15 @@ class _StudentsDisplayerState extends State<_StudentsDisplayer> {
               if (selected) {
                 return;
               }
-
+              // if the project already contains this student 
               if (_project.studentIds.contains(student)) {
                 Navigator.pop(context, false);
                 return;
               }
 
               selected = true;
-
+              
+              // add the selected student ID 
               _project.studentIds = _project.studentIds..add(student.id);
 
               try {

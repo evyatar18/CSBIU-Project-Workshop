@@ -27,10 +27,12 @@ class StudentTableScreen<T extends Student, S extends Project>
   });
 
   static void _onStudentClick(BuildContext context, Student student) {
+    // get the managers
     final sm = Provider.of<StudentManager>(context, listen: false);
     final pm = Provider.of<ProjectManager>(context, listen: false);
     final firebase = Provider.of<FirebaseInstance>(context, listen: false);
 
+    // push a screen that displays the chosen student
     Navigator.push(
       context,
       MaterialPageRoute(

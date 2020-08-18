@@ -26,6 +26,7 @@ class ProjectTableScreen<T extends Student, S extends Project>
   });
 
   static void _onProjectClick(BuildContext context, Project project) {
+    // get the managers
     StudentManager sm = Provider.of<StudentManager>(context, listen: false);
     ProjectManager pm = Provider.of<ProjectManager>(context, listen: false);
     FirebaseInstance firebase =
@@ -80,6 +81,7 @@ class ProjectTableScreen<T extends Student, S extends Project>
           onProjectClick,
           title,
         ),
+        // show the add floting add button only if needed
         floatingActionButton: showAddButton ? _buildAddButton() : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),

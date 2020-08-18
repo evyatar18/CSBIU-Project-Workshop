@@ -46,6 +46,7 @@ final castedSelections = [
   createCastingFilterableField(createSelectionFilterable(grade))
 ];
 
+// create filterable table with all the fields of studentss that can be filterd
 Widget createFilterableStudentsTable(Stream<List<Student>> students,
     void Function(BuildContext, Student) onClick, String title) {
   return FilterableTable<Student>(

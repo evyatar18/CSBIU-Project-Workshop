@@ -9,6 +9,7 @@ class MyAppSettings {
   static const String defaultDownloadPathEnabeld = "download-path-switch";
 
   static String getDefaultRootName(List<String> versions) {
+    // if there is no versions return currnt year
     return versions.isEmpty ? DateTime.now().year.toString() : versions[0];
   }
 
@@ -21,7 +22,6 @@ class MyAppSettings {
       return await Settings.getValue(
           defaultDownloadPathName, (await getExternalStorageDirectory()).path);
     } catch (e) {
-      print(e);
       return null;
     }
   }
@@ -30,7 +30,6 @@ class MyAppSettings {
     try {
       return await Settings.getValue(defaultDownloadPathEnabeld, false);
     } catch (e) {
-      print(e);
       return null;
     }
   }

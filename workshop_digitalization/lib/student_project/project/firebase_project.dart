@@ -162,14 +162,17 @@ class FirebaseProject extends Document<FirebaseProject> implements Project {
 
     final projs = root.projectManager;
 
+    // remove the students ID's that dont do the project from the project 
     toRemove
         .forEach((studentId) => projs.queueRemoveStudent(this.id, studentId));
+    // add new students ID's to the project
     toAdd.forEach((studentId) => projs.queueAddStudent(this.id, studentId));
 
     projs.save(this);
   }
 
   @override
+  // Get the project's Students (and dont their ID's)
   List<FirebaseStudent> get students {
     final studsInstance = root.studentManager;
     final studs =

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+
+// widget that centerd his children vertically and horizontly
 class CompletelyCentered extends StatelessWidget {
   final List<Widget> children;
 

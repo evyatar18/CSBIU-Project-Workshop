@@ -18,6 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex;
 
   final _children = <EmptyWidgetBuilder>[
+    // array of functions that create the main screens of the app
     () => MainMenu(),
     () => createStudentTable(showAddButton: false),
     () => createProjectTable(showAddButton: false),

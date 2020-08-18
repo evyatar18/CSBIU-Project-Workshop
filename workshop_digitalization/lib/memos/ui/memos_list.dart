@@ -21,6 +21,7 @@ class MemoScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
+        // open new Memo
         onPressed: () =>
             _opener.openNew(context, recipients: memoEmailRecipients),
         child: Icon(Icons.add),
@@ -134,10 +135,12 @@ class _MemoOpener {
   _MemoOpener(this.manager);
 
   final _openMutex = Mutex();
+
   Future<bool> _tryOpening() async {
     if (_opening) return false;
 
     try {
+      // this is designed for that only one user can open a memo 
       await _openMutex.acquire();
       if (_opening) {
         return false;

@@ -46,6 +46,7 @@ class LocalStudent implements Student {
     return s == null || s.isEmpty ? null : s;
   }
 
+  // funcrion that create new LocalStudent from map of student fields
   factory LocalStudent.fromJson(Map<String, dynamic> json) {
     return new LocalStudent(
       email: nullIfEmpty(json["email"]),

@@ -26,7 +26,7 @@ class FirebasePerson extends Model implements Person {
 
   @override
   String phoneNumber = "";
-
+  /// Make firebase person from any person
   factory FirebasePerson.fromPerson(Person person) {
     return new FirebasePerson(
         email: person.email,

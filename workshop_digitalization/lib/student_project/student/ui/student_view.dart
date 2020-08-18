@@ -85,11 +85,11 @@ class StudentDetails extends StatelessWidget {
           bottom: TabBar(
             isScrollable: true,
             tabs: [
-              Tab(child: TabName(title: 'Details')),
-              Tab(child: TabName(title: 'Grade')),
-              Tab(child: TabName(title: 'Memos')),
-              Tab(child: TabName(title: 'Documents')),
-              Tab(child: TabName(title: 'Project')),
+              Tab(child: TabTitle(title: 'Details')),
+              Tab(child: TabTitle(title: 'Grade')),
+              Tab(child: TabTitle(title: 'Memos')),
+              Tab(child: TabTitle(title: 'Documents')),
+              Tab(child: TabTitle(title: 'Project')),
             ],
           ),
         ),
@@ -117,6 +117,7 @@ class StudentDetails extends StatelessWidget {
     );
   }
 
+  // widget that displays the students grade
   Widget _buildGradeView() {
     return EditElementForm(
       enableDeleting: false,
@@ -333,7 +334,6 @@ class __ProjectViewState extends State<_ProjectView> {
 
         try {
           await _deleteFromProject(project);
-          // await studentManager.save(student);
 
           await showSuccessDialog(
             context,
