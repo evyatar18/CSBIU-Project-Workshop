@@ -1,5 +1,8 @@
 import 'progress.dart';
-import 'progress_repo.dart';
+
+/*
+ * these comparators are used in order to apply an ordering between progress snapshots
+ */
 
 /// Gives a value to snapshot according to current progress
 /// in progress: 0
@@ -22,7 +25,9 @@ int valueSnapshot(ProgressSnapshot snap) {
 /// first compares by _valueSnapshot
 /// if their values are equal, compares by ids - the higher id is before the lower id
 int defaultSnapshotComparator(
-    IdentifiedProgressSnapshot s1, IdentifiedProgressSnapshot s2) {
+  IdentifiedProgressSnapshot s1,
+  IdentifiedProgressSnapshot s2,
+) {
   int res = valueSnapshot(s1) - valueSnapshot(s2);
 
   // prefer showing newer snapshots over old ones

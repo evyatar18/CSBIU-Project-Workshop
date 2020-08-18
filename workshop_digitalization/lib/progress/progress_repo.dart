@@ -5,31 +5,7 @@ import 'package:workshop_digitalization/global/disposable.dart';
 
 import 'progress.dart';
 
-class IdentifiedProgressSnapshot implements ProgressSnapshot {
-  final int id;
-  ProgressSnapshot _snapshot;
-
-  @override
-  bool get failed => _snapshot.failed;
-
-  @override
-  bool get isInProgress => _snapshot.isInProgress;
-
-  @override
-  bool get isSuccess => _snapshot.isSuccess;
-
-  @override
-  String get message => _snapshot.message;
-
-  @override
-  double get progress => _snapshot.progress;
-
-  @override
-  String get taskName => _snapshot.taskName;
-
-  IdentifiedProgressSnapshot(this.id, this._snapshot);
-}
-
+/// applies a change to the map of progress snapshots
 typedef void _Change(Map<int, ProgressSnapshot> snapshots);
 
 class ProgressRepository implements Disposable {
@@ -73,6 +49,11 @@ class ProgressRepository implements Disposable {
     }
   }
 
+  /// create a new progress
+  ///
+  /// `initialSnapshot` is the initial snapshot of the progress
+  ///
+  /// returns the progress id
   Future<int> createId(ProgressSnapshot initialSnapshot) async {
     if (!_running) {
       return -1;
@@ -95,24 +76,34 @@ class ProgressRepository implements Disposable {
     return givenId;
   }
 
+  /// removes a progress by its id
+  ///
+  /// `id` the id of the progress
   void removeId(int id) {
     // remove snapshot matching `id` from the map
     _addChange((map) => map.remove(id));
   }
 
+  /// pushes a new progress snapshot to the given progress id
   void pushUpdate(int id, ProgressSnapshot snap) {
     // set the current value in the map
     _addChange((map) => map[id] = snap);
   }
 
+  /// disposes of the resources
   Future<void> dispose() async {
     _running = false;
     await _pendingChanges.close();
   }
 }
 
+/// an extension of `ProgressRepository` (because it's not connected to its main functionality)
+///
+/// this extension creates a new progress from a stream of progress snapshots
 extension StreamFeeder on ProgressRepository {
   Future<int> feed(Stream<ProgressSnapshot> snapshots) async {
+    // we use a broadcast stream here since we use both snapshots.first
+    // and snapshots.listen
     snapshots = snapshots.asBroadcastStream();
 
     int id = await createId(await snapshots.first);

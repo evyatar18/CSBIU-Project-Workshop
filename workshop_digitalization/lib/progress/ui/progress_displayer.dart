@@ -6,6 +6,11 @@ import 'package:workshop_digitalization/global/strings.dart';
 import '../progress_repo.dart';
 import 'progress_list_view.dart';
 
+/// a scaffold that displays ongoing progresses
+///
+/// it has a drawer which when opened shows the list of progress bars
+///
+/// whenever there is a newly created progress, a yellow button from the left appears that prompts opening the drawer
 class ProgressScaffold extends StatefulWidget {
   final ProgressRepository repo;
   final Widget body;
@@ -30,20 +35,11 @@ class _ProgressScaffoldState extends State<ProgressScaffold>
     _controller =
         AnimationController(duration: Duration(seconds: 1), vsync: this);
 
-    // when a new snapshot was created
-    _newSnapshotSubscription = widget.repo.newSnapshotListener.listen((i) async {
-      try {
-        _controller.stop();
-      } catch (e) {}
+    // when a new snapshot is created
+    _newSnapshotSubscription =
+        widget.repo.newSnapshotListener.listen(_newSnapshotAnimator);
 
-      try {
-        await _controller.forward();
-        await Future.delayed(Duration(seconds: 1));
-        await _controller.reverse();
-      } catch (e) {}
-    });
-
-    // the popping button animation
+    // defines the popping button animation
     _buttonAnimation = Tween<Offset>(
       begin: Offset(-1, 0),
       end: Offset(0.1, 0),
@@ -58,6 +54,18 @@ class _ProgressScaffoldState extends State<ProgressScaffold>
     super.dispose();
     _newSnapshotSubscription.cancel();
     _controller.dispose();
+  }
+
+  Future<void> _newSnapshotAnimator(int _) async {
+    try {
+      _controller.stop();
+    } catch (e) {}
+
+    try {
+      await _controller.forward();
+      await Future.delayed(Duration(seconds: 1));
+      await _controller.reverse();
+    } catch (e) {}
   }
 
   Widget _animatedButton() {
@@ -77,6 +85,7 @@ class _ProgressScaffoldState extends State<ProgressScaffold>
     return SlideTransition(position: _buttonAnimation, child: button);
   }
 
+  /// builds the drawer on the side
   Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: Column(
@@ -89,7 +98,7 @@ class _ProgressScaffoldState extends State<ProgressScaffold>
                   "Ongoing Tasks",
                   style: Theme.of(context)
                       .textTheme
-                      .display1
+                      .headline4
                       .apply(color: Colors.white),
                 ),
               ),

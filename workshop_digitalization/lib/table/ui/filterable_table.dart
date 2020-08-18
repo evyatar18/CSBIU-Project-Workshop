@@ -45,7 +45,7 @@ class FilterableTable<Object> extends StatefulWidget {
   FilterableTable({
     this.title = "",
     @required this.objects,
-    List<ObjectField<Object, String>> textFields = const <ObjectField<Object, String>>[],
+    List<ObjectField<Object, String>> textFields = const [],
     @required List<FilterableField> otherFilterables,
     this.nonFilterFields = const <ObjectField>[],
     this.shownFields = const <String>[],
