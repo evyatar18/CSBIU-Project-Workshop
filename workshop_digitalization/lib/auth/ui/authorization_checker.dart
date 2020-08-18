@@ -9,6 +9,9 @@ import 'package:workshop_digitalization/global/ui/completely_centered.dart';
 
 import 'auth_wrapper.dart';
 
+/// `Authorizer` is the widget which makes sure the *logged in* user is authorized to use the app
+/// it checks against the `allowed` collection(on firestore) to see if there is a document with the user UID as
+/// its document id and makes sure it has the `admin` field set to `true`
 class Authorizer extends StatelessWidget {
   final AuthBuilder builder;
 
@@ -73,11 +76,6 @@ class __RefreshingAuthorizerState extends State<_RefreshingAuthorizer> {
               Text("Error on checking if authorized"),
               Text(snapshot.error.toString()),
               SignOutButton(authenticator: auth),
-              // RaisedButton(
-              //   onPressed: () =>
-              //       auth.reload().then((_) => setState(() => null)),
-              //   child: Text("Retry"),
-              // )
             ],
           );
         }

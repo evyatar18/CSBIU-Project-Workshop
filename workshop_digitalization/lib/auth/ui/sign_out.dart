@@ -5,6 +5,7 @@ import 'package:workshop_digitalization/global/ui/dialogs.dart';
 
 import '../auth.dart';
 
+/// The red `Logout` button
 class SignOutButton extends StatelessWidget {
   final Authenticator authenticator;
 
@@ -19,7 +20,8 @@ class SignOutButton extends StatelessWidget {
       onPressed: () async {
         try {
           await authenticator.signOut();
-          final firebase = Provider.of<FirebaseInstance>(context, listen: false);
+          final firebase =
+              Provider.of<FirebaseInstance>(context, listen: false);
           await firebase.roots.stopListening();
 
           print("logged out successfully");
