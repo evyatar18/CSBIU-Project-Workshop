@@ -83,6 +83,7 @@ class AppSettings extends StatelessWidget {
                   }
                 }),
             onTap: () async {
+              // get directory for default path
               final dir = await DirectoryPicker.pick(
                 message: "Default download directory",
                 context: context,
@@ -124,6 +125,7 @@ class AppSettings extends StatelessWidget {
             );
           }
 
+          // the roots list dont contain the current root 
           if (!rootNames.contains(currentRoot.name)) {
             return Text(
               "New update from server does not contain the current root(${currentRoot.name})\n"
@@ -137,9 +139,6 @@ class AppSettings extends StatelessWidget {
                   ? currentRoot.name
                   : defaultRoot;
 
-          print(
-            "current root names: $rootNames, number of roots: ${snapshot.data.length}",
-          );
 
           return DropDownSettingsTile<String>(
             title: "Database Root",
