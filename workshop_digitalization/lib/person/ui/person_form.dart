@@ -22,12 +22,14 @@ class _ExpandablePersonFormState extends State<ExpandablePersonForm> {
   bool _isExpanded = false;
 
   void _setExpanded(bool value) {
+    // 
     setState(() {
       _isExpanded = value;
     });
   }
 
   void _toggleExpansion() {
+    // close or open the form
     _setExpanded(!_isExpanded);
   }
 
@@ -35,6 +37,7 @@ class _ExpandablePersonFormState extends State<ExpandablePersonForm> {
   Widget build(BuildContext context) {
     return Container(
       child: ExpansionPanelList(
+        // call the `_toggleExpansion` function when the expansion button invoked
         expansionCallback: (panelIndex, isExpanded) => _toggleExpansion(),
         children: [
           ExpansionPanel(
@@ -79,7 +82,6 @@ class PersonForm2 extends StatelessWidget {
           decoration: InputDecoration(labelText: "Last Name"),
           onSaved: (name) => person.lastName = name,
         ),
-        // multiple phone numbers(?)
         FormBuilderTextField(
           initialValue: person.phoneNumber ?? "",
           attribute: "$personId-phone",
