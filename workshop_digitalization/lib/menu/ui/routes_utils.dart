@@ -86,11 +86,9 @@ void pushSettingsScreen(BuildContext context) {
 }
 
 Widget createSettingsScreen() {
-  // await Settings.init(
-  //   cacheProvider: _isUsingHive ? HiveCache() : SharePreferenceCache(),
-  // );
   return AppSettings();
 }
+
 
 void pushWithProviderValues(BuildContext context, WidgetBuilder widget) {
   final sm = Provider.of<StudentManager>(context, listen: false);

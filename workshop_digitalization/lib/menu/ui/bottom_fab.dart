@@ -53,7 +53,6 @@ class _BottomFabState extends State<BottomFab> {
       animatedIcon: AnimatedIcons.menu_close,
       animatedIconTheme: IconThemeData(size: 22.0),
       // this is ignored if animatedIcon is non null
-      //\ child: Icon(Icons.add),
       visible: children.isNotEmpty,
       // If true user is forced to close dial manually
       // by tapping main button and overlay is not rendered.
