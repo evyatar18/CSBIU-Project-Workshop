@@ -9,8 +9,8 @@ class AndroidFileManager implements PlatformFileManager {
   Future<List<PlatformFile>> chooseFiles(
       [List<String> extensions, bool multiple = true]) async {
     final files = multiple
-        ? await FilePicker.getMultiFile(allowedExtensions: extensions)
-        : [await FilePicker.getFile(allowedExtensions: extensions)];
+        ? await FilePicker.getMultiFile(allowedExtensions: extensions, type: FileType.custom)
+        : [await FilePicker.getFile(allowedExtensions: extensions, type: FileType.custom)];
 
     return files.map((e) => _AndroidFile(e)).toList();
   }

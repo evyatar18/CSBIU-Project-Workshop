@@ -1,6 +1,8 @@
 import 'dart:async';
-import 'dart:html';
-import 'dart:js' as js;
+import 'package:universal_html/html.dart' as html;
+import 'package:universal_html/js.dart' as js;
+// import 'dart:html' as html;
+// import 'dart:js' as js;
 
 import 'package:workshop_digitalization/platform/files.dart';
 
@@ -24,7 +26,7 @@ class WebFileManager implements PlatformFileManager {
     // https://github.com/jimmywarting/StreamSaver.js
 
     // using the saveAs from https://github.com/eligrey/FileSaver.js
-    final blob = Blob([await file.data.join("")]);
+    final blob = html.Blob([await file.data.join("")]);
     js.context.callMethod("saveAs", [blob, file.name]);
 
     // done saving
@@ -33,8 +35,8 @@ class WebFileManager implements PlatformFileManager {
 
   /// Opens up the file dialog with the given settings
   /// and returns the chosen files
-  Future<List<File>> _openFilesDialog(List<String> extensions, bool multiple) {
-    InputElement uploadInput = FileUploadInputElement();
+  Future<List<html.File>> _openFilesDialog(List<String> extensions, bool multiple) {
+    html.InputElement uploadInput = html.FileUploadInputElement();
 
     if (extensions != null) {
       uploadInput.accept = extensions
@@ -45,9 +47,9 @@ class WebFileManager implements PlatformFileManager {
     uploadInput.multiple = multiple;
     uploadInput.click();
 
-    final files = Completer<List<File>>();
+    final files = Completer<List<html.File>>();
     final listener = uploadInput.onChange.listen(
-      (_) => files.complete(uploadInput.files ?? <File>[]),
+      (_) => files.complete(uploadInput.files ?? <html.File>[]),
     );
 
     files.future.whenComplete(listener.cancel);
@@ -55,8 +57,8 @@ class WebFileManager implements PlatformFileManager {
   }
 
   /// creates a _WebFile from a given html file
-  Future<PlatformFile> _createPlatformFile(File htmlFile) {
-    var reader = FileReader();
+  Future<PlatformFile> _createPlatformFile(html.File htmlFile) {
+    var reader = html.FileReader();
 
     final out = reader.onLoad
         .map((event) => _WebFile(htmlFile.name, reader.result.toString()))

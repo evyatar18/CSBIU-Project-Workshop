@@ -86,15 +86,11 @@ class _StudentLoaderScreenState extends State<StudentLoaderScreen> {
   }
 
   Widget _buildDisplayedFiles() {
-    return Builder(
-      builder: (context) {
-        return Column(
-          children: [
-            _buildUploadButton(context),
-            Expanded(child: _buildFileList()),
-          ],
-        );
-      },
+    return Column(
+      children: [
+        _buildUploadButton(context),
+        Expanded(child: _buildFileList()),
+      ],
     );
   }
 
