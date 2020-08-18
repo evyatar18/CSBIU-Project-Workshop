@@ -5,16 +5,18 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:workshop_digitalization/platform/web/web.dart';
 
-PlatformSpecific currentPlatform;
+PlatformSpecific _currentPlatform;
+PlatformSpecific get currentPlatform => _currentPlatform;
 
+/// initializes the `currentPlatform` variable
 Future<void> initializePlatform() async {
   if (kIsWeb) {
-    currentPlatform = WebPlatform();
+    _currentPlatform = WebPlatform();
     return;
   }
 
   if (Platform.isAndroid) {
-    currentPlatform = AndroidPlatform(await PackageInfo.fromPlatform());
+    _currentPlatform = AndroidPlatform(await PackageInfo.fromPlatform());
     return;
   }
 

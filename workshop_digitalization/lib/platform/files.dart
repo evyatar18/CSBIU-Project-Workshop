@@ -12,14 +12,6 @@ abstract class PlatformFile {
   Future<void> dispose();
 }
 
-final _lineSplitter = RegExp("[\r\n]+");
-
-extension GetLines on PlatformFile {
-  /// get lines from the platform file
-  Stream<String> get lines =>
-      data.map((event) => event.split(_lineSplitter)).expand((split) => split);
-}
-
 abstract class PlatformFileManager {
   /// Saves the given `PlatformFile` at the given directory
   ///
@@ -61,12 +53,14 @@ extension ChooseSingleFile on PlatformFileManager {
   }
 }
 
+/// a file which exists in memory
 class MemoryFile implements PlatformFile {
   final String _name;
   List<String> _data;
 
   MemoryFile(this._name, this._data);
 
+  /// create a `MemoryFile` from a single data string (instead of data list)
   factory MemoryFile.fromString(String name, String data) {
     return MemoryFile(name, [data]);
   }
