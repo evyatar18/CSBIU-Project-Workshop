@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/auth/ui/authorization_checker.dart';
-import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
+import 'package:workshop_digitalization/firebase_roots/dynamic_root/setup.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/ui/db_data.dart';
 import 'package:workshop_digitalization/menu/ui/home_page.dart';
 import 'package:workshop_digitalization/platform/init.dart';
@@ -17,7 +17,7 @@ import 'student_project/project/project.dart';
 import 'student_project/student/student.dart';
 import 'auth/ui/sign_out.dart';
 import 'firebase_consts/dynamic_db/ui/change_db.dart';
-import 'firebase_consts/firebase_root.dart';
+import 'firebase_roots/firebase_root.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -6,9 +6,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/auth/auth.dart';
 import 'package:workshop_digitalization/auth/ui/sign_out.dart';
-import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
+import 'package:workshop_digitalization/firebase_roots/dynamic_root/setup.dart';
 import 'package:workshop_digitalization/firebase_consts/dynamic_db/ui/change_db.dart';
-import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
+import 'package:workshop_digitalization/firebase_roots/firebase_root.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
 import 'package:workshop_digitalization/settings/settings.dart';
@@ -125,7 +125,7 @@ class AppSettings extends StatelessWidget {
             );
           }
 
-          // the roots list dont contain the current root 
+          // the roots list dont contain the current root
           if (!rootNames.contains(currentRoot.name)) {
             return Text(
               "New update from server does not contain the current root(${currentRoot.name})\n"

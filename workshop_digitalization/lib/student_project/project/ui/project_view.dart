@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
-import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
+import 'package:workshop_digitalization/firebase_roots/dynamic_root/setup.dart';
 import 'package:workshop_digitalization/global/emails.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/completely_centered.dart';
@@ -100,7 +100,7 @@ class ProjectDetailsView extends StatelessWidget {
         body: TabBarView(
           children: [
             // tab of project form that presents the details of the project
-            // that can be edited if it neccessery 
+            // that can be edited if it neccessery
             ProjectFormWrapper(
               project: project,
               projectManager: projectManager,
@@ -224,15 +224,15 @@ class _StudentsDisplayerState extends State<_StudentsDisplayer> {
               if (selected) {
                 return;
               }
-              // if the project already contains this student 
+              // if the project already contains this student
               if (_project.studentIds.contains(student)) {
                 Navigator.pop(context, false);
                 return;
               }
 
               selected = true;
-              
-              // add the selected student ID 
+
+              // add the selected student ID
               _project.studentIds = _project.studentIds..add(student.id);
 
               try {

@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:workshop_digitalization/auth/auth.dart';
-import 'package:workshop_digitalization/firebase_consts/active_root.dart';
-import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
 
+import '../firebase_root.dart';
+import '../active_root.dart';
 import '../roots.dart';
 
 /// All the settings which are relevant to a specific instance of firebase connection exist here

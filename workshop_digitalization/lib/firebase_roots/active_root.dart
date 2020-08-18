@@ -1,8 +1,10 @@
-import 'package:workshop_digitalization/firebase_consts/dynamic_db/setup.dart';
-import 'package:workshop_digitalization/firebase_consts/firebase_root.dart';
 import 'package:workshop_digitalization/student_project/project/firebase_project.dart';
 import 'package:workshop_digitalization/student_project/student/firebase_student.dart';
 
+import 'firebase_root.dart';
+import 'dynamic_root/setup.dart';
+
+/// represents a root that is currently being used by the application
 class ActiveRoot {
   final FirebaseRoot root;
 

@@ -4,7 +4,7 @@ import 'package:flamingo/flamingo.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:workshop_digitalization/files/container.dart';
 import 'package:workshop_digitalization/files/firebase.dart';
-import 'package:workshop_digitalization/firebase_consts/active_root.dart';
+import 'package:workshop_digitalization/firebase_roots/active_root.dart';
 import 'package:workshop_digitalization/global/smart_doc_accessor.dart';
 import 'package:workshop_digitalization/memos/firebase_memo.dart';
 import 'package:workshop_digitalization/memos/memo.dart';

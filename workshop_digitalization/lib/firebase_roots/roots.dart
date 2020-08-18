@@ -5,6 +5,7 @@ import 'package:rxdart/rxdart.dart';
 
 import 'firebase_root.dart';
 
+/// a collection of all available roots
 class Roots {
   // the collection which includes all different roots
   final CollectionReference rootsCollection;
@@ -30,14 +31,6 @@ class Roots {
     _roots.stream.listen((value) {
       print("roots: ${value.map((e) => e.name).toList()}");
     });
-  }
-
-  void listenAndStopOld() {
-    if (listening) {
-      _sub?.cancel();
-    }
-    _sub = null;
-    listen();
   }
 
   void listen() {
