@@ -52,11 +52,18 @@ abstract class StudentManager<StudentType extends Student> implements Disposable
   Stream<List<StudentType>> get students;
   List<StudentType> get latestStudents;
 
+  /// creates a new student
   Future<StudentType> createEmpty();
+
+  /// deletes a given student
   Future<void> delete(StudentType student);
+
+  /// saves the given student
   Future<void> save(StudentType student);
 
+  /// get a student by its id
   StudentType getStudent(String id);
 
+  /// add a batch of students
   Stream<ProgressSnapshot> addStudents(List<Student> batch);
 }
