@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../firebase_connection_bloc.dart';
 
+/// a button which when pressed, removes the currently used database and displays the choose database screen
 class ChangeDBButton extends StatelessWidget {
   final Color buttonColor;
   final Color textColor;

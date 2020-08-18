@@ -4,10 +4,16 @@ import 'package:workshop_digitalization/settings/settings.dart';
 
 import 'setup.dart';
 
+/// this BloC allows changing the currently used `FirebaseInstance`
 class FirebaseConnectionBloc {
   final _controller = ReplaySubject<FirebaseInstance>();
   Stream<FirebaseInstance> get instances => _controller.stream;
 
+  /// construct a new bloc
+  ///
+  /// `load` whether to load the connection details from the application settings
+  ///
+  /// `saveSettings` whether to save settings in the application settings
   FirebaseConnectionBloc({bool load = false, bool saveSettings = true}) {
     if (load) {
       loadSettings();
@@ -18,6 +24,7 @@ class FirebaseConnectionBloc {
     }
   }
 
+  /// saves the settings of the given firebase instance into the application settings
   Future<void> _settingsSaver(FirebaseInstance firebase) async {
     if (firebase == null) {
       MyAppSettings.setFirebaseOptions(null);
@@ -28,6 +35,7 @@ class FirebaseConnectionBloc {
     MyAppSettings.setFirebaseOptions(opts.asMap);
   }
 
+  /// loads the firebase instance from the current settings (if it's available in the settings)
   Future<void> loadSettings() {
     final opts = MyAppSettings.getFirebaseOptions();
 
@@ -43,6 +51,7 @@ class FirebaseConnectionBloc {
     }
   }
 
+  /// change the currently used `FirebaseInstance` instance using the given options
   Future<void> useInstance(FirebaseOptions opts) async {
     try {
       final instance = await initializeApp(opts);
@@ -52,9 +61,11 @@ class FirebaseConnectionBloc {
     }
   }
 
+  /// removes the currently used `FirebaseInstance` (used when changing a database)
   void clearInstance() {
     _controller.sink.add(null);
   }
 
+  /// disposes resources
   Future<void> dispose() => _controller.close();
 }

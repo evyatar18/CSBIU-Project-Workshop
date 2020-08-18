@@ -11,6 +11,7 @@ import 'package:workshop_digitalization/platform/init.dart';
 
 import '../firebase_connection_bloc.dart';
 
+/// the change database screen
 class DynamicDBHandler extends StatelessWidget {
   final WidgetBuilder builder;
 
@@ -64,6 +65,7 @@ class DynamicDBHandler extends StatelessWidget {
     );
   }
 
+  /// the screen which shows and prompts the user to provide with the firebase data (ie. `google-services.json` or the `firebase config for web`)
   Widget _buildChooser(BuildContext context, FirebaseConnectionBloc bloc) {
     return CompletelyCentered(
       children: [
@@ -104,11 +106,15 @@ class DynamicDBHandler extends StatelessWidget {
             (_) async => (await Clipboard.getData("text/plain"))?.text,
           ),
           builder: (context, snapshot) {
+            final message = snapshot.hasError
+                ? "Error getting data from clipboard, maybe the permission is not turned on?"
+                : snapshot.data ?? "(empty)";
+
             return Column(
               children: <Widget>[
                 Text("Current Clipboard:"),
                 SizedBox(height: 30),
-                Text(snapshot.data ?? "(empty)")
+                Text(message)
               ],
             );
           },
