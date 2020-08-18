@@ -34,6 +34,7 @@ class MemoViewState extends State<MemoView> {
 
   Future<bool> _onWillPop() async {
     var ch = await _thereIsChanges();
+    // if you want to exit without saving
     if (ch) {
       return (await showDialog(
             context: context,
@@ -100,6 +101,7 @@ class MemoViewState extends State<MemoView> {
   }
 
   void _reset() {
+    // reset the text to his original state (before editing)
     setState(() {
       _bodyController.text = widget.memo.content;
       _topicController.text = widget.memo.topic;
@@ -110,6 +112,7 @@ class MemoViewState extends State<MemoView> {
     return Future.value(_bodyController.text);
   }
 
+  // return if there is differnces between the saved text and the edited text
   Future<bool> _thereIsChanges() async {
     final txt = await _getText();
     return (widget.memo.content != txt ||
