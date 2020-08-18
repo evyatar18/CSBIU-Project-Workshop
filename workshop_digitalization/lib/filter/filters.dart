@@ -1,8 +1,15 @@
-// filter according to given input
+/// Defines the general form of a filter,
+///
+/// a filter recieves an input and outputs `true` if the input passes
+/// and `false` if the input does not pass
 typedef bool Filter<T>(T input);
 
-// creates a filter according to given input
+/// Creates a filter from a given input
 typedef Filter<T> FilterCreator<T, I>(I input);
+
+/*
+ * This file contains different filter creators
+ */
 
 Filter equalsFilter(dynamic toValue) {
   return (val) => val == toValue;
@@ -44,6 +51,7 @@ Filter<String> fullRegex(String reg) {
   return (val) => regex.hasMatch(val);
 }
 
+/// all the filters used for text fields
 Map<String, FilterCreator<String, String>> textFilters = {
   "equals": equalsFilter,
   "contains": stringContains,
@@ -53,6 +61,7 @@ Map<String, FilterCreator<String, String>> textFilters = {
   "regex": fullRegex,
 };
 
+/// all the filters used for selection fields
 Map<String, FilterCreator> selectionFilters = {
   "equals": equalsFilter
 };

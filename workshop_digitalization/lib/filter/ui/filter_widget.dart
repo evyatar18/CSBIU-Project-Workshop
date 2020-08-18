@@ -1,23 +1,56 @@
 import 'package:flutter/material.dart';
 
-abstract class DisplayedFilter implements Widget {
-  dynamic get initialValue;
+/// creates an `onChange` function which accepts a dynamic value instead of type `T`
+String Function(dynamic) _makeOnChange<T>(void Function(T) onChange) {
+  return (item) {
+    try {
+      onChange(item as T);
+    } catch (e) {
+      return e.toString();
+    }
 
-  // returns an error string when error should be displayed
-  String Function(dynamic value) get onChange;
+    return null;
+  };
 }
 
-class TextFilter extends StatefulWidget {
+/// creates a text filter widget with the given parameters
+Widget textFilterBuilder(
+    dynamic _, String initialValue, void Function(String) onChange) {
+  return _TextFilter(
+    initialValue: initialValue ?? "",
+    onChange: _makeOnChange<String>(onChange),
+  );
+}
+
+/// creates a selection filter widget with the given parameters
+Widget selectionFilterBuilder<T>(
+    Map<T, String> values, T initialValue, void Function(T) onChange) {
+  if (values == null || values.length == 0) {
+    return _SelectionFilter(
+      initialValue: null,
+      values: Map.fromEntries([]).cast<dynamic, String>(),
+    );
+  }
+
+  return _SelectionFilter(
+    initialValue: initialValue ?? values.keys.first,
+    values: values,
+    onChange: _makeOnChange<T>(onChange),
+  );
+}
+
+/// there is really nothing too special about this class
+class _TextFilter extends StatefulWidget {
   final dynamic initialValue;
   final String Function(dynamic value) onChange;
 
-  TextFilter({this.initialValue = "", this.onChange});
+  _TextFilter({this.initialValue = "", this.onChange});
 
   @override
   _TextFilterState createState() => _TextFilterState();
 }
 
-class _TextFilterState extends State<TextFilter> {
+class _TextFilterState extends State<_TextFilter> {
   TextEditingController _controller;
 
   @override
@@ -40,12 +73,12 @@ class _TextFilterState extends State<TextFilter> {
   Widget build(BuildContext context) => TextField(controller: _controller);
 }
 
-class SelectionFilter extends StatefulWidget implements DisplayedFilter {
+class _SelectionFilter extends StatefulWidget {
   final dynamic initialValue;
   final String Function(dynamic value) onChange;
   final Map<dynamic, String> values;
 
-  SelectionFilter({
+  _SelectionFilter({
     this.onChange,
     @required this.initialValue,
     // real value to display name map
@@ -56,7 +89,7 @@ class SelectionFilter extends StatefulWidget implements DisplayedFilter {
   _SelectionFilterState createState() => _SelectionFilterState();
 }
 
-class _SelectionFilterState extends State<SelectionFilter> {
+class _SelectionFilterState extends State<_SelectionFilter> {
   dynamic _value;
   @override
   void initState() {
@@ -96,38 +129,4 @@ class _SelectionFilterState extends State<SelectionFilter> {
       onChanged: _onChanged,
     );
   }
-}
-
-String Function(dynamic) _makeOnChange<T>(void Function(T) onChange) {
-  return (item) {
-    try {
-      onChange(item as T);
-    } catch (e) {
-      return e.toString();
-    }
-
-    return null;
-  };
-}
-
-Widget textFilterBuilder(
-    dynamic _, String initialValue, void Function(String) onChange) {
-  return TextFilter(
-    initialValue: initialValue ?? "",
-    onChange: _makeOnChange<String>(onChange),
-  );
-}
-
-Widget selectionFilterBuilder<T>(
-    Map<T, String> values, T initialValue, void Function(T) onChange) {
-
-  if (values == null || values.length == 0) {
-    return SelectionFilter(initialValue: null, values: Map.fromEntries([]).cast<dynamic, String>());
-  }
-
-  return SelectionFilter(
-    initialValue: initialValue ?? values.keys.first,
-    values: values,
-    onChange: _makeOnChange<T>(onChange),
-  );
 }
