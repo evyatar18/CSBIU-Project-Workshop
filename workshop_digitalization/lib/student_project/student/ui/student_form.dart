@@ -95,12 +95,11 @@ class StudentForm extends StatelessWidget {
                   onSaved: (lastName) => student.lastName = lastName,
                 ),
 
-                // TODO:: add option to choose phone providers
-                // multiple phone numbers(?)
                 FormBuilderTextField(
                   keyboardType: TextInputType.phone,
                   attribute: "phone",
                   decoration: InputDecoration(labelText: "Phone Number"),
+                  // validate the phone number 
                   validators: [phoneValidator],
                   onSaved: (phone) => student.phoneNumber = phone,
                 ),

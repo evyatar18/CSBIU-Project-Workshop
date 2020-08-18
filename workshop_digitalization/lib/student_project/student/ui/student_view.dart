@@ -117,6 +117,7 @@ class StudentDetails extends StatelessWidget {
     );
   }
 
+  // widget that displays the students grade
   Widget _buildGradeView() {
     return EditElementForm(
       enableDeleting: false,
@@ -333,7 +334,6 @@ class __ProjectViewState extends State<_ProjectView> {
 
         try {
           await _deleteFromProject(project);
-          // await studentManager.save(student);
 
           await showSuccessDialog(
             context,

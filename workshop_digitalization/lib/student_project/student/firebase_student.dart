@@ -80,7 +80,6 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
   @override
   int studyYear = DateTime.now().year;
 
-  // TODO: convert timezones if needed
   @override
   DateTime get lastUpdate =>
       super.updatedAt != null ? super.updatedAt.toDate() : DateTime.now();
