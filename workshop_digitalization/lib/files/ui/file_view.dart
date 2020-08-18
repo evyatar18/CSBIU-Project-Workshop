@@ -14,15 +14,20 @@ import 'package:workshop_digitalization/global/ui/circular_loader.dart';
 import '../container.dart';
 import '../transfer.dart';
 
+/// a Scaffold which displays a file container,
 class FileContainerDisplayer extends StatelessWidget {
   final FileContainer container;
   final ProgressRepository repo;
 
+  /// Create a new `FileContainerDisplayer`
+  ///
+  /// `container` the `FileContainer` to display
+  ///
+  /// `repo` a `ProgressRepository` which will be used to report ongoing operations (ie. upload, download and deletion)
   FileContainerDisplayer({@required this.container, @required this.repo});
 
   @override
   Widget build(BuildContext context) {
-    // TODO:: check if UI looks right
     return ProgressScaffold(
       repo: repo,
       body: Scaffold(
@@ -31,12 +36,6 @@ class FileContainerDisplayer extends StatelessWidget {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
-
-    // return Scaffold(
-    //   body: ProgressScaffold(repo: repo, body: _buildFileList(context)),
-    //   floatingActionButton: _buildAddButton(),
-    //   floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-    // );
   }
 
   /// Creates the ListView of the displayed files

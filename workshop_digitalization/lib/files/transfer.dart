@@ -58,8 +58,10 @@ class FileRetrievalSnapshot extends FileTransferSnapshot {
   FileRetrievalSnapshot(this.status, this.bytesTransferred, this.totalByteCount,
       this.fileName, this.file);
 
-  factory FileRetrievalSnapshot.error(String fileName, [String msg]) => FileRetrievalSnapshot(
-      FileTransferStatus.ERROR, 0, -1, fileName, Future.value(null)).._msg = msg;
+  factory FileRetrievalSnapshot.error(String fileName, [String msg]) =>
+      FileRetrievalSnapshot(
+          FileTransferStatus.ERROR, 0, -1, fileName, Future.value(null))
+        .._msg = msg;
 }
 
 /// Snapshot of File Upload
@@ -81,8 +83,10 @@ class FileUploadSnapshot extends FileTransferSnapshot {
   FileUploadSnapshot(this.status, this.bytesTransferred, this.totalByteCount,
       this.fileName, this.onComplete);
 
-  factory FileUploadSnapshot.error(String fileName, [String msg]) => FileUploadSnapshot(
-      FileTransferStatus.ERROR, 0, -1, fileName, Future<void>.value()).._msg = msg;
+  factory FileUploadSnapshot.error(String fileName, [String msg]) =>
+      FileUploadSnapshot(
+          FileTransferStatus.ERROR, 0, -1, fileName, Future<void>.value())
+        .._msg = msg;
 }
 
 /// Converts a `FileTransferSnapshot` to a `ProgressSnapshot`

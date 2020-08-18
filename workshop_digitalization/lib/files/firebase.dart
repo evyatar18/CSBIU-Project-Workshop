@@ -17,6 +17,7 @@ final _fsizeField = "size";
 final _ftypeField = "type";
 final _fpathField = "path";
 
+/// Holds info for a firebase file
 class _FBFileInfo implements FileInfo {
   @override
   final String fileName;
@@ -83,6 +84,8 @@ class _FBFileInfo implements FileInfo {
   }
 }
 
+/// `FBFileContainer` is a shorthand for `FirebaseFileContainer`
+/// it is an implementation of `FileContainer` that uses the firebase storage
 class FBFileContainer implements FileContainer {
   final _docAccessor = SmartDocumentAccessor();
 
