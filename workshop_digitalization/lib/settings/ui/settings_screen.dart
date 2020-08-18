@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/auth/auth.dart';
 import 'package:workshop_digitalization/auth/ui/sign_out.dart';
 import 'package:workshop_digitalization/firebase_roots/dynamic_root/setup.dart';
-import 'package:workshop_digitalization/firebase_consts/dynamic_db/ui/change_db.dart';
+import 'package:workshop_digitalization/firebase_roots/dynamic_root/ui/change_db.dart';
 import 'package:workshop_digitalization/firebase_roots/firebase_root.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';

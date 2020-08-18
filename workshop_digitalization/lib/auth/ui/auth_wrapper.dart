@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:workshop_digitalization/auth/auth.dart';
-import 'package:workshop_digitalization/firebase_consts/dynamic_db/ui/change_db.dart';
+import 'package:workshop_digitalization/firebase_roots/dynamic_root/ui/change_db.dart';
 import 'package:workshop_digitalization/global/ui/completely_centered.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
 import 'package:workshop_digitalization/settings/settings.dart';
