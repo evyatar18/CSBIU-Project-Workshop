@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:intl/intl.dart';
-
+// function that transform bytes number into kilobytes or megabytes if needed
 String byteSizeString(int bytes) {
   int kb = 1000;
   int mb = kb * kb;

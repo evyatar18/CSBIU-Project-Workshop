@@ -90,10 +90,10 @@ class ProjectDetailsView extends StatelessWidget {
           bottom: TabBar(
             isScrollable: true,
             tabs: [
-              Tab(child: TabName(title: 'Details')),
-              Tab(child: TabName(title: 'Memos')),
-              Tab(child: TabName(title: 'Documents')),
-              Tab(child: TabName(title: 'Students'))
+              Tab(child: TabTitle(title: 'Details')),
+              Tab(child: TabTitle(title: 'Memos')),
+              Tab(child: TabTitle(title: 'Documents')),
+              Tab(child: TabTitle(title: 'Students'))
             ],
           ),
         ),

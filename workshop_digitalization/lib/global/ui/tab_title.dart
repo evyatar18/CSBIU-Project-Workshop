@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-class TabName extends StatelessWidget {
+//widget for tab title
+class TabTitle extends StatelessWidget {
   final String title;
-  TabName({@required this.title});
+  TabTitle({@required this.title});
   @override
   Widget build(BuildContext context) {
     return Align(

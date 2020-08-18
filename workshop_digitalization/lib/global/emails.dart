@@ -14,11 +14,11 @@ class Email {
     List<String> cc = const <String>[],
     List<String> bcc = const <String>[],
     this.body = "",
-  })  : this.to = List.of(to)..removeWhere(_isMalformed),
-        this.cc = List.of(cc)..removeWhere(_isMalformed),
-        this.bcc = List.of(bcc)..removeWhere(_isMalformed);
-
-  static bool _isMalformed(String email) {
+  })  : this.to = List.of(to)..removeWhere(_isMailformed),
+        this.cc = List.of(cc)..removeWhere(_isMailformed),
+        this.bcc = List.of(bcc)..removeWhere(_isMailformed);
+  // check if mail is valid
+  static bool _isMailformed(String email) {
     return email == null || email.isEmpty || !email.contains("@");
   }
 
