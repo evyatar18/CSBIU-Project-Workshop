@@ -37,7 +37,6 @@ class StudentDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return DefaultTabController(
       length: 5,
       child: Scaffold(
@@ -65,10 +64,8 @@ class StudentDetails extends StatelessWidget {
             Tooltip(
               message: 'Call',
               child: FlatButton(
-                onPressed: () async {
-                  await launch('tel:${student.phoneNumber}');
-                },
-                child: Icon(Icons.call,color: Colors.white,),
+                onPressed: () => launch('tel:${student.phoneNumber}'),
+                child: Icon(Icons.call, color: Colors.white),
               ),
             ),
             Tooltip(
@@ -81,7 +78,7 @@ class StudentDetails extends StatelessWidget {
                     "Couldn't send email",
                   );
                 },
-                child: Icon(Icons.mail,color: Colors.white),
+                child: Icon(Icons.mail, color: Colors.white),
               ),
             ),
           ],

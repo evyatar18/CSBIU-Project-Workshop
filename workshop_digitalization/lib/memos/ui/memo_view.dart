@@ -123,7 +123,12 @@ class MemoViewState extends State<MemoView> {
     memo.topic = _topicController.text;
 
     // save memo
-    await handleExceptions(context, widget.manager.save(memo), "Error saving memo", successMessage: "Saved Successfully");
+    await handleExceptions(
+      context,
+      widget.manager.save(memo),
+      "Error saving memo",
+      successMessage: "Saved Successfully",
+    );
 
     // notify change to memo has occurred
     setState(() {});
@@ -186,8 +191,13 @@ class MemoViewState extends State<MemoView> {
           child: Icon(Icons.attach_file, color: Colors.white),
         ),
         FlatButton(
-          onPressed: () =>
+          onPressed: () {
+            handleExceptions(
+              context,
               openMemoEmail(memo: widget.memo, recipients: widget.recipients),
+              "Couldn't send memo email",
+            );
+          },
           child: Icon(Icons.mail, color: Colors.white),
         ),
       ],

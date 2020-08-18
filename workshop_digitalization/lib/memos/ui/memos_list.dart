@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mutex/mutex.dart';
 import 'package:workshop_digitalization/global/strings.dart';
+import 'package:workshop_digitalization/global/ui/exception_handler.dart';
 import 'package:workshop_digitalization/memos/memo_sender.dart';
 
 import '../memo.dart';
@@ -111,8 +112,13 @@ class MemoCard extends StatelessWidget {
             if (emailRecipients != null)
               IconButton(
                 icon: Icon(Icons.email),
-                onPressed: () =>
+                onPressed: () {
+                  handleExceptions(
+                    context,
                     openMemoEmail(memo: memo, recipients: emailRecipients),
+                    "Couldn't send memo email",
+                  );
+                },
               )
           ]),
         ),
