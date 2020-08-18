@@ -12,14 +12,17 @@ import 'package:workshop_digitalization/student_project/student/ui/new_student_v
 import 'package:workshop_digitalization/student_project/student/ui/student_table.dart';
 import 'package:workshop_digitalization/global/ui/circular_loader.dart';
 
+/// utility method for creating the LabeledCircularLoader with the given title
 Widget _loader(String title) {
   return LabeledCircularLoader(labels: [title]);
 }
 
-typedef Widget StudentProjectProvided(BuildContext context,
+/// a widget which needs to be provided both with a `StudentManager` and a `ProjectManager`
+typedef Widget _StudentProjectProvided(BuildContext context,
     StudentManager studentManager, ProjectManager projectManager);
 
-Widget createStudentProjectDependent(StudentProjectProvided builder) {
+/// create a widget which receives instances of `StudentManager` and `ProjectManager`
+Widget createStudentProjectDependent(_StudentProjectProvided builder) {
   return Consumer2<StudentManager, ProjectManager>(
     builder: (context, sm, pm, _) {
       if (sm == null || pm == null) {
@@ -30,12 +33,18 @@ Widget createStudentProjectDependent(StudentProjectProvided builder) {
   );
 }
 
-typedef Widget StudentProvided(BuildContext context, StudentManager manager);
-typedef Widget ProjectProvided(BuildContext context, ProjectManager manager);
-typedef Widget FirebaseProvided(
+/// an object which needs a `StudentManager` instance
+typedef Widget _StudentProvided(BuildContext context, StudentManager manager);
+
+/// an object which needs a `ProjectManager` instance
+typedef Widget _ProjectProvided(BuildContext context, ProjectManager manager);
+
+/// an object which needs a `FirebaseInstance` instance
+typedef Widget _FirebaseProvided(
     BuildContext context, FirebaseInstance instance);
 
-Widget createStudentDependent(StudentProvided builder) {
+/// create a widget which receives an instance of `StudentManager`
+Widget createStudentDependent(_StudentProvided builder) {
   return Consumer<StudentManager>(
     builder: (context, value, _) {
       if (value == null) {
@@ -46,7 +55,8 @@ Widget createStudentDependent(StudentProvided builder) {
   );
 }
 
-Widget createProjectDependent(ProjectProvided builder) {
+/// create a widget which receives an instance of `ProjectManager`
+Widget createProjectDependent(_ProjectProvided builder) {
   return Consumer<ProjectManager>(
     builder: (context, value, _) {
       if (value == null) {
@@ -57,7 +67,8 @@ Widget createProjectDependent(ProjectProvided builder) {
   );
 }
 
-Widget createFirebaseDependent(FirebaseProvided builder) {
+/// create a widget which receives an instance of `FirebaseInstance`
+Widget createFirebaseDependent(_FirebaseProvided builder) {
   return Consumer<FirebaseInstance>(
     builder: (context, value, _) {
       if (value == null) {
@@ -68,6 +79,7 @@ Widget createFirebaseDependent(FirebaseProvided builder) {
   );
 }
 
+/// create the students table
 Widget createStudentTable({bool showAddButton = true}) {
   return createStudentProjectDependent((context, sm, pm) {
     return StudentTableScreen<Student, Project>(
@@ -78,21 +90,19 @@ Widget createStudentTable({bool showAddButton = true}) {
   });
 }
 
-void pushSettingsScreen(BuildContext context) {
-  pushWithProviderValues(
-    context,
-    (_) => createSettingsScreen(),
-  );
+/// create the projects table
+Widget createProjectTable({bool showAddButton = true}) {
+  return createStudentProjectDependent((context, sm, pm) {
+    return ProjectTableScreen<Student, Project>(
+      studentManager: sm,
+      projectManager: pm,
+      showAddButton: showAddButton,
+    );
+  });
 }
 
-Widget createSettingsScreen() {
-  // await Settings.init(
-  //   cacheProvider: _isUsingHive ? HiveCache() : SharePreferenceCache(),
-  // );
-  return AppSettings();
-}
-
-void pushWithProviderValues(BuildContext context, WidgetBuilder widget) {
+/// pushes a widget to the navigator with the `StudentManager`, `ProjectManager` and `FirebaseInstance` providers for it to use
+void _pushWithProviderValues(BuildContext context, WidgetBuilder widget) {
   final sm = Provider.of<StudentManager>(context, listen: false);
   final pm = Provider.of<ProjectManager>(context, listen: false);
   final FirebaseInstance firebase =
@@ -113,50 +123,49 @@ void pushWithProviderValues(BuildContext context, WidgetBuilder widget) {
   );
 }
 
+void pushSettingsScreen(BuildContext context) {
+  _pushWithProviderValues(
+    context,
+    (_) => createSettingsScreen(),
+  );
+}
+
+Widget createSettingsScreen() {
+  return AppSettings();
+}
+
 void pushStudentTableScreen(BuildContext context) {
-  pushWithProviderValues(context, (context) => createStudentTable());
+  _pushWithProviderValues(context, (context) => createStudentTable());
 }
 
 void pushNewStudentScreen(BuildContext context) {
-  pushWithProviderValues(
+  _pushWithProviderValues(
     context,
     (_) => createStudentDependent(
         (context, manager) => NewStudentScreen(studentManager: manager)),
   );
 }
 
-Widget createProjectTable({bool showAddButton = true}) {
-  return createStudentProjectDependent((context, sm, pm) {
-    return ProjectTableScreen<Student, Project>(
-      studentManager: sm,
-      projectManager: pm,
-      showAddButton: showAddButton,
-    );
-  });
-}
-
 void pushNewProjectScreen(BuildContext context) {
-  {
-    pushWithProviderValues(
-      context,
-      (_) => createProjectDependent(
-        (context, manager) => createFirebaseDependent(
-          (context, instance) => NewProjectScreen(
-            projectManager: manager,
-            firebase: instance,
-          ),
+  _pushWithProviderValues(
+    context,
+    (_) => createProjectDependent(
+      (context, manager) => createFirebaseDependent(
+        (context, instance) => NewProjectScreen(
+          projectManager: manager,
+          firebase: instance,
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 
 void pushProjectTableScreen(BuildContext context) {
-  pushWithProviderValues(context, (context) => createProjectTable());
+  _pushWithProviderValues(context, (context) => createProjectTable());
 }
 
-void pushLoadScreen(BuildContext context) {
-  pushWithProviderValues(
+void pushStudentLoadScreen(BuildContext context) {
+  _pushWithProviderValues(
     context,
     (_) => createStudentDependent(
       (context, manager) => StudentLoaderScreen(manager),

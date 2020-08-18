@@ -27,7 +27,7 @@ class _BottomFabState extends State<BottomFab> {
           backgroundColor: Colors.blue,
           label: 'Upload Students CSV',
           labelStyle: TextStyle(fontSize: 18.0),
-          onTap: () => pushLoadScreen(context),
+          onTap: () => pushStudentLoadScreen(context),
         ),
       ],
       [

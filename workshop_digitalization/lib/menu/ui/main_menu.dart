@@ -100,7 +100,7 @@ class MainMenu extends StatelessWidget {
                 text: 'Load Students',
                 color: Colors.cyan,
               ),
-              onPressed: () => pushLoadScreen(context),
+              onPressed: () => pushStudentLoadScreen(context),
             ),
             FlatButton(
               child: BigIcon(
