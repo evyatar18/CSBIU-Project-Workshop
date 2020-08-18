@@ -4,6 +4,7 @@ import 'package:easy_web_view/easy_web_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// a simple widget which allows editing text and viewing its HTML rendering on the web
 class WebHtmlEditor extends StatefulWidget {
   final String initialInput;
   final Stream<Completer<String>> inputRequests;

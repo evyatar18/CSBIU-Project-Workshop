@@ -2,19 +2,33 @@ import 'package:flutter/material.dart';
 import '../filterable.dart';
 import 'filterable_field.dart';
 
+/// This is a displayed field filter
+/// it includes the functionality of removing this filter
+/// and changing its type (ie. from a textual filter with `startsWith` to a textual filter with `endsWith`)
 class DisplayedFieldFilter<Object, FilterType, InputType>
     extends StatefulWidget {
+  /// the filterable collection
   final Filterable<Object> filterable;
+
+  /// the filter id representing the backend filter
   final int filterId;
 
+  /// the field this filter is used
   final FilterableField<Object, FilterType, InputType> field;
 
+  /// Whether to show the field name next to the filter
   final bool showFieldName;
+
+  /// whether to allow changing the type of filter
   final bool showFilterChoice;
 
+  /// the initial filter type name
   final String initialFilter;
+
+  /// the initial value of the filter
   final InputType initialValue;
 
+  /// a function which runs when the filter is changed (when the type or value changes)
   final void Function(String filterName, InputType value) onFilterChange;
 
   DisplayedFieldFilter({
@@ -58,17 +72,23 @@ class _DisplayedFieldFilterState<Object, FilterType, InputType>
     }
   }
 
+  /// Change the current filter input value
   void _changeFilterValue(InputType val) {
+    // create a new filter based on the value
     final filter = widget.field.filterCreators[_currentFilter](val);
+
+    // set the filter on the backend
     widget.filterable.setFilter(widget.filterId, (obj, json) {
       final field = widget.field.field.getter(obj);
       return filter(field);
     });
 
+    // report change to the filter
     _currentValue = val;
     _onChange();
   }
 
+  /// change the current filter type
   void _changeFilter(String filterName) {
     setState(() {
       // when changing filter, reset the filter(it accepts any object)
@@ -79,6 +99,8 @@ class _DisplayedFieldFilterState<Object, FilterType, InputType>
     _onChange();
   }
 
+  /// the dropdown item which shows a name of a filter
+  /// `filterName` is the name of the filter to show
   DropdownMenuItem<String> _buildDropdownFilter(String filterName) {
     return DropdownMenuItem<String>(
       child: Padding(
@@ -90,6 +112,8 @@ class _DisplayedFieldFilterState<Object, FilterType, InputType>
     );
   }
 
+  /// build the dropdown button which shows the currently used filter
+  /// and allows changing the current filter
   DropdownButton _buildFilterChoiceButton() {
     return DropdownButton<String>(
       items:
@@ -101,6 +125,7 @@ class _DisplayedFieldFilterState<Object, FilterType, InputType>
     );
   }
 
+  /// get the values for each field from the given list of objects
   Map<FilterType, String> _getFieldValues(List<dynamic> objects) {
     if (objects == null) {
       return Map.fromEntries(<MapEntry<FilterType, String>>[]);
@@ -112,6 +137,7 @@ class _DisplayedFieldFilterState<Object, FilterType, InputType>
     return Map.fromEntries(entries);
   }
 
+  /// the filter object which changes as new data is added to the unfiltered values
   Widget _buildFilterWidget() {
     final source = widget.filterable.unfilteredValues;
     return StreamBuilder<Map<FilterType, String>>(

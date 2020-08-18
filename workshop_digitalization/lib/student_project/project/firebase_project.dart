@@ -231,7 +231,10 @@ class FirebaseProjectManager extends ProjectManager<FirebaseProject> {
 
   final _docAccessor = SmartDocumentAccessor();
 
+  /// a queue which maps between a projectId to a list of students which should be added to it
   final _addQueue = <String, List<String>>{};
+
+  /// a queue which maps between a projectId to a list of students which should be removed from it
   final _deleteQueue = <String, List<String>>{};
 
   Stream<List<FirebaseProject>> get projects => _projects.stream;
@@ -251,6 +254,9 @@ class FirebaseProjectManager extends ProjectManager<FirebaseProject> {
   Future<void> save(FirebaseProject project) async {
     final projectId = project.id;
 
+    /* this is a little more complicated than student saving, since on project saving
+     * we make sure that all the queued additions and removals are handled
+     */
     final addQueue = List.of(_getQueue(_addQueue, projectId));
     final deleteQueue = List.of(_getQueue(_deleteQueue, projectId));
 
@@ -310,6 +316,7 @@ class FirebaseProjectManager extends ProjectManager<FirebaseProject> {
     _clearQueue(_deleteQueue, projectId);
   }
 
+  /// disposes of old projects (after a firebase update occurs, we create a completely new instance for each project)
   Future<void> _disposeElements() {
     final projects = _projects.value;
     if (projects == null) {
@@ -357,7 +364,7 @@ class FirebaseProjectManager extends ProjectManager<FirebaseProject> {
       try {
         await studs.save(student);
       } catch (e) {
-        print("firebase_project.dart::313 - error: $e");
+        print("firebase_project.dart - error: $e");
       }
     });
 

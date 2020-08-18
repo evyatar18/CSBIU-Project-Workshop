@@ -1,6 +1,9 @@
 import 'package:flamingo/document_accessor.dart';
 import 'package:flamingo/flamingo.dart';
 
+/// `SmartDocumentAccessor` is a `DocumentAccessor` which doesn't remove documents
+/// it instead adds a `deleted` flag for each object that is deleted
+/// and provides the `isDeleted` functionality to check if an object should be treated as deleted
 class SmartDocumentAccessor extends DocumentAccessor {
   final _documentAccessor = DocumentAccessor();
 

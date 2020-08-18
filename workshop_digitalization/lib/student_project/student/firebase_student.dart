@@ -138,21 +138,27 @@ class FirebaseStudent extends Document<FirebaseStudent> implements Student {
   set grade(Grade g) => _grade = g;
 }
 
+/// a `StudentManager` which has a firebase backend
 class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
+  /// a reference to the student collection
   final CollectionReference _collection;
+
+  /// a SmartDocumentAccessor to manage this collection
   final _docAccessor = SmartDocumentAccessor();
 
-  final ActiveRoot root;
+  /// the current firebase root which is used for this document
+  final ActiveRoot _root;
 
   StreamSubscription _subscription;
   BehaviorSubject<List<FirebaseStudent>> _students =
       BehaviorSubject<List<FirebaseStudent>>();
 
-  FirebaseStudentManager(this.root)
-      : _collection = root.root.reference.collection("students") {
+  FirebaseStudentManager(this._root)
+      : _collection = _root.root.reference.collection("students") {
     _subscription = _collection.snapshots().listen(_handleSnapshots);
   }
 
+  /// disposes of old students (after a firebase update occurs, we create a completely new instance for each student)
   Future<void> _disposeElements() {
     final elements = _students.value;
     if (elements == null) {
@@ -162,14 +168,17 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
     }
   }
 
+  /// handles firebase snapshots
   void _handleSnapshots(QuerySnapshot snapshot) {
+    // disposes of all currently stored students
     _disposeElements();
 
+    // add all existing (not deleted) students
     _students.add(
       snapshot.documents
           .where((doc) => !_docAccessor.isDeleted(doc.data))
           .map((e) =>
-              FirebaseStudent(root, collectionRef: _collection, snapshot: e))
+              FirebaseStudent(_root, collectionRef: _collection, snapshot: e))
           .toList(),
     );
   }
@@ -178,16 +187,16 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
   List<FirebaseStudent> get latestStudents => _students.value;
 
   Future<FirebaseStudent> createEmpty() async {
-    final student = FirebaseStudent(root, collectionRef: _collection);
+    final student = FirebaseStudent(_root, collectionRef: _collection);
     await _docAccessor.save(student);
     return student;
   }
 
   Future<void> delete(FirebaseStudent student) async {
+    // delete the project of the student if it exists
     final project = student.project;
-
     if (project != null) {
-      final projs = root.projectManager;
+      final projs = _root.projectManager;
       project.studentIds = project.studentIds..remove(student.id);
       await projs.save(project);
     }
@@ -207,8 +216,9 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
     );
   }
 
+  /// create a `FirebaseStudent` instance from a given `Student` instance
   FirebaseStudent _fromStudent(Student s) {
-    return FirebaseStudent(root, collectionRef: _collection)
+    return FirebaseStudent(_root, collectionRef: _collection)
       ..personalID = s.personalID
       ..firstName = s.firstName
       ..lastName = s.lastName
@@ -222,6 +232,10 @@ class FirebaseStudentManager implements StudentManager<FirebaseStudent> {
     final taskName = "Writing ${batch.length} Students";
     yield ProgressSnapshot(taskName, "Preparing students...", 0);
 
+    // TODO: the students have to be divided into batches of 500 at max
+    // firebase does not support adding more than 500 in a batch
+    // since this shouldn't happen we didn't bother implementing this division
+    // but if it poses an issue it might need to be implemented
     final firebaseStudents = batch.map(_fromStudent);
     final writeBatch = Batch();
     firebaseStudents.forEach(writeBatch.save);

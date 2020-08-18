@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../progress.dart';
 
+/// a linear progress bar
 class LinearProgressBar extends StatelessWidget {
   final ProgressSnapshot snapshot;
 
+  /// given a `ProgressSnapshot` creates a `LinearProgressBar` widget
   LinearProgressBar({@required this.snapshot});
 
   /// Builds the task status bar

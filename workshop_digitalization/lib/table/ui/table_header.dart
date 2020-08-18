@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 final _beforeCapitalLetter = RegExp(r"(?=[A-Z])");
 
+/// a header for a column in the json table
 class JsonTableHeader extends StatelessWidget {
   final String header;
   final void Function() onClick;

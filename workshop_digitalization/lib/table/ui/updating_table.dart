@@ -3,19 +3,36 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:json_table/json_table.dart';
 
 import '../table_data_controller.dart';
-import 'table_headers.dart';
+import 'table_header.dart';
 
+/// a table which updates its data according to the given data stream
 class UpdatingTable<T> extends StatelessWidget {
   final TableDataController<T> controller;
   final void Function(T) onClick;
   final int paginationRowCount;
 
+  /// construct an `UpdatingTable`
+  ///
+  /// `controller` is the input table data controller for this table
+  ///
+  /// `onClick` is activated whenever a cell inside a row is clicked, returning the object of that row
+  ///
+  /// `paginationRowCount` is the amount of rows to use in each page
   UpdatingTable({
     @required this.controller,
     this.onClick,
     this.paginationRowCount = 25,
   });
 
+  /// builds the json table using the given parameters
+  ///
+  /// `objects` is the list of objects to use
+  ///
+  /// `jsoner` translates each object into a json
+  ///
+  /// `orderColumn` is the name of the column currently ordered by, may be null if no column is sorted by
+  ///
+  /// `ascending` is whether the order column is ordered in ascending order
   Widget _buildTable(
       List<dynamic> objects, Map<String, dynamic> Function(dynamic) jsoner,
       [String orderColumn, bool ascending = false]) {

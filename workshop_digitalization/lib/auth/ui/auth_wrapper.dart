@@ -7,10 +7,18 @@ import 'package:workshop_digitalization/settings/settings.dart';
 
 typedef Widget AuthBuilder(BuildContext context, AuthenticatedUser user);
 
+/// Shows the login / registration / forgotten password page
+///
+/// When the user is logged in, the control is handed over to the given builder
+/// with the logged in user
 class AuthWrapper extends StatefulWidget {
   final AuthBuilder authBuilder;
   final Authenticator authenticator;
 
+  /// `authBuilder` will be run when there is an authenticated user
+  ///
+  /// `authenticator` is the `Authenticator` instance to use in order to check if the user
+  /// is logged in, and to do the login/register/fogotten password operations
   const AuthWrapper({
     @required this.authBuilder,
     @required this.authenticator,
@@ -45,6 +53,9 @@ class _AuthWrapperState extends State<AuthWrapper> {
 
   @override
   Widget build(BuildContext context) {
+    // listens to the user stream, if there is no user logged in
+    // it shows the login form
+    // if there is a logged in user, hands over control to the authBuilder
     return StreamBuilder<AuthenticatedUser>(
       stream: authenticator.user,
       builder: (context, snapshot) {
@@ -65,6 +76,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
       },
     );
   }
+
 
   bool get _savePassword => MyAppSettings.savingPassword;
   void _changeSavePassword(bool b) {

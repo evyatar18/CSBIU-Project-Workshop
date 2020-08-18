@@ -1,7 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
-import 'package:workshop_digitalization/global/ui/disposer.dart';
+import 'package:provider/provider.dart';
 
 import 'package:workshop_digitalization/global/ui/utils.dart';
 import 'package:workshop_digitalization/global/strings.dart';
@@ -14,15 +14,20 @@ import 'package:workshop_digitalization/global/ui/circular_loader.dart';
 import '../container.dart';
 import '../transfer.dart';
 
+/// a Scaffold which displays a file container,
 class FileContainerDisplayer extends StatelessWidget {
   final FileContainer container;
   final ProgressRepository repo;
 
+  /// Create a new `FileContainerDisplayer`
+  ///
+  /// `container` the `FileContainer` to display
+  ///
+  /// `repo` a `ProgressRepository` which will be used to report ongoing operations (ie. upload, download and deletion)
   FileContainerDisplayer({@required this.container, @required this.repo});
 
   @override
   Widget build(BuildContext context) {
-    // TODO:: check if UI looks right
     return ProgressScaffold(
       repo: repo,
       body: Scaffold(
@@ -31,12 +36,6 @@ class FileContainerDisplayer extends StatelessWidget {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
-
-    // return Scaffold(
-    //   body: ProgressScaffold(repo: repo, body: _buildFileList(context)),
-    //   floatingActionButton: _buildAddButton(),
-    //   floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-    // );
   }
 
   /// Creates the ListView of the displayed files
@@ -176,9 +175,18 @@ class FileContainerDisplayer extends StatelessWidget {
 }
 
 Widget createFileContainerDisplayer({@required FileContainer container}) {
-  return Disposer<ProgressRepository>(
-    create: () => ProgressRepository(),
-    builder: (context, repo) =>
-        FileContainerDisplayer(container: container, repo: repo),
+  return Provider<ProgressRepository>(
+    create: (_) => ProgressRepository(),
+    builder: (context, _) {
+      final repo = Provider.of<ProgressRepository>(context);
+      return FileContainerDisplayer(container: container, repo: repo);
+    },
+    dispose: (_, repo) => repo.dispose(),
   );
+
+  // return Disposer<ProgressRepository>(
+  //   create: () => ProgressRepository(),
+  //   builder: (context, repo) =>
+  //       FileContainerDisplayer(container: container, repo: repo),
+  // );
 }

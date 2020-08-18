@@ -5,12 +5,19 @@ import 'field_filter.dart';
 import 'filterable_field.dart';
 
 typedef FilterWidgetCreator = Widget Function(
-    void Function(void Function() fn) setState);
+  void Function(void Function() fn) setState,
+);
 
+/// The scaffold which holds all the filters
+/// allowing adding new filters for fields
 class FiltersScaffold<Object, T, FilterInputType> extends StatefulWidget {
+  /// the filterable this scaffold is used on
   final Filterable<T> filterable;
+
+  /// the different fields of the object
   final List<FilterableField> fields;
 
+  /// all the currently used filter widgets
   final Map<int, FilterWidgetCreator> filterWidgets;
 
   FiltersScaffold({

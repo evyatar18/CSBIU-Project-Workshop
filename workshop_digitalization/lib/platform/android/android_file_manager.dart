@@ -37,6 +37,7 @@ class AndroidFileManager implements PlatformFileManager {
   }
 }
 
+/// a file which exists in the Android filesystem
 class _AndroidFile implements PlatformFile {
   File _file;
 

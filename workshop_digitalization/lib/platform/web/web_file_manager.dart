@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:universal_html/html.dart' as html;
 import 'package:universal_html/js.dart' as js;
-// import 'dart:html' as html;
-// import 'dart:js' as js;
 
 import 'package:workshop_digitalization/platform/files.dart';
 
@@ -61,7 +59,7 @@ class WebFileManager implements PlatformFileManager {
     var reader = html.FileReader();
 
     final out = reader.onLoad
-        .map((event) => _WebFile(htmlFile.name, reader.result.toString()))
+        .map((event) => MemoryFile.fromString(htmlFile.name, reader.result.toString()))
         .first;
     reader.readAsText(htmlFile, "UTF-8");
 
@@ -70,23 +68,4 @@ class WebFileManager implements PlatformFileManager {
 
     return out;
   }
-}
-
-class _WebFile implements PlatformFile {
-  String _data;
-  final String _name;
-
-  _WebFile(this._name, this._data);
-
-  @override
-  Future<void> dispose() {
-    _data = null;
-    return Future.value();
-  }
-
-  @override
-  Stream<String> get data => Stream.value(_data);
-
-  @override
-  String get name => _name;
 }

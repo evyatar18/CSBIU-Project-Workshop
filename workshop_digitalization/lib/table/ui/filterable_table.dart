@@ -15,6 +15,8 @@ import 'package:workshop_digitalization/table/table_data_controller.dart';
 import 'package:workshop_digitalization/table/ui/updating_table.dart';
 
 // we use stateful widget just because we need the dispose
+
+/// `FilterableTable` is a scaffold which contains a table that has the filtering functionality
 class FilterableTable<Object> extends StatefulWidget {
   final String title;
   final Stream<List<Object>> objects;
@@ -25,10 +27,25 @@ class FilterableTable<Object> extends StatefulWidget {
 
   final void Function(BuildContext context, Object object) onClick;
 
+  /// `title` is the title of the scaffold
+  ///
+  /// `objects` is a stream of unfiltered objects to use
+  ///
+  /// `textFields` is a list of fields that are filtered using text.
+  /// it is a convenience field since it creates the `FilterableField` instance given the text field
+  /// although that `FilterableField` could be provided in the `otherFilterables` field
+  ///
+  /// `otherFilterables` is a list of fields that can be filtered
+  ///
+  /// `nonFilterFields` are fields which should be displayed in the table but not filtered with
+  ///
+  /// `shownFields` are fields which their filters should be shown as an action in the `AppBar` of the scaffold
+  ///
+  /// `onClick` is activated when a row of an object is clicked on
   FilterableTable({
     this.title = "",
     @required this.objects,
-    @required List<ObjectField<Object, String>> textFields,
+    List<ObjectField<Object, String>> textFields = const [],
     @required List<FilterableField> otherFilterables,
     this.nonFilterFields = const <ObjectField>[],
     this.shownFields = const <String>[],

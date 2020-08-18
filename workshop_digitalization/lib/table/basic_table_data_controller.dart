@@ -6,18 +6,23 @@ import 'package:rxdart/rxdart.dart';
 import 'package:workshop_digitalization/filter/filterable.dart';
 import 'package:workshop_digitalization/table/table_data_controller.dart';
 
+/// makes a comparator for a field given its name and type
 typedef Comparator SorterMaker(String fieldName, Type fieldType);
 
 class BasicTableDataController<T> implements TableDataController<T> {
-  ValueStream<List<T>> supplier;
+  /// supplies all the input for the table
+  final ValueStream<List<T>> supplier;
+
   @override
   ValueStream<List<T>> get unfilteredValues => supplier;
 
+  /// a subscription that updates the table data everytime there is an update from the supplier
   StreamSubscription _subscription;
-  StreamSubscription get dataSubscription => _subscription;
 
+  /// a function which turns the objects into json
   final Map<String, dynamic> Function(T) jsoner;
 
+  // implementation for the `Filterable` type
   int _currentFilter = 0;
   final _filters = <int, ObjectFilter<T>>{};
 
@@ -31,12 +36,13 @@ class BasicTableDataController<T> implements TableDataController<T> {
     @required this.jsoner,
     this.sorter = _defaultTypeSorter,
   }) {
-    _subscription = supplier.listen(_dataListener);
+    _subscription = supplier.listen(_dataUpdater);
   }
 
   final _controller = ReplaySubject<TableData<T>>();
 
-  void _dataListener(List<T> data) {
+  /// updates the output of `_controller` according to the current settings (and given the current `data`)
+  void _dataUpdater(List<T> data) {
     if (data == null) {
       return;
     }
@@ -71,8 +77,8 @@ class BasicTableDataController<T> implements TableDataController<T> {
   @override
   Stream<TableData<T>> get data => _controller;
 
-  void _onDataChange() async {
-    _dataListener(supplier.value);
+  void _onDataChange() {
+    _dataUpdater(supplier.value);
   }
 
   @override

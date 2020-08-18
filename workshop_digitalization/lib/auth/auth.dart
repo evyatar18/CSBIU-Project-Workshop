@@ -1,28 +1,31 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
+/// A representation of a logged in user
 class AuthenticatedUser {
   FirebaseUser firebaseUser;
   AuthenticatedUser(this.firebaseUser);
 }
 
+/// The service class which provides the authentication methods
 class Authenticator {
   final FirebaseAuth _auth;
-  final _googleSignIn = GoogleSignIn();
 
   Authenticator(this._auth);
 
+  /// the logged in user stream, returns the user if they're logged in
+  /// otherwise returns null
   Stream<AuthenticatedUser> get user =>
       _auth.onAuthStateChanged.map(_userFromFirebaseUser);
 
+  /// creates an `AuthenticatedUser` instance from a `FirebaseUser` instance
   AuthenticatedUser _userFromFirebaseUser(FirebaseUser user) {
     return user == null ? null : AuthenticatedUser(user);
   }
 
-  Future<void> signOut() {
-    return _auth.signOut();
-  }
+  /// Sign out
+  Future<void> signOut() => _auth.signOut();
 
+  /// Register with email and password
   Future<AuthenticatedUser> register(String email, String password) async {
     try {
       final account = await _auth.createUserWithEmailAndPassword(
@@ -35,6 +38,7 @@ class Authenticator {
     }
   }
 
+  /// Login with email and password
   Future<AuthenticatedUser> login(String email, String password) async {
     try {
       final account = await _auth.signInWithEmailAndPassword(
@@ -49,50 +53,12 @@ class Authenticator {
     }
   }
 
+  /// Send a password reset link to the given email
   Future<void> forgotten(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
     } catch (e) {
       rethrow;
     }
-  }
-
-  Future<AuthenticatedUser> googleSignInPrompt() async {
-    try {
-      final googleUser = await _googleSignIn.signIn();
-
-      // authentication process was terminated
-      if (googleUser == null) {
-        return null;
-      }
-
-      final auth = await googleUser.authentication;
-
-      final credential = GoogleAuthProvider.getCredential(
-        accessToken: auth.accessToken,
-        idToken: auth.idToken,
-      );
-
-      // sign in but with 5 second timeout
-      final signinWithTimeout = await Future.any([
-        _auth.signInWithCredential(credential),
-        Future<AuthResult>.delayed(
-          Duration(seconds: 5),
-          () => throw "Google sign in timed out(5 seconds)",
-        ),
-      ]);
-
-      // we can ignore other parameters of the AuthResult object
-      // maybe need to check if an exception is thrown
-      final firebaseUser = signinWithTimeout.user;
-
-      return AuthenticatedUser(firebaseUser);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<void> reload() {
-    return this._auth.currentUser().then((value) => value.reload());
   }
 }
