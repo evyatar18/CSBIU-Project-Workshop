@@ -1,181 +1,245 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
+
 import 'package:flamingo/flamingo.dart';
 import 'package:flutter/material.dart';
-import 'package:workshop_digitalization/blocs/table_bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:workshop_digitalization/models/data/name.dart';
-import 'package:workshop_digitalization/view/student_form.dart';
-import 'package:workshop_digitalization/view/student_table.dart';
+import 'package:flutter_settings_screens/flutter_settings_screens.dart';
+import 'package:provider/provider.dart';
+import 'package:workshop_digitalization/auth/ui/authorization_checker.dart';
+import 'package:workshop_digitalization/dynamic_firebase/setup.dart';
+import 'package:workshop_digitalization/menu/ui/home_page.dart';
+import 'package:workshop_digitalization/platform/init.dart';
 
-import 'models/data/student.dart';
-import 'package:workshop_digitalization/loadScreen.dart';
-import 'package:workshop_digitalization/models/data/repository/dataRepository.dart';
-import 'package:workshop_digitalization/models/data/repository/singleDataRepsitory.dart';
-import 'package:workshop_digitalization/models/data/student.dart';
+import 'settings/settings.dart';
+import 'global/ui/circular_loader.dart';
+import 'global/ui/completely_centered.dart';
+import 'student_project/project/project.dart';
+import 'student_project/student/student.dart';
+import 'auth/ui/sign_out.dart';
+import 'dynamic_firebase/setup.dart';
+import 'dynamic_firebase/ui/change_db.dart';
+import 'dynamic_firebase/roots/firebase_root.dart';
+import 'dynamic_firebase/ui/db_data.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final firestore = Firestore.instance;
-  final root = firestore.collection('version').document('1');
-  Flamingo.configure(
-      firestore: firestore, storage: FirebaseStorage.instance, root: root);
+  await initializePlatform();
+
+  // use default shared preferences provider
+  await Settings.init();
 
   runApp(new MyApp());
-}
-
-final DataRepository repository = SingleDataRepository("students");
-
-class User extends Document<User> {
-  User({
-    String id,
-    DocumentSnapshot snapshot,
-    Map<String, dynamic> values,
-  }) : super(id: id, snapshot: snapshot, values: values);
-
-  String name;
-  DocumentReference other;
-
-  // For save data
-  @override
-  Map<String, dynamic> toData() {
-    final data = <String, dynamic>{};
-    writeNotNull(data, 'name', name);
-    writeNotNull(data, 'other', other);
-    return data;
-  }
-
-  // For load data
-  @override
-  void fromData(Map<String, dynamic> data) {
-    name = valueFromKey<String>(data, 'name');
-  }
-
-  // Call after create, update, delete.
-  @override
-  void onCompleted(ExecuteType executeType) {
-    print('$executeType');
-  }
-}
-
-void runFirebase() async {
-  User u = User();
-  User u2 = User();
-
-  final da = DocumentAccessor();
-
-  await da.save(u);
-  await da.save(u2);
-
-  u.name = "hello";
-  u.other = u2.reference;
-
-  await da.update(u);
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    runFirebase();
     return MaterialApp(
-      title: 'Students',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      title: 'Workshop Digitalization',
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      home: Scaffold(
+        body: DynamicDBHandler(
+          builder: (context) {
+            final firebase = Provider.of<FirebaseInstance>(context);
+            return Authorizer(
+              builder: (context, user) {
+                // now the current user is authorized, we can show the root updater
+                // we'll also start the root loader
+                firebase.roots.listen();
+                return _buildRootUpdater(firebase, _mainBodyBuilder);
+              },
+            );
+          },
+        ),
       ),
-      home: MyHomePage(title: 'Students'),
+    );
+  }
+
+  /// Builds the students and projects providers
+  /// Then builds the actual application
+  Widget _mainBodyBuilder(BuildContext context) {
+    final firebase = Provider.of<FirebaseInstance>(context);
+    final students = firebase.activeRoot.studentManager;
+    final projects = firebase.activeRoot.projectManager;
+
+    return MultiProvider(
+      providers: [
+        Provider<StudentManager>.value(value: students),
+        Provider<ProjectManager>.value(value: projects),
+      ],
+      child: MyHomePage(),
+    );
+  }
+
+  Future<String> _getDefaultRootName(FirebaseInstance firebase) async {
+    bool skippedOne = false;
+
+    final rootsFuture = firebase.roots.rootStream
+        // skip the first one if empty
+        .skipWhile(
+          (element) {
+            if (skippedOne) {
+              return false;
+            }
+            skippedOne = true;
+            return element.isEmpty;
+          },
+        )
+        .first
+        // timeout after 5 seconds
+        .timeout(Duration(seconds: 5));
+
+    try {
+      final rootNames = (await rootsFuture).map((root) => root.name).toList();
+      return MyAppSettings.getDefaultRootName(rootNames);
+    } on TimeoutException catch (e) {
+      throw "Firebase timed out after: ${e.duration}";
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// The widget which updates the view each time the root is changed
+  Widget _buildRootUpdater(
+    FirebaseInstance firebase,
+    WidgetBuilder childBuilder,
+  ) {
+    // we use FutureBuilder to get a **default** root collection
+    return FutureBuilder<String>(
+      future: _getDefaultRootName(firebase),
+      builder: (context, snapshot) {
+        final auth = firebase.authenticator;
+
+        if (snapshot.hasError) {
+          return CompletelyCentered(
+            children: [
+              Text("Failed loading default root:"),
+              Text(snapshot.error.toString()),
+              SignOutButton(authenticator: auth),
+            ],
+          );
+        }
+
+        if (!snapshot.hasData) {
+          return LabeledCircularLoader(
+            labels: ["Loading default root"],
+            children: <Widget>[
+              ChangeDBButton(),
+              SignOutButton(authenticator: auth),
+            ],
+          );
+        }
+
+        final defaultRoot = snapshot.data;
+        print("Default root: $defaultRoot");
+
+        // we use a ValueChangeObserver to change the root when it is changed in the settings
+        return ValueChangeObserver<String>(
+          cacheKey: MyAppSettings.firebaseRootName,
+          defaultValue: snapshot.data,
+          builder: (context, versionName, onChangeRootSetting) {
+            // holds the current root reference
+            FirebaseRoot current;
+            // after changed a root in the settings, get the corresponding FirebaseRoot object
+            // and use it as the current firebase root
+            return StreamBuilder<void>(
+              stream: firebase.roots.rootStream
+                  // find and return the root with the current name
+                  .map(
+                    (roots) => roots.firstWhere(
+                      (root) => root.name == versionName,
+                      orElse: () => null,
+                    ),
+                  )
+                  // if there was an update to another root, just ignore
+                  // only if there's no current root, show the event
+                  .skipWhile((root) => root == current && current != null)
+                  .asyncMap(
+                (root) {
+                  // set the current root reference
+                  current = root;
+                  return root == null
+                      ? Future<void>.value()
+                      : firebase.useRoot(root);
+                },
+              ),
+              builder: (context, snapshot) {
+                final routeCreator = [
+                  SizedBox(height: 20),
+                  Text("You may create the route if it doesn't exist"),
+                  RaisedButton(
+                    onPressed: () => firebase.roots.getRoot(versionName),
+                    child: Text("Create Root"),
+                  ),
+                  Text("Or you can use another available root"),
+                  StreamBuilder<String>(
+                    stream: firebase.roots.rootStream
+                        .where((event) => event != null)
+                        .map(
+                          (event) => MyAppSettings.getDefaultRootName(
+                            event
+                                .where((element) =>
+                                    element.name != versionName &&
+                                    element.name != null)
+                                .map((e) => e.name)
+                                .toList(),
+                          ),
+                        ),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Text(
+                          "Error loading default root: ${snapshot.error}",
+                        );
+                      }
+                      if (!snapshot.hasData) {
+                        return LabeledCircularLoader(
+                          labels: ["Loading default root..."],
+                        );
+                      }
+                      final defaultRoot = snapshot.data;
+                      return RaisedButton(
+                        onPressed: () {
+                          MyAppSettings.setRoot(defaultRoot);
+                          onChangeRootSetting(defaultRoot);
+                        },
+                        child: Text("Change Root (to $defaultRoot)"),
+                      );
+                    },
+                  ),
+                ];
+
+                if (snapshot.hasError) {
+                  return CompletelyCentered(children: [
+                    Text(
+                      "Failed getting and using the firebase root $versionName",
+                    ),
+                    Text(snapshot.error.toString()),
+                    ChangeDBButton(),
+                    ...routeCreator,
+                  ]);
+                }
+
+                if (!snapshot.hasData) {
+                  return LabeledCircularLoader(
+                    labels: ["Getting root `$versionName` from firebase..."],
+                    children: <Widget>[...routeCreator],
+                  );
+                }
+
+                // configure flamingo to use this instance of firebase
+                Flamingo.configure(
+                  firestore: firebase.firestore,
+                  storage: firebase.storage,
+                  root: firebase.activeRoot.root.reference,
+                );
+
+                return Builder(builder: childBuilder);
+              },
+            );
+          },
+        );
+      },
     );
   }
 }
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() {
-    return _MyHomePageState();
-  }
-}
-
-class MockStudent implements Student {
-  @override
-  String email = "test@ho.com";
-
-  @override
-  Name fullName = Name(first: "hey", last: "world");
-
-  @override
-  String id = "123456782";
-
-  @override
-  DateTime lastUpdate = DateTime.now().add(Duration(seconds: 10));
-
-  @override
-  DateTime loadDate = DateTime.now();
-
-  @override
-  String phoneNumber = "123-123123";
-
-  @override
-  StudentStatus status = StudentStatus.IRRELEVANT;
-
-  @override
-  int studyYear = 2020;
-
-  @override
-  DocumentReference reference;
-
-  @override
-  Map<String, dynamic> toJson() {
-    // TODO: implement toJson
-    return null;
-  }
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    Firestore fs = Firestore.instance;
-    // fs
-    //     .collection("students")
-    //     .document("04Vzpzh63aZhl6ywWyVu")
-    //     .get()
-    //     .asStream()
-    //     .expand((ds) => mapFlattener(ds.data).entries)
-    //     .forEach(print);
-
-    // var fname = "name.first";
-
-    // fs
-    //     .collection("students")
-    //     .where(fname, isEqualTo: "x")
-    //     .snapshots()
-    //     .expand((ds) => ds.documentChanges)
-    //     .where((dc) => dc.newIndex >= 0)
-    //     .map((dc) => dc.document)
-    //     .map((ds) => "${ds.documentID}, ${flattenMap(ds.data)}}")
-    //     .forEach(print);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      // body: StudentForm(student: _MockStudent())
-      body: _buildStudentTable(),
-    );
-  }
-}
-
-Widget _buildStudentTable() => StudentTable(
-      FirebaseSchema({
-        "name.first": "First Name",
-        "name.last": "Last Name",
-        "id": "ID",
-        "year": "Year",
-        "email": "Email",
-        "phone": "Phone",
-        "status": "Status",
-        "lastUpdate": "Last Update",
-        "loadDate": "Load Date"
-      }),
-    );
