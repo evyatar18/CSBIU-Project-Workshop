@@ -36,7 +36,7 @@ https://firebase.google.com/docs/functions/get-started#set-up-node.js-and-the-fi
 
         `npm install -g firebase-tools`
 
-    * You should be able to run the `firebase` command now, try it out (for example `firebase -V` will return the firebase version, we tested on version 8.6.0)
+    * You should be able to run the `firebase` command now, try it out (for example `firebase -V` will return the firebase version, we tested on version 8.6.0 and 8.7.0)
 3. **Initialize Firebase Tools**: Run the command `firebase login`, and choose your google account where you initialized your firebase project.
     * If login was successful, try running the command `firebase projects:list` to see a list of all the firebase projects associated with your account. You should see your firebase project listed there (something like this):
     ```
@@ -48,7 +48,7 @@ https://firebase.google.com/docs/functions/get-started#set-up-node.js-and-the-fi
     ```
     * Grab the `Project ID` of the desired firebase project and type in console `firebase use <ProjectID>`, in my example I would type `firebase use test-a97ea`.
     * Now you are ready to deploy the firebase functions and rules.
-4. **Install Dependencies**: You need the NPM dependencies installed on your machine. To install run the command `npm install` in the project folder(`firebase_functions` folder).
+4. **Install Dependencies**: You need the NPM dependencies installed on your machine. To install run the command `npm install` in the `functions` folder(`firebase_functions/functions` folder).
 5. **Deploy**: Make sure your console working directory is `firebase_functions`, after that, type in the console `firebase deploy`. This will upload the **firebase functions** and **custom rules** for **firestore** and **storage**.
     * You should be expecting output ending like this:
         ```
