@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flamingo/flamingo.dart';
 import 'package:workshop_digitalization/files/container.dart';
 import 'package:workshop_digitalization/files/firebase.dart';
-import 'package:workshop_digitalization/firebase_roots/dynamic_root/setup.dart';
+import 'package:workshop_digitalization/dynamic_firebase/setup.dart';
 import 'package:workshop_digitalization/global/disposable.dart';
 import 'package:workshop_digitalization/global/list_modifier.dart';
 import 'package:workshop_digitalization/global/smart_doc_accessor.dart';

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:workshop_digitalization/auth/auth.dart';
 import 'package:workshop_digitalization/auth/ui/sign_out.dart';
-import 'package:workshop_digitalization/firebase_roots/dynamic_root/setup.dart';
+import 'package:workshop_digitalization/dynamic_firebase/setup.dart';
 import 'package:workshop_digitalization/global/ui/circular_loader.dart';
 import 'package:workshop_digitalization/global/ui/completely_centered.dart';
 

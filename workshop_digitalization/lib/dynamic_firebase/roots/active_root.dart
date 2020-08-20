@@ -2,7 +2,7 @@ import 'package:workshop_digitalization/student_project/project/firebase_project
 import 'package:workshop_digitalization/student_project/student/firebase_student.dart';
 
 import 'firebase_root.dart';
-import 'dynamic_root/setup.dart';
+import '../setup.dart';
 
 /// represents a root that is currently being used by the application
 class ActiveRoot {

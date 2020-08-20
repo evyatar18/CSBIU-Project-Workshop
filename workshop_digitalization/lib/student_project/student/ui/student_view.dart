@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
-import 'package:workshop_digitalization/firebase_roots/dynamic_root/setup.dart';
+import 'package:workshop_digitalization/dynamic_firebase/setup.dart';
 import 'package:workshop_digitalization/global/emails.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/circular_loader.dart';

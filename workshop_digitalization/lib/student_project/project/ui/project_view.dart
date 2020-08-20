@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:workshop_digitalization/files/ui/file_view.dart';
-import 'package:workshop_digitalization/firebase_roots/dynamic_root/setup.dart';
+import 'package:workshop_digitalization/dynamic_firebase/setup.dart';
 import 'package:workshop_digitalization/global/emails.dart';
 import 'package:workshop_digitalization/global/strings.dart';
 import 'package:workshop_digitalization/global/ui/completely_centered.dart';

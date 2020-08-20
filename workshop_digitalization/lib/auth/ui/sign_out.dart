@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:workshop_digitalization/firebase_roots/dynamic_root/setup.dart';
+import 'package:workshop_digitalization/dynamic_firebase/setup.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
 
 import '../auth.dart';

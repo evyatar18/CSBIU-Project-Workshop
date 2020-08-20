@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:workshop_digitalization/firebase_roots/dynamic_root/setup.dart';
 import 'package:workshop_digitalization/global/ui/circular_loader.dart';
 import 'package:workshop_digitalization/global/ui/completely_centered.dart';
 import 'package:workshop_digitalization/global/ui/dialogs.dart';
 import 'package:workshop_digitalization/platform/init.dart';
 
+import '../setup.dart';
 import '../firebase_connection_bloc.dart';
 
 /// the change database screen

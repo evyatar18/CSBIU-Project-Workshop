@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:workshop_digitalization/firebase_roots/dynamic_root/setup.dart';
+import 'package:workshop_digitalization/dynamic_firebase/setup.dart';
 import 'package:workshop_digitalization/student_project/project/project_element_manager.dart';
 import 'package:workshop_digitalization/student_project/ui/edit_element_screen.dart';
 
