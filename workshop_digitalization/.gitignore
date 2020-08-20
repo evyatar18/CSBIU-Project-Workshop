@@ -38,3 +38,10 @@ lib/generated_plugin_registrant.dart
 
 # added WORKSHOP PROJECT
 pubspec.lock
+
+test/test.csv
+test/test.dart
+ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+ios/Runner.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings

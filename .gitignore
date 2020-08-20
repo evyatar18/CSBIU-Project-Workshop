@@ -1,10 +1,1 @@
-workshop_digitalization/pubspec.lock
-workshop_digitalization/test/test.csv
-workshop_digitalization/test/test.dart
-workshop_digitalization/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
-workshop_digitalization/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
-workshop_digitalization/ios/Runner.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
-workshop_digitalization/ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
 .vscode
-workshop_digitalization/lib/firebase_consts/dynamic_db/firebase_options_reader.dart
-workshop_digitalization/lib/firebase_consts/dynamic_db/ui/db_data.dart
